@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "build": "cd web && npm install && npm run build",
+    "dev": "cd web && npm run dev",
+    "lint": "cd web && npm run lint"
+  },
+  "devDependencies": {
+    "supabase": "^2.76.16"
+  },
+  "dependencies": {
+    "lucide-react": "^1.7.0"
+  }
+}

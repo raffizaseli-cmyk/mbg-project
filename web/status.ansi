@@ -1,0 +1,76 @@
+ M ../MASTER_PLAN.md
+ M ../backend/routers/mbg.py
+ M ../backend/routers/transactions.py
+ M ../bot/bot_sessions.pickle
+ M ../bot/main.py
+ M .next/app-build-manifest.json
+ M .next/cache/webpack/client-development/18.pack.gz
+ M .next/cache/webpack/client-development/20.pack.gz
+ M .next/cache/webpack/client-development/21.pack.gz
+ M .next/cache/webpack/client-development/22.pack.gz
+ M .next/cache/webpack/client-development/3.pack.gz
+ M .next/cache/webpack/client-development/8.pack.gz
+ M .next/cache/webpack/client-development/index.pack.gz
+ M .next/cache/webpack/client-development/index.pack.gz.old
+ M .next/cache/webpack/server-development/0.pack.gz
+ M .next/cache/webpack/server-development/1.pack.gz
+ M .next/cache/webpack/server-development/10.pack.gz
+ M .next/cache/webpack/server-development/11.pack.gz
+ M .next/cache/webpack/server-development/12.pack.gz
+ M .next/cache/webpack/server-development/13.pack.gz
+ M .next/cache/webpack/server-development/14.pack.gz
+ M .next/cache/webpack/server-development/15.pack.gz
+ M .next/cache/webpack/server-development/2.pack.gz
+ M .next/cache/webpack/server-development/4.pack.gz
+ M .next/cache/webpack/server-development/6.pack.gz
+ M .next/cache/webpack/server-development/7.pack.gz
+ M .next/cache/webpack/server-development/8.pack.gz
+ M .next/cache/webpack/server-development/index.pack.gz
+ M .next/cache/webpack/server-development/index.pack.gz.old
+ M .next/server/app-paths-manifest.json
+ M .next/server/app/(dashboard)/hutang/page_client-reference-manifest.js
+ M .next/server/app/(dashboard)/page_client-reference-manifest.js
+ D .next/server/app/(dashboard)/piutang/page.js
+ D .next/server/app/(dashboard)/piutang/page_client-reference-manifest.js
+ M .next/server/app/(dashboard)/settings/page.js
+ M .next/server/app/(dashboard)/settings/page_client-reference-manifest.js
+ M .next/server/app/(dashboard)/stok/page_client-reference-manifest.js
+ M .next/server/server-reference-manifest.json
+ M .next/server/webpack-runtime.js
+ D .next/static/chunks/app/(dashboard)/piutang/page.js
+ M .next/static/chunks/app/(dashboard)/settings/page.js
+ M .next/static/chunks/webpack.js
+ D .next/static/webpack/1788a28e6fd610f4.webpack.hot-update.json
+ D .next/static/webpack/4eacddba287d4e07.webpack.hot-update.json
+ D .next/static/webpack/7e48053e191e5633.webpack.hot-update.json
+ D .next/static/webpack/9a6cc0543ddbe820.webpack.hot-update.json
+ D .next/static/webpack/app/(dashboard)/settings/page.7e48053e191e5633.hot-update.js
+ D .next/static/webpack/webpack.1788a28e6fd610f4.hot-update.js
+ M .next/static/webpack/webpack.39ea6c117119269f.hot-update.js
+ D .next/static/webpack/webpack.4eacddba287d4e07.hot-update.js
+ D .next/static/webpack/webpack.7e48053e191e5633.hot-update.js
+ D .next/static/webpack/webpack.9a6cc0543ddbe820.hot-update.js
+ M .next/trace
+ D .next/types/app/(dashboard)/piutang/page.ts
+ M app/(dashboard)/settings/components/TabBahan.tsx
+?? ../supabase/migrations/20240101000014_transaction_payment_fields.sql
+?? ../supabase/migrations/20240101000015_excel_files_error_message.sql
+?? .next/cache/webpack/client-development/23.pack.gz
+?? .next/cache/webpack/client-development/24.pack.gz
+?? .next/server/app/(dashboard)/mbg/
+?? .next/server/app/(dashboard)/pembukuan/
+?? .next/static/chunks/app/(dashboard)/mbg/
+?? .next/static/chunks/app/(dashboard)/pembukuan/
+?? .next/static/webpack/278ab095f0593657.webpack.hot-update.json
+?? .next/static/webpack/3c71e009ed23a204.webpack.hot-update.json
+?? .next/static/webpack/7ddfe306af531009.webpack.hot-update.json
+?? .next/static/webpack/d24b8771e704e3ae.webpack.hot-update.json
+?? .next/static/webpack/webpack.278ab095f0593657.hot-update.js
+?? .next/static/webpack/webpack.3c71e009ed23a204.hot-update.js
+?? .next/static/webpack/webpack.7ddfe306af531009.hot-update.js
+?? .next/static/webpack/webpack.d24b8771e704e3ae.hot-update.js
+?? .next/types/app/(dashboard)/mbg/
+?? .next/types/app/(dashboard)/pembukuan/
+?? diff.ansi
+?? diff.txt
+?? status.ansi

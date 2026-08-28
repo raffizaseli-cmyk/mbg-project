@@ -1,0 +1,11 @@
+Columns in tenants:
+ - id
+ - name
+ - slug
+ - owner_email
+ - phone
+ - address
+ - business_type
+ - plan
+ - is_active
+ - created_at

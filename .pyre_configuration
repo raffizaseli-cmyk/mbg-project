@@ -1,0 +1,7 @@
+{
+  "source_directories": [
+    "backend",
+    "bot"
+  ],
+  "venv": ".venv"
+}

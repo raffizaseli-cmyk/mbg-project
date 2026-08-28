@@ -1,0 +1,1 @@
+const fs=require('fs');const p='c:\\Users\\Lenovo\\OneDrive\\folder fix\\web\\app\\(dashboard)\\penyetelan-dapur\\page.tsx';const s=fs.readFileSync(p,'utf8');const lines=s.split(/\r?\n/);for(let i=0;i<lines.length;i++){const l=lines[i]; if(l.includes('/*')||l.includes('*/')||/omitted/.test(l)){ console.log((i+1)+': '+l); }}console.log('done');

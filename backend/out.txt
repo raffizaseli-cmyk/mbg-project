@@ -1,0 +1,30 @@
+
+PRODUCTS ACROSS ALL TENANTS:
+{'id': '2eeaaace-a276-4c6f-9b44-61a0c11c0635', 'tenant_id': 'd6014971-0d73-41a0-9319-dcf48e13a2d0', 'name': 'beras', 'stock_qty': 50000.0, 'harga': 12000.0, 'category': 'bahan_baku'}
+{'id': '4ee4683f-0857-4543-a55c-df85b9228a55', 'tenant_id': 'b32e6547-15be-4505-99fb-a64257c5efc6', 'name': 'Beras', 'stock_qty': 0.0, 'harga': 14000.0, 'category': 'bahan_baku'}
+{'id': '7b506581-0cef-4603-9a8e-ceb76853717e', 'tenant_id': 'd6014971-0d73-41a0-9319-dcf48e13a2d0', 'name': 'ayam', 'stock_qty': 61000.0, 'harga': 10000.0, 'category': 'bahan_baku'}
+{'id': 'ec8d4aba-4d9a-4b1b-9379-ed84deb06cd2', 'tenant_id': 'd6014971-0d73-41a0-9319-dcf48e13a2d0', 'name': 'beras', 'stock_qty': 483598700.0, 'harga': 13000.0, 'category': 'bahan_baku'}
+
+RECENT TRANSACTIONS:
+{'id': 'c27e2a41-882c-4b37-b55e-079c818cba50', 'tenant_id': 'd6014971-0d73-41a0-9319-dcf48e13a2d0', 'date': '2026-03-26', 'total': 243000.0, 'status': 'confirmed'}
+{'id': '2aa82138-b342-417b-96e9-90a87c70902a', 'tenant_id': 'd6014971-0d73-41a0-9319-dcf48e13a2d0', 'date': '2026-03-26', 'total': 243000.0, 'status': 'confirmed'}
+{'id': '72d23bc7-2d9b-42c0-8a15-3bd0fe9f6554', 'tenant_id': 'd6014971-0d73-41a0-9319-dcf48e13a2d0', 'date': '2026-03-26', 'total': 13113000.0, 'status': 'confirmed'}
+{'id': '60c0330d-b12e-4eeb-a6cf-8de7c46ed01b', 'tenant_id': 'd6014971-0d73-41a0-9319-dcf48e13a2d0', 'date': '2026-03-26', 'total': 268000.0, 'status': 'confirmed'}
+{'id': '2596cd3c-54a9-4167-95d8-610c330b5c30', 'tenant_id': 'd6014971-0d73-41a0-9319-dcf48e13a2d0', 'date': '2026-03-26', 'total': 330000.0, 'status': 'confirmed'}
+
+RECENT ITEMS:
+{'transaction_id': '2596cd3c-54a9-4167-95d8-610c330b5c30', 'product_id': '2eeaaace-a276-4c6f-9b44-61a0c11c0635', 'product_name': 'beras', 'qty': 10.0, 'price': 13000.0, 'has_ppn': False}
+{'transaction_id': '2596cd3c-54a9-4167-95d8-610c330b5c30', 'product_id': '7b506581-0cef-4603-9a8e-ceb76853717e', 'product_name': 'ayam', 'qty': 10.0, 'price': 20000.0, 'has_ppn': False}
+{'transaction_id': '60c0330d-b12e-4eeb-a6cf-8de7c46ed01b', 'product_id': '82eb810b-9d7d-42fc-b4b9-0002e689092f', 'product_name': 'mangga', 'qty': 5.0, 'price': 5000.0, 'has_ppn': False}
+{'transaction_id': '60c0330d-b12e-4eeb-a6cf-8de7c46ed01b', 'product_id': '2eeaaace-a276-4c6f-9b44-61a0c11c0635', 'product_name': 'beras', 'qty': 10.0, 'price': 13000.0, 'has_ppn': False}
+{'transaction_id': '60c0330d-b12e-4eeb-a6cf-8de7c46ed01b', 'product_id': '2b9b19f5-b294-4d81-973d-041523c4c8ee', 'product_name': 'Telur', 'qty': 30.0, 'price': 2500.0, 'has_ppn': False}
+{'transaction_id': '60c0330d-b12e-4eeb-a6cf-8de7c46ed01b', 'product_id': 'c877c460-5c72-4521-a0c2-8f4dd0fc78dc', 'product_name': 'Minyak', 'qty': 2.0, 'price': 19000.0, 'has_ppn': False}
+{'transaction_id': '72d23bc7-2d9b-42c0-8a15-3bd0fe9f6554', 'product_id': '2eeaaace-a276-4c6f-9b44-61a0c11c0635', 'product_name': 'beras', 'qty': 1000.0, 'price': 13000.0, 'has_ppn': False}
+{'transaction_id': '72d23bc7-2d9b-42c0-8a15-3bd0fe9f6554', 'product_id': '2b9b19f5-b294-4d81-973d-041523c4c8ee', 'product_name': 'Telur', 'qty': 30.0, 'price': 2500.0, 'has_ppn': False}
+{'transaction_id': '72d23bc7-2d9b-42c0-8a15-3bd0fe9f6554', 'product_id': 'c877c460-5c72-4521-a0c2-8f4dd0fc78dc', 'product_name': 'Minyak', 'qty': 2.0, 'price': 19000.0, 'has_ppn': False}
+{'transaction_id': '2aa82138-b342-417b-96e9-90a87c70902a', 'product_id': '2eeaaace-a276-4c6f-9b44-61a0c11c0635', 'product_name': 'beras', 'qty': 100.0, 'price': 1300.0, 'has_ppn': False}
+{'transaction_id': '2aa82138-b342-417b-96e9-90a87c70902a', 'product_id': '2b9b19f5-b294-4d81-973d-041523c4c8ee', 'product_name': 'Telur', 'qty': 30.0, 'price': 2500.0, 'has_ppn': False}
+{'transaction_id': '2aa82138-b342-417b-96e9-90a87c70902a', 'product_id': 'c877c460-5c72-4521-a0c2-8f4dd0fc78dc', 'product_name': 'Minyak', 'qty': 2.0, 'price': 19000.0, 'has_ppn': False}
+{'transaction_id': 'c27e2a41-882c-4b37-b55e-079c818cba50', 'product_id': '2eeaaace-a276-4c6f-9b44-61a0c11c0635', 'product_name': 'beras', 'qty': 10.0, 'price': 13000.0, 'has_ppn': False}
+{'transaction_id': 'c27e2a41-882c-4b37-b55e-079c818cba50', 'product_id': '2b9b19f5-b294-4d81-973d-041523c4c8ee', 'product_name': 'Telur', 'qty': 30.0, 'price': 2500.0, 'has_ppn': False}
+{'transaction_id': 'c27e2a41-882c-4b37-b55e-079c818cba50', 'product_id': '7b506581-0cef-4603-9a8e-ceb76853717e', 'product_name': 'ayam', 'qty': 2.0, 'price': 19000.0, 'has_ppn': False}

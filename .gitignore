@@ -1,0 +1,35 @@
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+backend/.env
+bot/.env
+web/.env.local
+web/.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# Node
+node_modules/
+.next/
+out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+.vercel
+.env*.local

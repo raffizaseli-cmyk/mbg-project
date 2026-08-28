@@ -1,0 +1,1 @@
+const fs=require('fs');const path='c:\\Users\\Lenovo\\OneDrive\\folder fix\\web\\app\\(dashboard)\\penyetelan-dapur\\page.tsx';const s=fs.readFileSync(path,'utf8');const lines=s.split(/\r?\n/);for(let i=1;i<=820 && i<=lines.length;i++){console.log(i+': '+lines[i-1]);}

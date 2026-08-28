@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBG Katering - Simulasi Produksi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .progress-bar-fill { transition: width 0.5s ease-out; }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen pb-12">
+
+<!-- Topbar -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <i data-lucide="chef-hat" class="text-indigo-600 w-6 h-6"></i>
+            <span class="font-bold text-xl tracking-tight text-slate-900">MBG<span class="text-indigo-600">Pro</span></span>
+            <span class="ml-2 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">Outbound Module</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <input type="password" id="auth-token" placeholder="Bearer Token..." class="text-sm px-3 py-1.5 border border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-64" onchange="saveToken()">
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Kolom Kiri: Input & Gizi -->
+        <div class="lg:col-span-1 space-y-6">
+            
+            <!-- Panel Simulasi -->
+            <div class="glass-card rounded-xl p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2"><i data-lucide="calculator" class="w-5 h-5 text-indigo-500"></i> Panel Simulasi</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Pilih Menu</label>
+                        <select id="menu-select" class="w-full border-slate-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-slate-50 border">
+                            <option value="">-- Memuat Menu... --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Jumlah Porsi</label>
+                        <input type="number" id="qty-input" value="100" min="1" class="w-full border-slate-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-slate-50 border">
+                    </div>
+                    <button onclick="runSimulation()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition duration-150 flex justify-center items-center gap-2 shadow-sm">
+                        <i data-lucide="play" class="w-4 h-4"></i> Jalankan Simulasi
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel Gizi -->
+            <div id="nutrition-panel" class="glass-card rounded-xl p-6 hidden">
+                <div class="flex justify-between items-start mb-4">
+                    <h2 class="text-lg font-semibold flex items-center gap-2"><i data-lucide="activity" class="w-5 h-5 text-emerald-500"></i> Profil Gizi per Porsi</h2>
+                    <div id="nutrition-warning" class="hidden relative group cursor-help">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
+                            <i data-lucide="alert-triangle" class="w-3 h-3 mr-1"></i> Incomplete
+                        </span>
+                        <div class="opacity-0 group-hover:opacity-100 transition absolute right-0 mt-2 w-48 bg-slate-800 text-white text-xs rounded py-1.5 px-2.5 z-10 shadow-lg pointer-events-none">
+                            Beberapa bahan baku belum dipetakan ke data gizi TKPI. Total kalori mungkin kurang akurat.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Kalori -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium text-slate-700">Kalori (Kkal)</span>
+                            <span id="val-calories" class="font-bold text-slate-900">0</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2.5">
+                            <div id="bar-calories" class="bg-orange-500 h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <!-- Protein -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium text-slate-700">Protein (g)</span>
+                            <span id="val-proteins" class="font-bold text-slate-900">0</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2.5">
+                            <div id="bar-proteins" class="bg-blue-500 h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <!-- Lemak -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium text-slate-700">Lemak (g)</span>
+                            <span id="val-fat" class="font-bold text-slate-900">0</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2.5">
+                            <div id="bar-fat" class="bg-yellow-400 h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <!-- Karbo -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium text-slate-700">Karbohidrat (g)</span>
+                            <span id="val-carbs" class="font-bold text-slate-900">0</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2.5">
+                            <div id="bar-carbs" class="bg-emerald-500 h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Kolom Kanan: BOM & Eksekusi -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="glass-card rounded-xl p-6 min-h-[500px] flex flex-col">
+                
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-lg font-semibold flex items-center gap-2"><i data-lucide="package-open" class="w-5 h-5 text-slate-600"></i> Bill of Materials (BOM)</h2>
+                    <div id="status-badge" class="hidden"></div>
+                </div>
+
+                <div id="bom-empty" class="flex-1 flex flex-col items-center justify-center text-slate-400">
+                    <i data-lucide="clipboard-list" class="w-12 h-12 mb-3 opacity-50"></i>
+                    <p>Jalankan simulasi untuk melihat proyeksi bahan baku.</p>
+                </div>
+
+                <div id="bom-table-container" class="hidden flex-1">
+                    <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Bahan Baku</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Kebutuhan</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Stok Gudang</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Shortage</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bom-body" class="bg-white divide-y divide-slate-200">
+                                <!-- JS Injected Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Footer Action -->
+                <div id="action-footer" class="mt-6 pt-6 border-t border-slate-200 hidden">
+                    <div class="flex items-center justify-between">
+                        <p class="text-sm text-slate-500">Tanggal Pengiriman: <input type="date" id="delivery-date" class="ml-2 border border-slate-300 rounded px-2 py-1 text-sm bg-slate-50"></p>
+                        <button id="btn-masak" onclick="executeMasak()" class="bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 px-6 rounded-lg transition duration-150 flex items-center gap-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i data-lucide="flame" class="w-4 h-4"></i> Eksekusi Masak (Potong Stok)
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<script>
+    // Inisialisasi Icon
+    lucide.createIcons();
+
+    let baseUrl = window.location.origin;
+    let token = localStorage.getItem("mbg_token") || "";
+    document.getElementById("auth-token").value = token;
+
+    function saveToken() {
+        token = document.getElementById("auth-token").value;
+        localStorage.setItem("mbg_token", token);
+        loadMenus();
+    }
+
+    // Set default date to today
+    document.getElementById('delivery-date').valueAsDate = new Date();
+
+    async function fetchAPI(endpoint, options = {}) {
+        options.headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        };
+        const res = await fetch(baseUrl + endpoint, options);
+        if(!res.ok) {
+            const err = await res.json();
+            throw new Error(err.detail || 'Terjadi kesalahan jaringan');
+        }
+        return res.json();
+    }
+
+    async function loadMenus() {
+        if(!token) return;
+        try {
+            const res = await fetchAPI('/products?category=produk_jadi&limit=100');
+            const select = document.getElementById('menu-select');
+            select.innerHTML = '';
+            
+            if(res.data && res.data.length > 0) {
+                res.data.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.id;
+                    opt.textContent = item.name;
+                    select.appendChild(opt);
+                });
+            } else {
+                select.innerHTML = '<option value="">Tidak ada menu ditemukan</option>';
+            }
+        } catch (e) {
+            console.error(e);
+            document.getElementById('menu-select').innerHTML = '<option value="">Error load menu (Cek Token)</option>';
+        }
+    }
+
+    async function runSimulation() {
+        const menuId = document.getElementById('menu-select').value;
+        const qty = document.getElementById('qty-input').value;
+
+        if(!menuId || !qty) {
+            alert("Pilih menu dan jumlah porsi!");
+            return;
+        }
+
+        document.getElementById('bom-empty').classList.add('hidden');
+        document.getElementById('bom-table-container').classList.remove('hidden');
+        const tbody = document.getElementById('bom-body');
+        tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-slate-500">Memuat simulasi... <i data-lucide="loader" class="w-4 h-4 animate-spin inline ml-1"></i></td></tr>';
+        lucide.createIcons();
+
+        try {
+            const res = await fetchAPI(`/recipes/simulate?menu_id=${menuId}&qty=${qty}`);
+            const data = res.data;
+            
+            renderBOM(data);
+            renderNutrition(data.nutrition_per_portion);
+            
+            // Set Badge
+            const badge = document.getElementById('status-badge');
+            badge.classList.remove('hidden');
+            if(data.can_produce) {
+                badge.innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200">✅ Stok Cukup</span>`;
+            } else {
+                badge.innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">🚨 Stok Kurang (Max: ${data.max_possible} porsi)</span>`;
+            }
+
+            // Footer action
+            document.getElementById('action-footer').classList.remove('hidden');
+            const btn = document.getElementById('btn-masak');
+            if(data.can_produce) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+
+        } catch (e) {
+            alert(e.message);
+            tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-red-500">${e.message}</td></tr>`;
+        }
+    }
+
+    function renderBOM(data) {
+        const tbody = document.getElementById('bom-body');
+        tbody.innerHTML = '';
+        
+        if(!data.ingredients || data.ingredients.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-slate-500">Resep belum diatur untuk menu ini.</td></tr>';
+            return;
+        }
+
+        data.ingredients.forEach(item => {
+            const isShort = !item.sufficient;
+            const trClass = isShort ? "bg-red-50/70" : "bg-white hover:bg-slate-50 transition";
+            const nameClass = isShort ? "text-red-700 font-semibold" : "text-slate-900 font-medium";
+            const shortClass = isShort ? "text-red-600 font-bold" : "text-slate-400";
+            
+            const tr = document.createElement('tr');
+            tr.className = trClass;
+            tr.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap text-sm ${nameClass}">${item.name}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-slate-700">${item.total_needed_display} ${item.display_unit}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-slate-700">${item.available_display} ${item.display_unit}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-right ${shortClass}">
+                    ${isShort ? '-' + item.shortage_display : '✓'}
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderNutrition(nut) {
+        document.getElementById('nutrition-panel').classList.remove('hidden');
+        if(!nut) return;
+
+        // Set Values
+        document.getElementById('val-calories').textContent = nut.calories;
+        document.getElementById('val-proteins').textContent = nut.proteins;
+        document.getElementById('val-fat').textContent = nut.fat;
+        document.getElementById('val-carbs').textContent = nut.carbohydrates;
+
+        // Set Bars (Asumsi Maksimal Harian anak: Kkal=800, Pro=30, Fat=25, Carb=100)
+        document.getElementById('bar-calories').style.width = Math.min((nut.calories / 800) * 100, 100) + '%';
+        document.getElementById('bar-proteins').style.width = Math.min((nut.proteins / 30) * 100, 100) + '%';
+        document.getElementById('bar-fat').style.width = Math.min((nut.fat / 25) * 100, 100) + '%';
+        document.getElementById('bar-carbs').style.width = Math.min((nut.carbohydrates / 100) * 100, 100) + '%';
+
+        // Warning Badge
+        const warn = document.getElementById('nutrition-warning');
+        if(nut.incomplete_nutrition_data) {
+            warn.classList.remove('hidden');
+        } else {
+            warn.classList.add('hidden');
+        }
+    }
+
+    async function executeMasak() {
+        const menuId = document.getElementById('menu-select').value;
+        const qty = document.getElementById('qty-input').value;
+        const delDate = document.getElementById('delivery-date').value;
+
+        if(!confirm(`Konfirmasi eksekusi ${qty} porsi? Ini akan memotong stok gudang secara permanen.`)) return;
+
+        const btn = document.getElementById('btn-masak');
+        btn.disabled = true;
+        btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Memproses...`;
+        lucide.createIcons();
+
+        try {
+            const res = await fetchAPI('/recipes/produce', {
+                method: 'POST',
+                body: JSON.stringify({ menu_id: menuId, qty: parseInt(qty), delivery_date: delDate })
+            });
+            alert("🔥 BOOM! " + res.message + " Stok berhasil dipotong.");
+            runSimulation(); // Refresh stok
+        } catch (e) {
+            alert("Gagal: " + e.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="flame" class="w-4 h-4"></i> Eksekusi Masak (Potong Stok)`;
+            lucide.createIcons();
+        }
+    }
+
+    // Init
+    if(token) loadMenus();
+</script>
+</body>
+</html>

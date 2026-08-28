@@ -1,0 +1,2 @@
+﻿Found beras, ID: 2eeaaace-a276-4c6f-9b44-61a0c11c0635, Tenant: d6014971-0d73-41a0-9319-dcf48e13a2d0
+RPC Error: <class 'postgrest.exceptions.APIError'> {'message': 'column "updated_at" of relation "products" does not exist', 'code': '42703', 'hint': None, 'details': None}

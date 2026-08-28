@@ -1,0 +1,5 @@
+ERROR: 1 validation error for UserInDB
+email
+  value is not a valid email address: The part after the @-sign is a special-use or reserved name that cannot be used with email. [type=value_error, input_value='owner@uji-coba.local', input_type=str]
+
+RAW DATA: {'id': 'f7f22204-39f3-446c-b2f0-96ab779da471', 'tenant_id': 'b32e6547-15be-4505-99fb-a64257c5efc6', 'telegram_id': None, 'email': 'owner@uji-coba.local', 'name': 'Owner Uji Coba', 'role': 'owner', 'password_hash': None, 'session_token': None, 'is_active': True, 'created_at': '2026-03-04T09:44:21.882728+00:00'}

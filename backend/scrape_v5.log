@@ -1,0 +1,15 @@
+[16:12:28] ======================================================================
+[16:12:28] [TKPI v5] SIMPLE MULTI-STRATEGY SCRAPER
+[16:12:28] ======================================================================
+[16:12:28] 
+[1] Trying different URLs...
+[16:12:28]   Trying: https://www.andrafarm.com/_andra.php?_i=daftar-tkpi
+[16:12:29]     Found 23 tables, checking for food data...
+[16:12:29]   Trying: https://www.andrafarm.com/_andra.php?_i=daftar-tkpi&page=1
+[16:12:30]     Found 23 tables, checking for food data...
+[16:12:30]   Trying: https://www.andrafarm.com/api/tkpi
+[16:12:31]   Trying: https://www.andrafarm.com/data/tkpi.json
+[16:12:31] 
+❌ No data extracted from any source
+[16:12:31] 
+[FALLBACK] Using sample data instead...

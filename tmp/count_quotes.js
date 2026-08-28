@@ -1,0 +1,1 @@
+const fs=require('fs'); const s=fs.readFileSync('c:\\Users\\Lenovo\\OneDrive\\folder fix\\web\\app\\(dashboard)\\penyetelan-dapur\\page.tsx','utf8'); const dq=(s.match(/"/g)||[]).length; const sq=(s.match(/'/g)||[]).length; const bt=(s.match(/`/g)||[]).length; console.log('double',dq,'single',sq,'backtick',bt);

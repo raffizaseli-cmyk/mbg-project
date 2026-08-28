@@ -1,0 +1,65 @@
+diff --git a/web/app/(dashboard)/settings/components/TabBahan.tsx b/web/app/(dashboard)/settings/components/TabBahan.tsx
+index 1fe9b5f..2bb5210 100644
+--- a/web/app/(dashboard)/settings/components/TabBahan.tsx
++++ b/web/app/(dashboard)/settings/components/TabBahan.tsx
+@@ -63,2 +63,11 @@ export function TabBahan() {
+   const [belanjaErrors, setBelanjaErrors] = useState<string[]>([]);
++  const [paymentMethod, setPaymentMethod] = useState("tunai");
++  
++  // Set default due_date to 30 days from now
++  const defaultDueDate = useMemo(() => {
++    const d = new Date();
++    d.setDate(d.getDate() + 30);
++    return d.toISOString().split("T")[0];
++  }, []);
++  const [dueDate, setDueDate] = useState(defaultDueDate);
+ 
+@@ -196,3 +205,4 @@ export function TabBahan() {
+         date: new Date().toISOString().split('T')[0],
+-        payment_method: "tunai",
++        payment_method: paymentMethod,
++        due_date: paymentMethod === "hutang" ? dueDate : null,
+         items: items
+@@ -202,2 +212,4 @@ export function TabBahan() {
+       setParsedBelanja([]);
++      setPaymentMethod("tunai");
++      setDueDate(defaultDueDate);
+       alert("✅ Belanja berhasil disimpan! Stok bertambah dan bahan baru telah dibuat otomatis.");
+@@ -437,7 +449,34 @@ export function TabBahan() {
+                     </tr>
+-                  </tfoot>
+-                </table>
++              </tfoot>
++            </table>
++          </div>
++        )}
++
++        {/* Payment Method Selector */}
++        <div className="mt-4 p-3 bg-white border rounded-lg shadow-sm">
++            <label className="block text-sm font-medium text-gray-700 mb-1">Metode Pembayaran</label>
++            <select 
++              value={paymentMethod}
++              onChange={(e) => setPaymentMethod(e.target.value)}
++              className="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500"
++            >
++              <option value="tunai">Tunai</option>
++              <option value="transfer">Transfer</option>
++              <option value="hutang">Hutang (Tempo)</option>
++            </select>
++            
++            {paymentMethod === "hutang" && (
++              <div className="mt-3">
++                <label className="block text-sm font-medium text-gray-700 mb-1">Jatuh Tempo</label>
++                <input 
++                  type="date"
++                  value={dueDate}
++                  onChange={(e) => setDueDate(e.target.value)}
++                  className="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500"
++                />
+               </div>
+             )}
+-            <button
++        </div>
++
++        <button
+               disabled={parsedBelanja.length === 0 || saving}
