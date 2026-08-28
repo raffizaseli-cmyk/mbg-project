@@ -33,3 +33,9 @@ Thumbs.db
 
 .vercel
 .env*.local
+
+scratch/
+*.exe
+*.log
+*.txt
+.env
