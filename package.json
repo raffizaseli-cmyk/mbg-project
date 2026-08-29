@@ -1,13 +1,22 @@
 {
+  "name": "mbg-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "web"
+  ],
   "scripts": {
-    "build": "cd web && npm install && npm run build",
-    "dev": "cd web && npm run dev",
-    "lint": "cd web && npm run lint"
+    "dev": "npm --prefix web run dev",
+    "build": "npm --prefix web run build",
+    "start": "npm --prefix web run start",
+    "lint": "npm --prefix web run lint"
+  },
+  "dependencies": {
+    "next": "14.2.35",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "supabase": "^2.76.16"
-  },
-  "dependencies": {
-    "lucide-react": "^1.7.0"
   }
 }

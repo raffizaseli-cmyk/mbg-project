@@ -11,7 +11,20 @@ from core.dependencies import get_current_user, require_role
 from models.supplier import SupplierCreate, SupplierResponse, SupplierUpdate
 from models.user import UserInDB
 
+import time
+from typing import Tuple
+
 router = APIRouter(prefix="/suppliers", tags=["suppliers"])
+
+_SUPPLIERS_CACHE: Dict[str, Tuple[float, list]] = {}
+_SUPPLIERS_CACHE_TTL = 60.0
+
+
+def invalidate_suppliers_cache(tenant_id: str = None):
+    if tenant_id:
+        _SUPPLIERS_CACHE.pop(tenant_id, None)
+    else:
+        _SUPPLIERS_CACHE.clear()
 
 
 @router.get("", response_model=Dict[str, Any])
@@ -20,16 +33,23 @@ def list_suppliers(
     is_active: bool = Query(True),
     current_user: UserInDB = Depends(get_current_user),
 ):
-    """List suppliers."""
-    supabase = get_supabase()
-    query = supabase.table("suppliers").select("*").eq("tenant_id", current_user.tenant_id)
+    """List suppliers with in-memory caching."""
+    now = time.time()
+    cache_key = f"{current_user.tenant_id}_{is_active}"
+    cached = _SUPPLIERS_CACHE.get(cache_key)
 
-    if is_active:
-        query = query.eq("is_active", True)
+    if cached and (now - cached[0]) < _SUPPLIERS_CACHE_TTL:
+        raw_data = cached[1]
+    else:
+        supabase = get_supabase()
+        query = supabase.table("suppliers").select("*").eq("tenant_id", current_user.tenant_id)
+        if is_active:
+            query = query.eq("is_active", True)
+        response = query.execute()
+        raw_data = getattr(response, "data", None) or []
+        _SUPPLIERS_CACHE[cache_key] = (now, raw_data)
 
-    response = query.execute()
-    data = getattr(response, "data", None) or []
-
+    data = raw_data
     if search:
         data = [s for s in data if search.lower() in s.get("name", "").lower()]
 
@@ -85,6 +105,7 @@ def create_supplier(
             detail="Failed to create supplier",
         )
 
+    invalidate_suppliers_cache(current_user.tenant_id)
     return {"success": True, "data": SupplierResponse(**data[0])}
 
 
@@ -123,6 +144,7 @@ def update_supplier(
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Supplier not found")
 
+    invalidate_suppliers_cache(current_user.tenant_id)
     return {"success": True, "data": SupplierResponse(**data[0])}
 
 
@@ -138,4 +160,5 @@ def delete_supplier(
         "tenant_id", current_user.tenant_id
     ).execute()
 
+    invalidate_suppliers_cache(current_user.tenant_id)
     return {"success": True, "message": "Supplier deleted"}

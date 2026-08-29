@@ -18,12 +18,30 @@ from core.config import settings
 from models.tenant import TenantResponse, TenantUpdate
 from models.user import UserInDB, UserResponse
 
+import time
+from typing import Tuple
+
 router = APIRouter(prefix="/tenants", tags=["tenants"])
+
+_TENANT_CACHE: Dict[str, Tuple[float, dict]] = {}
+_TENANT_CACHE_TTL = 60.0
+
+
+def invalidate_tenant_cache(tenant_id: str = None):
+    if tenant_id:
+        _TENANT_CACHE.pop(tenant_id, None)
+    else:
+        _TENANT_CACHE.clear()
 
 
 @router.get("/me", response_model=Dict[str, Any])
 def get_current_tenant(current_user: UserInDB = Depends(get_current_user)):
-    """Get current tenant info."""
+    """Get current tenant info with in-memory caching."""
+    now = time.time()
+    cached = _TENANT_CACHE.get(current_user.tenant_id)
+    if cached and (now - cached[0]) < _TENANT_CACHE_TTL:
+        return {"success": True, "data": TenantResponse(**cached[1])}
+
     supabase = get_supabase()
     response = (
         supabase.table("tenants")
@@ -36,12 +54,15 @@ def get_current_tenant(current_user: UserInDB = Depends(get_current_user)):
     if not tenant_data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tenant not found")
 
-    # Ambil contact_name dari nama tabel users (owner)
-    owner_query = supabase.table("users").select("name").eq("tenant_id", current_user.tenant_id).eq("role", "owner").limit(1).execute()
-    owners = getattr(owner_query, "data", None)
-    if owners:
-        tenant_data["contact_name"] = owners[0].get("name")
+    if current_user.role == "owner":
+        tenant_data["contact_name"] = current_user.name
+    else:
+        owner_query = supabase.table("users").select("name").eq("tenant_id", current_user.tenant_id).eq("role", "owner").limit(1).execute()
+        owners = getattr(owner_query, "data", None)
+        if owners:
+            tenant_data["contact_name"] = owners[0].get("name")
 
+    _TENANT_CACHE[current_user.tenant_id] = (now, tenant_data)
     return {"success": True, "data": TenantResponse(**tenant_data)}
 
 
@@ -90,6 +111,8 @@ def update_tenant(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to update tenant",
         )
+
+    invalidate_tenant_cache(current_user.tenant_id)
 
     # Sisipkan contact_name di response akhir
     tenant_resp = tenant_list[0]

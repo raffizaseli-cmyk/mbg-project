@@ -1,4 +1,5 @@
-from typing import Callable
+import time
+from typing import Callable, Dict, Tuple
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -10,12 +11,24 @@ from models.user import UserInDB
 
 bearer_scheme = HTTPBearer(auto_error=False)
 
+# In-memory user cache to avoid roundtrips to Supabase on every single API request
+_USER_CACHE: Dict[str, Tuple[float, dict]] = {}
+_USER_CACHE_TTL_SEC = 60.0
+
+
+def invalidate_user_cache(user_id: str = None):
+    """Invalidate cached user data."""
+    if user_id:
+        _USER_CACHE.pop(user_id, None)
+    else:
+        _USER_CACHE.clear()
+
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
 ) -> UserInDB:
     """
-    Decode JWT, load current user from Supabase, and ensure the user is active.
+    Decode JWT, load current user (cached in-memory for 60s), and ensure the user is active.
     """
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise HTTPException(
@@ -31,9 +44,17 @@ def get_current_user(
             detail="Invalid token payload",
         )
 
-    supabase = get_supabase()
-    response = supabase.table("users").select("*").eq("id", user_id).single().execute()
-    user_data = getattr(response, "data", None)
+    # 1. Check in-memory user cache
+    now = time.time()
+    cached = _USER_CACHE.get(user_id)
+    if cached and (now - cached[0]) < _USER_CACHE_TTL_SEC:
+        user_data = cached[1]
+    else:
+        supabase = get_supabase()
+        response = supabase.table("users").select("*").eq("id", user_id).single().execute()
+        user_data = getattr(response, "data", None)
+        if user_data:
+            _USER_CACHE[user_id] = (now, user_data)
 
     if not user_data:
         raise HTTPException(

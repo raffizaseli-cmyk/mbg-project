@@ -25,79 +25,149 @@ class BudgetService:
     def get_monthly_summary(
         self, tenant_id: str, year: int, month: int
     ) -> Dict[str, Any]:
+        from concurrent.futures import ThreadPoolExecutor
         supabase = get_supabase()
 
-        # ── Pagu ──
-        pagu_resp = (
-            supabase.table("budget_allocations")
-            .select("pagu_amount, notes")
-            .eq("tenant_id", tenant_id)
-            .eq("year", year)
-            .eq("month", month)
-            .limit(1)
-            .execute()
-        )
-        pagu_rows = getattr(pagu_resp, "data", None) or []
-        pagu_amount = _d(pagu_rows[0]["pagu_amount"]) if pagu_rows else Decimal("0")
-
-        # ── Pencairan ──
-        disb_resp = (
-            supabase.table("fund_disbursements")
-            .select("*")
-            .eq("tenant_id", tenant_id)
-            .eq("year", year)
-            .eq("month", month)
-            .order("disbursement_date")
-            .execute()
-        )
-        disbursements = getattr(disb_resp, "data", None) or []
-        total_disbursed = sum(_d(d.get("amount")) for d in disbursements)
-
-        # ── Realisasi per juknis_category ──
         first = date(year, month, 1)
         if month == 12:
             last = date(year + 1, 1, 1) - timedelta(days=1)
         else:
             last = date(year, month + 1, 1) - timedelta(days=1)
 
-        trx_resp = (
-            supabase.table("transactions")
-            .select("total, juknis_category")
-            .eq("tenant_id", tenant_id)
-            .eq("status", "confirmed")
-            .eq("type", "expense")
-            .gte("date", first.isoformat())
-            .lte("date", last.isoformat())
-            .execute()
-        )
-        trx_rows = getattr(trx_resp, "data", None) or []
+        first_iso = first.isoformat()
+        last_iso = last.isoformat()
 
+        def fetch_pagu():
+            return (
+                supabase.table("budget_allocations")
+                .select("pagu_amount, notes")
+                .eq("tenant_id", tenant_id)
+                .eq("year", year)
+                .eq("month", month)
+                .limit(1)
+                .execute()
+            )
+
+        def fetch_disb():
+            return (
+                supabase.table("fund_disbursements")
+                .select("*")
+                .eq("tenant_id", tenant_id)
+                .eq("year", year)
+                .eq("month", month)
+                .order("disbursement_date")
+                .execute()
+            )
+
+        def fetch_trx():
+            return (
+                supabase.table("transactions")
+                .select("total, juknis_category")
+                .eq("tenant_id", tenant_id)
+                .eq("status", "confirmed")
+                .eq("type", "expense")
+                .gte("date", first_iso)
+                .lte("date", last_iso)
+                .execute()
+            )
+
+        def fetch_ops():
+            return (
+                supabase.table("operational_costs")
+                .select("amount")
+                .eq("tenant_id", tenant_id)
+                .gte("cost_date", first_iso)
+                .lte("cost_date", last_iso)
+                .execute()
+            )
+
+        def fetch_pay():
+            return (
+                supabase.table("payroll_periods")
+                .select("id")
+                .eq("tenant_id", tenant_id)
+                .neq("status", "draft")
+                .gte("start_date", first_iso)
+                .lte("start_date", last_iso)
+                .execute()
+            )
+
+        def fetch_alloc():
+            return (
+                supabase.table("mbg_allocation_settings")
+                .select("*")
+                .eq("tenant_id", tenant_id)
+                .limit(1)
+                .execute()
+            )
+
+        def fetch_ba():
+            return (
+                supabase.table("mbg_budget_allocations")
+                .select("total_portions, budget_bahan, budget_ops, budget_insentif")
+                .eq("tenant_id", tenant_id)
+                .gte("date", first_iso)
+                .lte("date", last_iso)
+                .execute()
+            )
+
+        def fetch_kas():
+            return (
+                supabase.table("kas_accounts")
+                .select("id, name, type, current_balance, is_active")
+                .eq("tenant_id", tenant_id)
+                .eq("is_active", True)
+                .order("name")
+                .execute()
+            )
+
+        def fetch_fr():
+            return (
+                supabase.table("fund_returns")
+                .select("*")
+                .eq("tenant_id", tenant_id)
+                .eq("year", year)
+                .eq("month", month)
+                .limit(1)
+                .execute()
+            )
+
+        with ThreadPoolExecutor(max_workers=9) as executor:
+            fut_pagu = executor.submit(fetch_pagu)
+            fut_disb = executor.submit(fetch_disb)
+            fut_trx = executor.submit(fetch_trx)
+            fut_ops = executor.submit(fetch_ops)
+            fut_pay = executor.submit(fetch_pay)
+            fut_alloc = executor.submit(fetch_alloc)
+            fut_ba = executor.submit(fetch_ba)
+            fut_kas = executor.submit(fetch_kas)
+            fut_fr = executor.submit(fetch_fr)
+
+            pagu_resp = fut_pagu.result()
+            disb_resp = fut_disb.result()
+            trx_resp = fut_trx.result()
+            ops_resp = fut_ops.result()
+            pay_resp = fut_pay.result()
+            alloc_resp = fut_alloc.result()
+            ba_resp = fut_ba.result()
+            kas_resp = fut_kas.result()
+            fr_resp = fut_fr.result()
+
+        pagu_rows = getattr(pagu_resp, "data", None) or []
+        pagu_amount = _d(pagu_rows[0]["pagu_amount"]) if pagu_rows else Decimal("0")
+
+        disbursements = getattr(disb_resp, "data", None) or []
+        total_disbursed = sum(_d(d.get("amount")) for d in disbursements)
+
+        trx_rows = getattr(trx_resp, "data", None) or []
         realisasi: Dict[str, Decimal] = {}
         for t in trx_rows:
             cat = t.get("juknis_category") or "lainnya"
             realisasi[cat] = realisasi.get(cat, Decimal("0")) + _d(t.get("total"))
 
-        # ── Tambahan: Biaya Operasional & Gaji (Payroll) ──
-        ops_resp = (
-            supabase.table("operational_costs")
-            .select("amount")
-            .eq("tenant_id", tenant_id)
-            .gte("cost_date", first.isoformat())
-            .lte("cost_date", last.isoformat())
-            .execute()
-        )
         for o in (getattr(ops_resp, "data", None) or []):
             realisasi["operasional"] = realisasi.get("operasional", Decimal("0")) + _d(o.get("amount"))
 
-        pay_resp = (
-            supabase.table("payroll_periods")
-            .select("id")
-            .eq("tenant_id", tenant_id)
-            .neq("status", "draft")
-            .gte("start_date", first.isoformat())
-            .lte("start_date", last.isoformat())
-            .execute()
-        )
         p_ids = [p["id"] for p in (getattr(pay_resp, "data", None) or [])]
         if p_ids:
             item_resp = (
@@ -112,14 +182,6 @@ class BudgetService:
         total_spent = sum(realisasi.values())
         sisa = total_disbursed - total_spent
 
-        # ── Alokasi settings (FIXED MODEL) ──
-        alloc_resp = (
-            supabase.table("mbg_allocation_settings")
-            .select("*")
-            .eq("tenant_id", tenant_id)
-            .limit(1)
-            .execute()
-        )
         alloc_rows = getattr(alloc_resp, "data", None) or [{}]
         alloc = alloc_rows[0] if alloc_rows else {}
         price_pp = _d(alloc.get("price_per_portion", 15000))
@@ -129,15 +191,6 @@ class BudgetService:
         insentif_harian = _d(alloc.get("insentif_harian", 6000000))
         hari_kerja = int(alloc.get("hari_kerja_bulan") or 26)
 
-        # ─── Total porsi bulan ini ──
-        ba_resp = (
-            supabase.table("mbg_budget_allocations")
-            .select("total_portions, budget_bahan, budget_ops, budget_insentif")
-            .eq("tenant_id", tenant_id)
-            .gte("date", first.isoformat())
-            .lte("date", last.isoformat())
-            .execute()
-        )
         ba_rows = getattr(ba_resp, "data", None) or []
         total_porsi = sum(r.get("total_portions", 0) for r in ba_rows)
         

@@ -1,10 +1,24 @@
+import time
+from typing import Any, Dict, Optional, List, Tuple
 from fastapi import APIRouter, Depends, HTTPException, status, Query
-from typing import Any, Dict, Optional, List
 from core.database import get_supabase
 from models.user import UserInDB
 from core.dependencies import get_current_user, require_role
 
 router = APIRouter(prefix="/ingredients", tags=["ingredients"])
+
+_MASTER_INGRED_CACHE: Tuple[float, list] = (0.0, [])
+_INGRED_MAPPINGS_CACHE: Tuple[float, list] = (0.0, [])
+_UNIT_WEIGHTS_CACHE: Tuple[float, list] = (0.0, [])
+_ALIASES_CACHE: Dict[str, Tuple[float, list]] = {}
+_CACHE_TTL = 60.0
+
+def invalidate_ingredients_cache():
+    global _MASTER_INGRED_CACHE, _INGRED_MAPPINGS_CACHE, _UNIT_WEIGHTS_CACHE, _ALIASES_CACHE
+    _MASTER_INGRED_CACHE = (0.0, [])
+    _INGRED_MAPPINGS_CACHE = (0.0, [])
+    _UNIT_WEIGHTS_CACHE = (0.0, [])
+    _ALIASES_CACHE.clear()
 
 # ─── NUTRITION REF (DATABASE NUTRISI) ENDPOINTS ───────────────────────────────
 
@@ -224,6 +238,11 @@ def get_master_ingredients_list(
     supabase = Depends(get_supabase)
 ):
     """Fetch kitchen products and active master ingredients for use in Referensi Satuan."""
+    global _MASTER_INGRED_CACHE
+    now = time.time()
+    if _MASTER_INGRED_CACHE[1] and (now - _MASTER_INGRED_CACHE[0]) < _CACHE_TTL:
+        return _MASTER_INGRED_CACHE[1]
+
     try:
         # Fetch kitchen products (the real active kitchen ingredients: Beras, Telur, Minyak, etc.)
         prod_res = (
@@ -271,6 +290,7 @@ def get_master_ingredients_list(
                     "category": m.get("category", "lainnya")
                 })
 
+        _MASTER_INGRED_CACHE = (now, result)
         return result
     except Exception as e:
         raise HTTPException(
@@ -322,6 +342,7 @@ def create_master_ingredient_entry(
         res = supabase.table("master_ingredients").insert(new_entry).execute()
         if not getattr(res, "data", None):
             raise HTTPException(status_code=500, detail="Gagal membuat master ingredient baru.")
+        invalidate_ingredients_cache()
         return res.data[0]
     except HTTPException:
         raise
@@ -337,6 +358,11 @@ def get_ai_ingredient_mappings(
     supabase = Depends(get_supabase)
 ):
     """Fetch ingredient mapping results with nutrition data from nutrition_ref."""
+    global _INGRED_MAPPINGS_CACHE
+    now = time.time()
+    if _INGRED_MAPPINGS_CACHE[1] and (now - _INGRED_MAPPINGS_CACHE[0]) < _CACHE_TTL:
+        return _INGRED_MAPPINGS_CACHE[1]
+
     try:
         res = (
             supabase.table("ingredient_mapping")
@@ -344,7 +370,9 @@ def get_ai_ingredient_mappings(
             .order("nama_tkpi", desc=False)
             .execute()
         )
-        return res.data or []
+        data = res.data or []
+        _INGRED_MAPPINGS_CACHE = (now, data)
+        return data
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -359,12 +387,18 @@ def get_unit_weights(
     supabase = Depends(get_supabase)
 ):
     """Fetch all unit weights mappings with master_ingredients names and nutrition_ref_id."""
+    global _UNIT_WEIGHTS_CACHE
+    now = time.time()
+    if _UNIT_WEIGHTS_CACHE[1] and (now - _UNIT_WEIGHTS_CACHE[0]) < _CACHE_TTL:
+        return _UNIT_WEIGHTS_CACHE[1]
+
     try:
         res = supabase.table("ingredient_unit_weights").select("*, master_ingredients(common_name, nutrition_ref_id)").execute()
         data = res.data or []
         for item in data:
             if item.get("master_ingredients") and item["master_ingredients"].get("nutrition_ref_id"):
                 item["nutrition_ref_id"] = item["master_ingredients"]["nutrition_ref_id"]
+        _UNIT_WEIGHTS_CACHE = (now, data)
         return data
     except Exception as e:
         raise HTTPException(
@@ -450,6 +484,7 @@ def create_unit_weight(
 
         # Use upsert to handle potential conflict on unique constraint
         res = supabase.table("ingredient_unit_weights").upsert(data, on_conflict="ingredient_id, unit").execute()
+        invalidate_ingredients_cache()
         return res.data[0] if res.data else {}
     except HTTPException:
         raise
@@ -479,6 +514,7 @@ def update_unit_weight(
                 raise HTTPException(status_code=422, detail="Berat dalam gram harus > 0")
 
         res = supabase.table("ingredient_unit_weights").update(data).eq("id", id).execute()
+        invalidate_ingredients_cache()
         return res.data[0] if res.data else {}
     except HTTPException:
         raise
@@ -497,6 +533,7 @@ def delete_unit_weight(
     """Delete a unit weight mapping."""
     try:
         res = supabase.table("ingredient_unit_weights").delete().eq("id", id).execute()
+        invalidate_ingredients_cache()
         return {"success": True, "message": "Berhasil menghapus referensi satuan."}
     except Exception as e:
         raise HTTPException(
@@ -702,6 +739,11 @@ def get_product_aliases(
     supabase = Depends(get_supabase)
 ):
     """Fetch all product aliases for the current tenant, joined with product name."""
+    now = time.time()
+    cached = _ALIASES_CACHE.get(current_user.tenant_id)
+    if cached and (now - cached[0]) < _CACHE_TTL:
+        return cached[1]
+
     try:
         res = (
             supabase.table("product_aliases")
@@ -710,7 +752,9 @@ def get_product_aliases(
             .order("alias_name", desc=False)
             .execute()
         )
-        return res.data or []
+        data = res.data or []
+        _ALIASES_CACHE[current_user.tenant_id] = (now, data)
+        return data
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -762,6 +806,7 @@ def create_product_alias(
         else:
             res = supabase.table("product_aliases").insert(data).execute()
 
+        invalidate_ingredients_cache()
         return res.data[0] if res.data else {}
     except HTTPException:
         raise
@@ -812,6 +857,7 @@ def update_product_alias(
             data["packaging_unit"] = pkg_unit
 
         res = supabase.table("product_aliases").update(data).eq("id", id).execute()
+        invalidate_ingredients_cache()
         return res.data[0] if res.data else {}
     except HTTPException:
         raise
@@ -843,6 +889,7 @@ def delete_product_alias(
             raise HTTPException(status_code=404, detail="Mapping alias tidak ditemukan")
 
         res = supabase.table("product_aliases").delete().eq("id", id).execute()
+        invalidate_ingredients_cache()
         return {"success": True, "message": "Berhasil menghapus mapping alias."}
     except HTTPException:
         raise

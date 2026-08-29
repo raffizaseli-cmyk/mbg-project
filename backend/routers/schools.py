@@ -13,7 +13,20 @@ from models.school import SchoolCreate, SchoolResponse, SchoolUpdate
 from models.user import UserInDB
 from datetime import datetime
 
+import time
+from typing import Tuple
+
 router = APIRouter(prefix="/schools", tags=["schools"])
+
+_SCHOOLS_CACHE: Dict[str, Tuple[float, list]] = {}
+_SCHOOLS_CACHE_TTL = 60.0
+
+
+def invalidate_schools_cache(tenant_id: str = None):
+    if tenant_id:
+        _SCHOOLS_CACHE.pop(tenant_id, None)
+    else:
+        _SCHOOLS_CACHE.clear()
 
 
 @router.get("", response_model=Dict[str, Any])
@@ -22,17 +35,23 @@ def list_schools(
     is_active: bool = Query(True),
     current_user: UserInDB = Depends(get_current_user),
 ):
-    """List schools."""
-    supabase = get_supabase()
-    query = supabase.table("schools").select("*").eq("tenant_id", current_user.tenant_id)
+    """List schools with in-memory caching."""
+    now = time.time()
+    cache_key = f"{current_user.tenant_id}_{is_active}"
+    cached = _SCHOOLS_CACHE.get(cache_key)
 
-    if is_active:
-        query = query.eq("is_active", True)
+    if cached and (now - cached[0]) < _SCHOOLS_CACHE_TTL:
+        raw_data = cached[1]
+    else:
+        supabase = get_supabase()
+        query = supabase.table("schools").select("*").eq("tenant_id", current_user.tenant_id)
+        if is_active:
+            query = query.eq("is_active", True)
+        response = query.execute()
+        raw_data = getattr(response, "data", None) or []
+        _SCHOOLS_CACHE[cache_key] = (now, raw_data)
 
-    response = query.execute()
-    data = getattr(response, "data", None) or []
-
-    # Filter by search
+    data = raw_data
     if search:
         data = [s for s in data if search.lower() in s.get("name", "").lower()]
 
@@ -90,6 +109,7 @@ def create_school(
             detail="Failed to create school",
         )
 
+    invalidate_schools_cache(current_user.tenant_id)
     return {"success": True, "data": SchoolResponse(**data[0])}
 
 
@@ -130,6 +150,7 @@ def update_school(
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="School not found")
 
+    invalidate_schools_cache(current_user.tenant_id)
     return {"success": True, "data": SchoolResponse(**data[0])}
 
 
@@ -145,6 +166,7 @@ def delete_school(
         "tenant_id", current_user.tenant_id
     ).execute()
 
+    invalidate_schools_cache(current_user.tenant_id)
     return {"success": True, "message": "School deleted"}
 
 
@@ -197,6 +219,7 @@ def update_school_level(
     if not update_resp.data:
         raise HTTPException(status_code=404, detail="School not found")
         
+    invalidate_schools_cache(current_user.tenant_id)
     return {
         "success": True,
         "school_id": school_id,

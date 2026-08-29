@@ -352,25 +352,12 @@ def get_stock_projection(
     from datetime import date, timedelta
     from services.recipe_service import recipe_service
 
+    from concurrent.futures import ThreadPoolExecutor
     supabase = get_supabase()
     tid = current_user.tenant_id
     today = date.today()
     monday = today - timedelta(days=today.weekday())
 
-    # ── Ambil semua produk aktif ──────────────────────────────────────────
-    prod_resp = (
-        supabase.table("products")
-        .select("id, name, unit, base_unit, display_unit, conversion_factor, stock_qty, stock_min, harga")
-        .eq("tenant_id", tid)
-        .eq("is_active", True)
-        .neq("category", "produk_jadi")
-        .neq("category", "komponen")
-        .execute()
-    )
-    products = getattr(prod_resp, "data", None) or []
-    prod_map = {p["id"]: p for p in products}
-
-    # ── Coba dapatkan menu di rentang target hari ─────────────────────────
     target_dates = [today + timedelta(days=i) for i in range(days)]
     query_pairs = {}
     for d in target_dates:
@@ -381,14 +368,48 @@ def get_stock_projection(
         query_pairs[ws].append(dow)
 
     unique_ws = list(query_pairs.keys())
-    
-    menu_resp = (
-        supabase.table("mbg_weekly_menus")
-        .select("week_start, day_of_week, menu_id")
-        .eq("tenant_id", tid)
-        .in_("week_start", unique_ws)
-        .execute()
-    )
+
+    def fetch_products():
+        return (
+            supabase.table("products")
+            .select("id, name, unit, base_unit, display_unit, conversion_factor, stock_qty, stock_min, harga")
+            .eq("tenant_id", tid)
+            .eq("is_active", True)
+            .neq("category", "produk_jadi")
+            .neq("category", "komponen")
+            .execute()
+        )
+
+    def fetch_menus():
+        return (
+            supabase.table("mbg_weekly_menus")
+            .select("week_start, day_of_week, menu_id")
+            .eq("tenant_id", tid)
+            .in_("week_start", unique_ws)
+            .execute()
+        )
+
+    def fetch_schools():
+        return (
+            supabase.table("schools")
+            .select("default_portions")
+            .eq("tenant_id", tid)
+            .eq("is_active", True)
+            .execute()
+        )
+
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        fut_prod = executor.submit(fetch_products)
+        fut_menus = executor.submit(fetch_menus)
+        fut_schools = executor.submit(fetch_schools)
+
+        prod_resp = fut_prod.result()
+        menu_resp = fut_menus.result()
+        school_resp = fut_schools.result()
+
+    products = getattr(prod_resp, "data", None) or []
+    prod_map = {p["id"]: p for p in products}
+
     all_menus = getattr(menu_resp, "data", None) or []
     
     scheduled_menu_ids = []
@@ -400,14 +421,6 @@ def get_stock_projection(
             scheduled_menu_ids.append(m["menu_id"])
             valid_days_count += 1
 
-    # Total porsi / hari dari sekolah
-    school_resp = (
-        supabase.table("schools")
-        .select("default_portions")
-        .eq("tenant_id", tid)
-        .eq("is_active", True)
-        .execute()
-    )
     total_portions = sum(
         int(s.get("default_portions") or 0)
         for s in (getattr(school_resp, "data", None) or [])

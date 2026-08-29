@@ -9,6 +9,7 @@ GET /reports/receivables  → piutang ke pemerintah
 GET /reports/payables     → hutang ke supplier
 """
 
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date, timedelta
 from decimal import Decimal
 from typing import Any, Dict, List, Optional
@@ -52,40 +53,88 @@ def get_daily_report(
         raise HTTPException(422, detail="Format date harus YYYY-MM-DD")
 
     date_str = target.isoformat()
+    dow = target.weekday() + 1
+    ws = target - timedelta(days=target.weekday())
 
-    # ─── MBG: allokasi + deliveries ──────────────────────────────────
-    alloc_resp = (
-        supabase.table("mbg_budget_allocations")
-        .select("total_portions, total_revenue, budget_bahan, budget_ops, budget_insentif")
-        .eq("tenant_id", tid)
-        .eq("date", date_str)
-        .limit(1)
-        .execute()
-    )
+    def fetch_alloc():
+        return (
+            supabase.table("mbg_budget_allocations")
+            .select("total_portions, total_revenue, budget_bahan, budget_ops, budget_insentif")
+            .eq("tenant_id", tid)
+            .eq("date", date_str)
+            .limit(1)
+            .execute()
+        )
+
+    def fetch_del():
+        return (
+            supabase.table("mbg_deliveries")
+            .select("id, school_id, portions_sent")
+            .eq("tenant_id", tid)
+            .eq("delivery_date", date_str)
+            .execute()
+        )
+
+    def fetch_menu():
+        return (
+            supabase.table("mbg_weekly_menus")
+            .select("menu_name")
+            .eq("tenant_id", tid)
+            .eq("week_start", ws.isoformat())
+            .eq("day_of_week", dow)
+            .limit(1)
+            .execute()
+        )
+
+    def fetch_exp():
+        return (
+            supabase.table("transactions")
+            .select("id, total, suppliers(name)")
+            .eq("tenant_id", tid)
+            .eq("date", date_str)
+            .eq("type", "expense")
+            .eq("status", "confirmed")
+            .execute()
+        )
+
+    def fetch_cf():
+        return (
+            supabase.table("cashflow_log")
+            .select("flow_type, amount")
+            .eq("tenant_id", tid)
+            .eq("date", date_str)
+            .execute()
+        )
+
+    def fetch_prod():
+        return (
+            supabase.table("products")
+            .select("name, stock_qty, stock_min, unit, conversion_factor, display_unit")
+            .eq("tenant_id", tid)
+            .eq("is_active", True)
+            .execute()
+        )
+
+    with ThreadPoolExecutor(max_workers=6) as executor:
+        fut_alloc = executor.submit(fetch_alloc)
+        fut_del = executor.submit(fetch_del)
+        fut_menu = executor.submit(fetch_menu)
+        fut_exp = executor.submit(fetch_exp)
+        fut_cf = executor.submit(fetch_cf)
+        fut_prod = executor.submit(fetch_prod)
+
+        alloc_resp = fut_alloc.result()
+        del_resp = fut_del.result()
+        menu_resp = fut_menu.result()
+        exp_resp = fut_exp.result()
+        cf_resp = fut_cf.result()
+        prod_resp = fut_prod.result()
+
     alloc_rows = getattr(alloc_resp, "data", None) or []
     alloc = alloc_rows[0] if alloc_rows else None
 
-    del_resp = (
-        supabase.table("mbg_deliveries")
-        .select("id, school_id, portions_sent")
-        .eq("tenant_id", tid)
-        .eq("delivery_date", date_str)
-        .execute()
-    )
     deliveries = getattr(del_resp, "data", None) or []
 
-    # Menu hari ini
-    dow = target.weekday() + 1
-    ws = target - timedelta(days=target.weekday())
-    menu_resp = (
-        supabase.table("mbg_weekly_menus")
-        .select("menu_name")
-        .eq("tenant_id", tid)
-        .eq("week_start", ws.isoformat())
-        .eq("day_of_week", dow)
-        .limit(1)
-        .execute()
-    )
     menu_rows = getattr(menu_resp, "data", None) or []
     menu_name = (menu_rows[0] if menu_rows else {}).get("menu_name")
 
@@ -102,15 +151,6 @@ def get_daily_report(
     }
 
     # ─── Expenses: transaksi hari ini ────────────────────────────────
-    exp_resp = (
-        supabase.table("transactions")
-        .select("id, total, suppliers(name)")
-        .eq("tenant_id", tid)
-        .eq("date", date_str)
-        .eq("type", "expense")
-        .eq("status", "confirmed")
-        .execute()
-    )
     exp_rows = getattr(exp_resp, "data", None) or []
     exp_total = sum(_d(r.get("total")) for r in exp_rows)
 
@@ -135,13 +175,6 @@ def get_daily_report(
     }
 
     # ─── Cashflow ─────────────────────────────────────────────────────
-    cf_resp = (
-        supabase.table("cashflow_log")
-        .select("flow_type, amount")
-        .eq("tenant_id", tid)
-        .eq("date", date_str)
-        .execute()
-    )
     cf_rows = getattr(cf_resp, "data", None) or []
     income  = sum(_d(r["amount"]) for r in cf_rows if r.get("flow_type") == "in")
     outcome = sum(_d(r["amount"]) for r in cf_rows if r.get("flow_type") == "out")
@@ -153,13 +186,6 @@ def get_daily_report(
     }
 
     # ─── Stock alerts ─────────────────────────────────────────────────
-    prod_resp = (
-        supabase.table("products")
-        .select("name, stock_qty, stock_min, unit, conversion_factor, display_unit")
-        .eq("tenant_id", tid)
-        .eq("is_active", True)
-        .execute()
-    )
     prod_rows = getattr(prod_resp, "data", None) or []
     stock_alerts = []
     for p in prod_rows:
@@ -215,16 +241,125 @@ def get_monthly_report(
     else:
         last = date(y, m + 1, 1) - timedelta(days=1)
 
+    first_iso = first.isoformat()
+    last_iso = last.isoformat()
     period_label = f"{BULAN[m]} {y}"
+    period_key = f"{y:04d}-{m:02d}"
 
-    # ─── MBG Allocation Settings (rate per porsi) ─────────────────────
-    settings_resp = (
-        supabase.table("mbg_allocation_settings")
-        .select("bahan_sd_smp, bahan_paud_tk, ops_per_porsi, insentif_harian")
-        .eq("tenant_id", tid)
-        .limit(1)
-        .execute()
-    )
+    def fetch_settings():
+        return (
+            supabase.table("mbg_allocation_settings")
+            .select("bahan_sd_smp, bahan_paud_tk, ops_per_porsi, insentif_harian")
+            .eq("tenant_id", tid)
+            .limit(1)
+            .execute()
+        )
+
+    def fetch_deliveries():
+        return (
+            supabase.table("mbg_deliveries")
+            .select("portions_sent, delivery_date, menu_name, schools(name, school_level)")
+            .eq("tenant_id", tid)
+            .gte("delivery_date", first_iso)
+            .lte("delivery_date", last_iso)
+            .execute()
+        )
+
+    def fetch_expenses():
+        return (
+            supabase.table("transactions")
+            .select("id, total, suppliers(name)")
+            .eq("tenant_id", tid)
+            .eq("type", "expense")
+            .eq("status", "confirmed")
+            .gte("date", first_iso)
+            .lte("date", last_iso)
+            .execute()
+        )
+
+    def fetch_payables():
+        return (
+            supabase.table("payables")
+            .select("amount")
+            .eq("tenant_id", tid)
+            .eq("status", "unpaid")
+            .execute()
+        )
+
+    def fetch_ops():
+        return (
+            supabase.table("operational_costs")
+            .select("amount")
+            .eq("tenant_id", tid)
+            .gte("cost_date", first_iso)
+            .lte("cost_date", last_iso)
+            .execute()
+        )
+
+    def fetch_payroll():
+        return (
+            supabase.table("payroll_periods")
+            .select("id")
+            .eq("tenant_id", tid)
+            .eq("status", "confirmed")
+            .gte("start_date", first_iso)
+            .lte("start_date", last_iso)
+            .execute()
+        )
+
+    def fetch_recv():
+        return (
+            supabase.table("receivables")
+            .select("amount")
+            .eq("tenant_id", tid)
+            .gte("created_at", first_iso)
+            .lte("created_at", last_iso)
+            .execute()
+        )
+
+    def fetch_prod():
+        return (
+            supabase.table("products")
+            .select("name, stock_qty, stock_min, unit")
+            .eq("tenant_id", tid)
+            .eq("is_active", True)
+            .execute()
+        )
+
+    def fetch_excel():
+        try:
+            return (
+                supabase.table("excel_files")
+                .select("file_url")
+                .eq("tenant_id", tid)
+                .eq("period", period_key)
+                .limit(1)
+                .execute()
+            )
+        except Exception:
+            return None
+
+    with ThreadPoolExecutor(max_workers=9) as executor:
+        fut_settings = executor.submit(fetch_settings)
+        fut_del = executor.submit(fetch_deliveries)
+        fut_exp = executor.submit(fetch_expenses)
+        fut_payables = executor.submit(fetch_payables)
+        fut_ops = executor.submit(fetch_ops)
+        fut_payroll = executor.submit(fetch_payroll)
+        fut_recv = executor.submit(fetch_recv)
+        fut_prod = executor.submit(fetch_prod)
+        fut_excel = executor.submit(fetch_excel)
+
+        settings_resp = fut_settings.result()
+        del_resp = fut_del.result()
+        exp_resp = fut_exp.result()
+        payable_resp = fut_payables.result()
+        ops_resp = fut_ops.result()
+        pay_resp = fut_payroll.result()
+        recv_resp = fut_recv.result()
+        prod_resp = fut_prod.result()
+        excel_resp = fut_excel.result()
+
     settings_rows = getattr(settings_resp, "data", None) or []
     alloc_settings = settings_rows[0] if settings_rows else {}
     rate_bahan_sd = _d(alloc_settings.get("bahan_sd_smp") or 10000)
@@ -233,14 +368,6 @@ def get_monthly_report(
     rate_insentif = _d(alloc_settings.get("insentif_harian") or 6000000)
 
     # ─── MBG deliveries bulanan ──────────────────────────────────────
-    del_resp = (
-        supabase.table("mbg_deliveries")
-        .select("portions_sent, delivery_date, menu_name, schools(name, school_level)")
-        .eq("tenant_id", tid)
-        .gte("delivery_date", first.isoformat())
-        .lte("delivery_date", last.isoformat())
-        .execute()
-    )
     del_rows = getattr(del_resp, "data", None) or []
     total_portions = sum(r.get("portions_sent", 0) for r in del_rows)
     delivery_dates = {r.get("delivery_date") for r in del_rows if r.get("delivery_date")}
@@ -256,8 +383,8 @@ def get_monthly_report(
     
     for d in del_rows:
         p = _d(d.get("portions_sent", 0))
-        date_str = d.get("delivery_date", "")
-        menu_name = d.get("menu_name", "Tanpa Jadwal")
+        date_str_del = d.get("delivery_date", "")
+        menu_name_del = d.get("menu_name", "Tanpa Jadwal")
         s_data = d.get("schools") or {}
         if isinstance(s_data, list):
             s_data = s_data[0] if s_data else {}
@@ -267,10 +394,10 @@ def get_monthly_report(
         revenue_bahan += p * (rate_bahan_tk if sl == "paud_tk" else rate_bahan_sd)
         
         # Add to summary
-        if date_str:
-            daily_groups[date_str]["total_portions"] += int(p)
-            daily_groups[date_str]["menu_name"] = menu_name
-            daily_groups[date_str]["deliveries"].append({
+        if date_str_del:
+            daily_groups[date_str_del]["total_portions"] += int(p)
+            daily_groups[date_str_del]["menu_name"] = menu_name_del
+            daily_groups[date_str_del]["deliveries"].append({
                 "school_name": s_name,
                 "portions_sent": int(p),
                 "status": d.get("status", "confirmed")
@@ -293,21 +420,11 @@ def get_monthly_report(
     revenue_gross = revenue_calculated  # backward compat
 
     # ─── Expenses bulanan ─────────────────────────────────────────────
-    exp_resp = (
-        supabase.table("transactions")
-        .select("id, total, suppliers(name)")
-        .eq("tenant_id", tid)
-        .eq("type", "expense")
-        .eq("status", "confirmed")
-        .gte("date", first.isoformat())
-        .lte("date", last.isoformat())
-        .execute()
-    )
     exp_rows = getattr(exp_resp, "data", None) or []
     exp_total = sum(_d(r.get("total")) for r in exp_rows)
 
     # Top suppliers
-    sup_map: Dict[str, Decimal] = {}
+    sup_map = {}
     for r in exp_rows:
         name = (r.get("suppliers") or {}).get("name") or "Tanpa Supplier"
         sup_map[name] = sup_map.get(name, Decimal("0")) + _d(r.get("total"))
@@ -317,36 +434,12 @@ def get_monthly_report(
     ]
 
     # Hutang outstanding bulan ini
-    payable_resp = (
-        supabase.table("payables")
-        .select("amount")
-        .eq("tenant_id", tid)
-        .eq("status", "unpaid")
-        .execute()
-    )
     payable_rows = getattr(payable_resp, "data", None) or []
     hutang_outstanding = sum(_d(r.get("amount")) for r in payable_rows)
 
     # ─── Operational costs & Payroll ─────────────────────────────────
-    ops_resp = (
-        supabase.table("operational_costs")
-        .select("amount")
-        .eq("tenant_id", tid)
-        .gte("cost_date", first.isoformat())
-        .lte("cost_date", last.isoformat())
-        .execute()
-    )
     total_ops = sum(_d(r.get("amount")) for r in (getattr(ops_resp, "data", None) or []))
 
-    pay_resp = (
-        supabase.table("payroll_periods")
-        .select("id")
-        .eq("tenant_id", tid)
-        .eq("status", "confirmed")
-        .gte("start_date", first.isoformat())
-        .lte("start_date", last.isoformat())
-        .execute()
-    )
     p_ids = [p["id"] for p in (getattr(pay_resp, "data", None) or [])]
     total_payroll = Decimal("0")
     if p_ids:
@@ -372,25 +465,10 @@ def get_monthly_report(
     gross_profit = revenue_calculated - total_all_expenses
 
     # ─── Piutang (receivables) ────────────────────────────────────────
-    recv_resp = (
-        supabase.table("receivables")
-        .select("amount")
-        .eq("tenant_id", tid)
-        .gte("created_at", first.isoformat())
-        .lte("created_at", last.isoformat())
-        .execute()
-    )
     recv_rows = getattr(recv_resp, "data", None) or []
     piutang_total = sum(_d(r.get("amount")) for r in recv_rows)
 
     # ─── Stock summary ────────────────────────────────────────────────
-    prod_resp = (
-        supabase.table("products")
-        .select("name, stock_qty, stock_min, unit")
-        .eq("tenant_id", tid)
-        .eq("is_active", True)
-        .execute()
-    )
     prod_rows = getattr(prod_resp, "data", None) or []
     low_items = [
         {"name": p["name"], "stock_qty": float(p.get("stock_qty") or 0), "unit": p.get("unit", "")}
@@ -399,22 +477,8 @@ def get_monthly_report(
     ]
 
     # ─── Excel status ─────────────────────────────────────────────────
-    period_key = f"{y:04d}-{m:02d}"
-    excel_status = "not_generated"
-    try:
-        excel_resp = (
-            supabase.table("excel_files")
-            .select("file_url")
-            .eq("tenant_id", tid)
-            .eq("period", period_key)
-            .limit(1)
-            .execute()
-        )
-        excel_rows = getattr(excel_resp, "data", None) or []
-        excel_status = "generated" if excel_rows else "not_generated"
-    except Exception as e:
-        import logging
-        logging.warning("Failed to fetch excel_files status: %s", e)
+    excel_rows = getattr(excel_resp, "data", None) or [] if excel_resp else []
+    excel_status = "generated" if excel_rows else "not_generated"
 
     return {
         "success": True,
