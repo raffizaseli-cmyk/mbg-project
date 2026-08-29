@@ -3,11 +3,14 @@ Recipe / BOM management endpoints.
 Includes component (reusable mini-recipe) CRUD.
 """
 
+import logging
 from datetime import date
 from decimal import Decimal
 from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+
+logger = logging.getLogger(__name__)
 
 from core.database import get_supabase
 from core.dependencies import get_current_user, require_role
@@ -560,13 +563,63 @@ def add_component_item(
 
     # Auto-fill unit from product if not provided
     unit = body.unit
-    if not unit:
-        prod_resp = supabase.table("products").select("unit, display_unit, conversion_factor").eq("id", body.ingredient_id).single().execute()
+    prod_data: dict = {}
+    if not unit or body.unit_weight_gram is None:
+        prod_resp = supabase.table("products").select("unit, display_unit, conversion_factor, nutrition_ref_id").eq("id", body.ingredient_id).single().execute()
         prod_data = getattr(prod_resp, "data", None) or {}
-        unit = prod_data.get("display_unit") or prod_data.get("unit", "kg")
+        if not unit:
+            unit = prod_data.get("display_unit") or prod_data.get("unit", "kg")
 
-    # Convert qty from input unit to base unit
-    _, input_factor = get_base_unit(unit)
+    input_unit = (unit or "kg").strip().lower()
+    input_factor = 1.0
+
+    if body.unit_weight_gram is not None and float(body.unit_weight_gram) > 0:
+        # Explicit override: 1 unit = N gram
+        input_factor = float(body.unit_weight_gram)
+        # Auto-save conversion_factor to product so future reads are consistent
+        try:
+            supabase.table("products").update({
+                "conversion_factor": input_factor,
+                "display_unit": unit,
+            }).eq("id", body.ingredient_id).execute()
+            nut_id = prod_data.get("nutrition_ref_id")
+            if nut_id:
+                m_resp = supabase.table("master_ingredients").select("id").eq("nutrition_ref_id", int(nut_id)).limit(1).execute()
+                m_data = getattr(m_resp, "data", None)
+                if m_data:
+                    supabase.table("ingredient_unit_weights").upsert({
+                        "ingredient_id": m_data[0]["id"],
+                        "unit": input_unit,
+                        "weight_gram": input_factor,
+                        "source": "bom_component",
+                    }, on_conflict="ingredient_id, unit").execute()
+        except Exception as e:
+            logger.warning(f"Gagal auto-save unit weight dari komponen item: {e}")
+    else:
+        _, std_factor = get_base_unit(input_unit)
+        if std_factor != 1.0 or input_unit in ("g", "gram", "gr", "ml", "cc"):
+            input_factor = std_factor
+        else:
+            # Fallback to product conversion_factor
+            prod_factor = float(prod_data.get("conversion_factor") or 1.0)
+            if prod_factor > 1.0:
+                input_factor = prod_factor
+            else:
+                # Lookup ingredient_unit_weights table
+                nut_id = prod_data.get("nutrition_ref_id")
+                if nut_id:
+                    try:
+                        m_resp = supabase.table("master_ingredients").select("id").eq("nutrition_ref_id", int(nut_id)).limit(1).execute()
+                        m_data = getattr(m_resp, "data", None)
+                        if m_data:
+                            w_resp = supabase.table("ingredient_unit_weights").select("weight_gram").eq("ingredient_id", m_data[0]["id"]).eq("unit", input_unit).limit(1).execute()
+                            w_data = getattr(w_resp, "data", None)
+                            if w_data and float(w_data[0].get("weight_gram", 0)) > 0:
+                                input_factor = float(w_data[0]["weight_gram"])
+                    except Exception:
+                        pass
+
+    # Convert qty to base unit (gram / ml / pcs)
     qty_in_base = float(body.qty_needed) * input_factor
 
     insert_data = {

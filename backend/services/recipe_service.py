@@ -201,6 +201,7 @@ class RecipeService:
         total_proteins = 0.0
         total_fat = 0.0
         total_carbohydrates = 0.0
+        incomplete_nutrition_data = False
 
         for ing_id, total_needed in flat.items():
             product = products_map.get(ing_id, {})
@@ -237,9 +238,10 @@ class RecipeService:
                 total_proteins += float(nref.get("proteins", 0)) * multiplier
                 total_fat += float(nref.get("fat", 0)) * multiplier
                 total_carbohydrates += float(nref.get("carbohydrate", 0)) * multiplier
-            elif weight_in_gram > 0:
-                # Bahan ini tidak memiliki relasi nutrisi
-                pass
+            else:
+                # Bahan ini tidak memiliki relasi nutrisi atau weight 0
+                if weight_in_gram > 0 or not nut_id:
+                    incomplete_nutrition_data = True
 
             ingredients.append({
                 "ingredient_id": ing_id,

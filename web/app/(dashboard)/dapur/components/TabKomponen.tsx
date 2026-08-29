@@ -5,7 +5,7 @@ import { apiGet, apiPost, apiPut, apiDelete } from "@/lib/api";
 import { Modal } from "@/components/ui/Modal";
 
 interface Product {
-  id: string; name: string; category: string; unit: string;
+  id: string; name: string; category: string; unit: string; display_unit?: string; conversion_factor?: number;
 }
 
 interface ComponentItem {
@@ -25,6 +25,7 @@ interface FormRowItem {
   qty_needed: number;
   unit: string;
   usage_type: 'per_porsi' | 'per_hari';
+  unit_weight_gram?: number;
 }
 
 export function TabKomponen() {
@@ -37,7 +38,7 @@ export function TabKomponen() {
   const [showCompModal, setShowCompModal] = useState(false);
   const [editingCompId, setEditingCompId] = useState<string | null>(null);
   const [compForm, setCompForm] = useState({ name: "", description: "" });
-  const [compFormItems, setCompFormItems] = useState<FormRowItem[]>([{ ingredient_name: "", ingredient_id: null, qty_needed: 0, unit: "", usage_type: "per_porsi" }]);
+  const [compFormItems, setCompFormItems] = useState<FormRowItem[]>([{ ingredient_name: "", ingredient_id: null, qty_needed: 0, unit: "", usage_type: "per_porsi", unit_weight_gram: undefined }]);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -98,9 +99,13 @@ export function TabKomponen() {
       const exist = findProductByName(val);
       if (exist) {
         nw[idx].ingredient_id = exist.id;
-        nw[idx].unit = exist.unit;
+        nw[idx].unit = exist.display_unit || exist.unit;
+        if (exist.conversion_factor && exist.conversion_factor > 1) {
+          nw[idx].unit_weight_gram = exist.conversion_factor;
+        }
       } else {
         nw[idx].ingredient_id = null;
+        nw[idx].unit_weight_gram = undefined;
       }
       return nw;
     });
@@ -137,6 +142,8 @@ export function TabKomponen() {
             ingredient_id: actualIngId,
             qty_needed: item.qty_needed,
             unit: item.unit || undefined,
+            usage_type: item.usage_type,
+            unit_weight_gram: item.unit_weight_gram || undefined,
           });
         }
       }
@@ -267,23 +274,46 @@ export function TabKomponen() {
               </div>
               <div className="space-y-3">
                 {compFormItems.map((row, idx) => (
-                  <div key={idx} className="flex gap-3 items-center bg-white p-2 border border-gray-100 rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:border-purple-200 transition-colors group">
-                    <div className="hidden sm:flex text-gray-300 w-4 justify-center pointer-events-none opacity-50 shrink-0">::</div>
-                    <input required type="text" list="bahan-list" placeholder="Pilih / ketik bahan..."
-                      value={row.ingredient_name} onChange={e => updateCompRowName(idx, e.target.value)}
-                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 font-medium outline-none" />
-                    <input required type="number" step="0.001" min="0" placeholder="Qty" value={row.qty_needed || ""}
-                      onChange={e => setCompFormItems(prev => prev.map((r, i) => i === idx ? { ...r, qty_needed: parseFloat(e.target.value) || 0 } : r))}
-                      className="w-[100px] px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 font-mono outline-none" />
-                    <input required type="text" placeholder="Satuan" value={row.unit}
-                      onChange={e => setCompFormItems(prev => prev.map((r, i) => i === idx ? { ...r, unit: e.target.value } : r))}
-                      className="w-20 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 font-medium text-center outline-none" />
-                    <button type="button" onClick={() => setCompFormItems(prev => prev.filter((_, i) => i !== idx))}
-                      disabled={compFormItems.length <= 1} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 disabled:opacity-20 shrink-0 outline-none transition-colors">✕</button>
+                  <div key={idx} className="flex flex-col">
+                    <div className="flex gap-3 items-center bg-white p-2 border border-gray-100 rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:border-purple-200 transition-colors group">
+                      <div className="hidden sm:flex text-gray-300 w-4 justify-center pointer-events-none opacity-50 shrink-0">::</div>
+                      <input required type="text" list="bahan-list" placeholder="Pilih / ketik bahan..."
+                        value={row.ingredient_name} onChange={e => updateCompRowName(idx, e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 font-medium outline-none" />
+                      <input required type="number" step="0.001" min="0" placeholder="Qty" value={row.qty_needed || ""}
+                        onChange={e => setCompFormItems(prev => prev.map((r, i) => i === idx ? { ...r, qty_needed: parseFloat(e.target.value) || 0 } : r))}
+                        className="w-[100px] px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 font-mono outline-none" />
+                      <input required type="text" placeholder="Satuan" value={row.unit}
+                        onChange={e => setCompFormItems(prev => prev.map((r, i) => i === idx ? { ...r, unit: e.target.value } : r))}
+                        className="w-20 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 font-medium text-center outline-none" />
+                      <button type="button" onClick={() => setCompFormItems(prev => prev.filter((_, i) => i !== idx))}
+                        disabled={compFormItems.length <= 1} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 disabled:opacity-20 shrink-0 outline-none transition-colors">✕</button>
+                    </div>
+
+                    {row.unit && !['kg', 'g', 'gram', 'gr', 'l', 'liter', 'ml', 'cc'].includes(row.unit.trim().toLowerCase()) && (
+                      <div className="mt-2 pt-2 border-t border-gray-100 flex flex-wrap items-center gap-2 bg-amber-50/60 px-2.5 py-2 rounded-xl text-xs">
+                        <span className="text-amber-700 font-bold">⚖️ 1 {row.unit} =</span>
+                        <input
+                          type="number" step="0.1" min="0.1" placeholder="gram"
+                          value={row.unit_weight_gram ?? (row.ingredient_id ? (products.find(p => p.id === row.ingredient_id)?.conversion_factor ?? "") : "")}
+                          onChange={e => {
+                            const val = parseFloat(e.target.value) || 0;
+                            setCompFormItems(prev => prev.map((r, i) => i === idx ? { ...r, unit_weight_gram: val } : r));
+                          }}
+                          className="w-20 px-2 py-1 bg-white border border-amber-300 rounded-lg font-bold text-blue-700 outline-none text-center focus:ring-2 focus:ring-amber-400 text-xs"
+                        />
+                        <span className="text-gray-500 font-semibold">gram</span>
+                        {row.qty_needed > 0 && (
+                          <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
+                            ≈ {((row.qty_needed) * (row.unit_weight_gram || (products.find(p => p.id === row.ingredient_id)?.conversion_factor || 1))).toLocaleString('id-ID')} gram
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-              <button type="button" onClick={() => setCompFormItems(prev => [...prev, { ingredient_name: "", ingredient_id: null, qty_needed: 0, unit: "", usage_type: "per_porsi" }])}
+              <button type="button" onClick={() => setCompFormItems(prev => [...prev, { ingredient_name: "", ingredient_id: null, qty_needed: 0, unit: "", usage_type: "per_porsi", unit_weight_gram: undefined }])}
                 className="w-full mt-4 py-3 border-2 border-dashed border-purple-200 rounded-xl text-purple-600 hover:bg-purple-50 hover:border-purple-300 transition-colors font-bold text-sm tracking-wide">
                 + Tambah Baris Bahan
               </button>

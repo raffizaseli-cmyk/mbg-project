@@ -98,6 +98,7 @@ class ComponentItemCreate(BaseModel):
     unit: Optional[str] = None
     usage_type: str = "per_porsi"
     daily_qty: Optional[Decimal] = None
+    unit_weight_gram: Optional[Decimal] = None  # gram per 1 unit (misal 1 siung = 5g)
 
 
 class ComponentItemResponse(BaseModel):
