@@ -62,21 +62,13 @@ app = FastAPI(title="MBG Catering Backend", version="1.0.2")
 
 
 # ─── CORS ──────────────────────────────────────────────────────────────────
-if settings.app_env == "development":
-    origins = ["*"]
-else:
-    origins = [
-        o for o in [settings.web_url, settings.backend_url,
-                    "http://localhost:3000", "http://localhost:8000"]
-        if o
-    ]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_origin_regex=r"https?://.*",
 )
 
 app.add_middleware(RequestLoggingMiddleware)

@@ -4,8 +4,14 @@ let apiClient: AxiosInstance | null = null;
 
 export function getApiClient(): AxiosInstance {
   if (!apiClient) {
+    const rawUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      "http://localhost:8000";
+    const baseURL = rawUrl.replace(/\/+$/, "");
+
     apiClient = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000",
+      baseURL,
       timeout: 120_000,
     });
 
