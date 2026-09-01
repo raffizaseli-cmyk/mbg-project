@@ -1,10 +1,10 @@
 "use client";
 
-import { apiPost } from "@/lib/api";
+import { apiPost, getBaseBackendUrl, setCustomBackendUrl } from "@/lib/api";
 import { setToken } from "@/lib/auth";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
-import { UtensilsCrossed, ArrowRight, Loader2, Mail, Lock } from "lucide-react";
+import { FormEvent, useEffect, useState } from "react";
+import { UtensilsCrossed, ArrowRight, Loader2, Mail, Lock, Server, Check, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,6 +12,33 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Backend URL diagnostics & custom switcher
+  const [currentBackendUrl, setCurrentBackendUrl] = useState("");
+  const [showServerConfig, setShowServerConfig] = useState(false);
+  const [inputServerUrl, setInputServerUrl] = useState("");
+  const [serverSavedMsg, setServerSavedMsg] = useState("");
+
+  useEffect(() => {
+    const url = getBaseBackendUrl();
+    setCurrentBackendUrl(url);
+    setInputServerUrl(url);
+    if (typeof window !== "undefined" && window.location.hostname !== "localhost" && url.includes("localhost")) {
+      setShowServerConfig(true);
+    }
+  }, []);
+
+  function handleSaveServerUrl(e: FormEvent) {
+    e.preventDefault();
+    setServerSavedMsg("");
+    if (!inputServerUrl.trim()) return;
+    setCustomBackendUrl(inputServerUrl.trim());
+    const updated = getBaseBackendUrl();
+    setCurrentBackendUrl(updated);
+    setServerSavedMsg("✅ URL Backend berhasil disimpan!");
+    setError("");
+    setTimeout(() => setServerSavedMsg(""), 4000);
+  }
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
@@ -33,6 +60,9 @@ export default function LoginPage() {
         err?.message ||
         "Terjadi error, coba lagi";
       setError(msg);
+      if (msg.toLowerCase().includes("network") || msg.toLowerCase().includes("refused") || msg.toLowerCase().includes("failed")) {
+        setShowServerConfig(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -144,12 +174,66 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center mt-8 text-sm text-gray-500">
+          <p className="text-center mt-6 text-sm text-gray-500">
             Belum punya akun?{" "}
             <a href="/register" className="text-blue-600 font-semibold hover:text-blue-700 transition-colors hover:underline">
               Daftar Sekarang
             </a>
           </p>
+
+          {/* Backend Connection Diagnostic / Custom Switcher */}
+          <div className="mt-8 pt-4 border-t border-gray-100">
+            <button
+              type="button"
+              onClick={() => setShowServerConfig(!showServerConfig)}
+              className="w-full flex items-center justify-between text-xs text-gray-400 hover:text-gray-600 transition-colors py-1 group"
+            >
+              <div className="flex items-center gap-1.5 truncate max-w-[240px]">
+                <Server className="w-3.5 h-3.5 shrink-0 text-gray-400 group-hover:text-blue-600" />
+                <span className="truncate">Server: <span className="font-mono text-gray-500">{currentBackendUrl || "Memuat..."}</span></span>
+              </div>
+              <span className="text-[11px] font-medium text-blue-600 hover:underline shrink-0">
+                {showServerConfig ? "Tutup" : "Ubah"}
+              </span>
+            </button>
+
+            {showServerConfig && (
+              <form onSubmit={handleSaveServerUrl} className="mt-3 p-3 bg-gray-50 rounded-2xl border border-gray-200 space-y-2 animate-in text-xs">
+                <div className="flex items-center justify-between font-semibold text-gray-700">
+                  <span>Hubungkan ke Backend Railway</span>
+                  {currentBackendUrl.includes("localhost") && (
+                    <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">
+                      Localhost Aktif
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-gray-500 leading-relaxed">
+                  Masukkan URL Railway Backend Anda jika belum diset di Vercel:
+                </p>
+                <div className="flex gap-1.5">
+                  <input
+                    type="url"
+                    value={inputServerUrl}
+                    onChange={(e) => setInputServerUrl(e.target.value)}
+                    placeholder="https://xxxx.up.railway.app"
+                    className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs font-mono outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="px-3 py-2 bg-blue-600 text-white rounded-xl font-semibold text-xs hover:bg-blue-700 shadow-sm shrink-0"
+                  >
+                    Simpan
+                  </button>
+                </div>
+                {serverSavedMsg && (
+                  <p className="text-[11px] text-emerald-600 font-bold mt-1">
+                    {serverSavedMsg}
+                  </p>
+                )}
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </div>

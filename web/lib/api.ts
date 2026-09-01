@@ -2,22 +2,46 @@ import axios, { AxiosInstance } from "axios";
 
 let apiClient: AxiosInstance | null = null;
 
+export function getBaseBackendUrl(): string {
+  if (typeof window !== "undefined") {
+    const custom = localStorage.getItem("custom_backend_url");
+    if (custom && custom.trim()) {
+      return custom.trim().replace(/\/+$/, "");
+    }
+  }
+  const envUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl && envUrl.trim()) {
+    return envUrl.trim().replace(/\/+$/, "");
+  }
+  return "http://localhost:8000";
+}
+
+export function setCustomBackendUrl(url: string) {
+  if (typeof window !== "undefined") {
+    if (url && url.trim()) {
+      localStorage.setItem("custom_backend_url", url.trim().replace(/\/+$/, ""));
+    } else {
+      localStorage.removeItem("custom_backend_url");
+    }
+    apiClient = null;
+  }
+}
+
 export function getApiClient(): AxiosInstance {
   if (!apiClient) {
-    const rawUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL ||
-      process.env.NEXT_PUBLIC_API_URL ||
-      "http://localhost:8000";
-    const baseURL = rawUrl.replace(/\/+$/, "");
+    const baseURL = getBaseBackendUrl();
 
     apiClient = axios.create({
       baseURL,
       timeout: 120_000,
     });
 
-    // Request interceptor: attach JWT token
+    // Request interceptor: attach dynamic baseURL & JWT token
     apiClient.interceptors.request.use(
       (config) => {
+        config.baseURL = getBaseBackendUrl();
         const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;

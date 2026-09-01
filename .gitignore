@@ -39,3 +39,4 @@ scratch/
 *.log
 *.txt
 .env
+mbg-project/
