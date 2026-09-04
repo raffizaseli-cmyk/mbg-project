@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { apiDownload, apiUpload, apiGet } from "@/lib/api";
+import { apiDownload, apiUpload, apiGet, getBackendBaseUrl } from "@/lib/api";
 import { PageHeader } from "@/components/layout/page-header";
 import { BaseModal } from "@/components/ui/BaseModal";
 import Link from "next/link";
@@ -164,7 +164,7 @@ export function TabImport() {
         setRollbackLoading(true);
         try {
             const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
-            const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+            const baseUrl = getBackendBaseUrl();
             const res = await fetch(`${baseUrl}/imports/rollback`, {
                 method: "DELETE",
                 headers: {

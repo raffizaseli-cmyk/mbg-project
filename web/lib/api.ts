@@ -1,14 +1,28 @@
 import axios, { AxiosInstance } from "axios";
 
+export function getBackendBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_BACKEND_URL) {
+    return process.env.NEXT_PUBLIC_BACKEND_URL.replace(/\/+$/, "");
+  }
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "");
+  }
+  // Auto-fallback jika berjalan di remote hosting (Vercel, dsb) agar tidak menembak localhost:8000
+  if (
+    typeof window !== "undefined" &&
+    !window.location.hostname.includes("localhost") &&
+    !window.location.hostname.includes("127.0.0.1")
+  ) {
+    return "https://mbg-production-oneui.up.railway.app";
+  }
+  return "http://localhost:8000";
+}
+
 let apiClient: AxiosInstance | null = null;
 
 export function getApiClient(): AxiosInstance {
   if (!apiClient) {
-    const rawUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL ||
-      process.env.NEXT_PUBLIC_API_URL ||
-      "http://localhost:8000";
-    const baseURL = rawUrl.replace(/\/+$/, "");
+    const baseURL = getBackendBaseUrl();
 
     apiClient = axios.create({
       baseURL,
