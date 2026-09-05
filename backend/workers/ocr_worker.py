@@ -823,13 +823,22 @@ def _send_batch_complete(
         items = getattr(items_resp, "data", None) or []
         for it in items:
             nama = _esc_worker(it.get("ocr_nama_asli") or it.get("product_name", "?"))
-            q = _display_qty_for_notif(float(it.get("qty", 0)), it.get("unit", "pcs"))
+            qty_val = float(it.get("qty", 0))
+            q = _display_qty_for_notif(qty_val, it.get("unit", "pcs"))
             sat = _esc_worker(it.get("unit", "pcs"))
-            harga = _esc_worker(_fmt_rp_worker(it.get("price", 0)))
-            sub = _esc_worker(_fmt_rp_worker(it.get("subtotal", 0)))
+            price_val = float(it.get("price", 0))
+            sub_val = float(it.get("subtotal", 0))
+            harga = _esc_worker(_fmt_rp_worker(price_val))
+            sub = _esc_worker(_fmt_rp_worker(sub_val))
             needs_conf = it.get("needs_confirmation", False)
             unmapped_mark = " ❓" if needs_conf else ""
-            lines.append(f"   {nama}: {q} {sat} x {harga} = {sub}{unmapped_mark}")
+
+            if sub_val <= 0:
+                lines.append(f"   {nama}: {q} {sat} (total gabungan){unmapped_mark}")
+            elif qty_val == 1.0 and sat in ("pcs", "bks", "karung") and price_val == sub_val and sub_val >= 100000:
+                lines.append(f"   {nama}: {sub} (borongan){unmapped_mark}")
+            else:
+                lines.append(f"   {nama}: {q} {sat} x {harga} = {sub}{unmapped_mark}")
 
         # Tampilkan peringatan integritas jika ada
         trx_notes = trx.get("notes") or ""

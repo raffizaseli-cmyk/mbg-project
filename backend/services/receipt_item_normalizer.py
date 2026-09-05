@@ -119,6 +119,56 @@ def _collapse_packaging_to_pcs(item: Dict[str, Any], nama: str) -> None:
         item["harga_satuan"] = round(sub)
 
 
+_BULK_STAPLES_PATTERN = re.compile(
+    r"\b(beras|minyak|gula|terigu|tepung|telur|telor)\b",
+    re.I,
+)
+
+_PACKAGING_PATTERN = re.compile(
+    r"\b(\d+(?:\.\d+)?)\s*(kg|liter|l|g|gram|ml)\b",
+    re.I,
+)
+
+
+def _normalize_bulk_packaging(item: Dict[str, Any], nama: str) -> None:
+    """
+    Jika bahan pokok curah dapur (beras, minyak, gula, terigu) dibeli dalam kemasan
+    berisi berat/volume (misal 'Beras Pandan Wangi 5kg' atau 'Minyak Tropical 2L'),
+    pastikan kuantitas stok mencerminkan total berat/volume riil (kg/liter),
+    bukan '1 kg' atau '1 liter'.
+    """
+    if not _BULK_STAPLES_PATTERN.search(nama):
+        return
+
+    pack_match = _PACKAGING_PATTERN.search(nama)
+    if not pack_match:
+        return
+
+    pack_val = float(pack_match.group(1))
+    pack_unit = pack_match.group(2).lower()
+    if pack_unit in ("l", "liter"):
+        target_unit = "liter"
+    elif pack_unit in ("g", "gram"):
+        pack_val = round(pack_val / 1000.0, 3)
+        target_unit = "kg"
+    elif pack_unit == "kg":
+        target_unit = "kg"
+    else:
+        return
+
+    qty = _to_float(item.get("qty"), 1.0)
+    sub = _to_float(item.get("subtotal"), 0.0)
+    current_unit = _unit_lower(item.get("satuan"))
+
+    # Jika di nota qty adalah jumlah kemasan (misal 1 sak/pouch atau qty=1)
+    if current_unit in ("pcs", "pack", "bks", "sak", "karung", "pouch", "botol", target_unit) and qty <= 50:
+        real_qty = round(qty * pack_val, 3)
+        item["qty"] = real_qty
+        item["satuan"] = target_unit
+        if sub > 0:
+            item["harga_satuan"] = round(sub / real_qty)
+
+
 def _normalize_borongan(item: Dict[str, Any]) -> None:
     """Hanya nama + subtotal tanpa qty bermakna."""
     qty = _to_float(item.get("qty"), 0)
@@ -140,11 +190,6 @@ def normalize_item(item: Dict[str, Any]) -> Dict[str, Any]:
     """
     Terapkan aturan normalisasi pada satu item OCR.
     Mengembalikan item yang sama (mutasi in-place + return).
-
-    ATURAN BARU (v2):
-    - TIDAK BOLEH mengubah harga_satuan atau qty jika keduanya sudah non-zero.
-    - Hanya mengisi field yang KOSONG/0 (fallback).
-    - Menandai math_mismatch jika qty * harga != subtotal.
     """
     if not item:
         return item
@@ -161,38 +206,46 @@ def normalize_item(item: Dict[str, Any]) -> Dict[str, Any]:
 
     _normalize_ons(item)
     _normalize_gram_to_kg(item)
+    _normalize_bulk_packaging(item, nama)
 
     if _is_packaged_goods(nama, kategori, is_kemasan):
         _collapse_packaging_to_pcs(item, nama)
 
     _normalize_borongan(item)
 
-    # ── Konsistensi harga: HANYA isi field yang KOSONG ──
+    # ── Rekonsiliasi harga dan subtotal matematis ──
     qty = _to_float(item.get("qty"), 1.0)
-    sub = _to_float(item.get("subtotal"), 0)
-    harga = _to_float(item.get("harga_satuan"), 0)
+    sub = _to_float(item.get("subtotal"), 0.0)
+    harga = _to_float(item.get("harga_satuan"), 0.0)
 
+    # 1. Jika harga kosong/0 tapi subtotal ada
     if sub > 0 and qty > 0 and harga <= 0:
-        # Harga kosong, isi dari subtotal/qty (fallback)
         item["harga_satuan"] = round(sub / qty)
+        harga = item["harga_satuan"]
+
+    # 2. Jika subtotal kosong/0 tapi harga ada
     elif harga > 0 and qty > 0 and sub <= 0:
-        # Subtotal kosong, isi dari harga*qty (fallback)
         item["subtotal"] = round(harga * qty)
+        sub = item["subtotal"]
 
-    # ── Deteksi math mismatch (JANGAN perbaiki, hanya tandai) ──
-    qty = _to_float(item.get("qty"), 1.0)
-    sub = _to_float(item.get("subtotal"), 0)
-    harga = _to_float(item.get("harga_satuan"), 0)
+    # 3. Kasus kasir menyalin subtotal ke kolom harga (contoh: Bawang Merah 0.5kg harga=20.000 subtotal=20.000)
+    # Jika harga == subtotal dan qty != 1.0, maka 20.000 adalah subtotal nota, bukan harga per kg!
+    elif sub > 0 and qty > 0 and qty != 1.0 and abs(harga - sub) < 1.0:
+        item["harga_satuan"] = round(sub / qty)
+        harga = item["harga_satuan"]
 
-    if qty > 0 and harga > 0 and sub > 0:
+    # 4. Kasus ketidakcocokan matematis kasir (misal: 0.5 x 13.500 tapi subtotal 15.500)
+    elif sub > 0 and qty > 0 and harga > 0:
         expected = round(qty * harga)
         actual = round(sub)
-        # Toleransi pembulatan Rp 10
         if abs(expected - actual) > 10:
             item["math_mismatch"] = (
-                f"{nama}: {qty} x {int(harga)} = {expected}, "
-                f"tapi subtotal nota = {actual}"
+                f"{nama}: di nota tertulis {qty} x {int(harga)} = {expected}, "
+                f"tetapi subtotal nota = {actual}"
             )
+            # Prioritaskan subtotal riil (uang kas keluar) dan hitung ulang harga per unit riil
+            item["harga_satuan"] = round(sub / qty)
+            harga = item["harga_satuan"]
 
     return item
 
