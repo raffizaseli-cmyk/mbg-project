@@ -53,29 +53,29 @@ class RateLimiter:
         """
         Validate rate limit. Raise HTTP 429 jika limit terlampaui.
         """
-        redis_client = get_redis_client()
-        
-        # Ambil IP jika belum ada user_id (rute public seperti login)
-        client_ip = request.client.host if request.client else "unknown"
-        identifier = f"ip:{client_ip}"
-        
-        # Coba ambil auth header tapi tidak memaksa 401
-        auth_header = request.headers.get("Authorization")
-        if auth_header and auth_header.startswith("Bearer "):
-            token = auth_header.split(" ")[1]
-            try:
-                # JWT simple decode (tanpa memvalidasi ke DB) hanya untuk key
-                import jwt
-                payload = jwt.decode(token, settings.secret_key, algorithms=["HS256"])
-                user_id = payload.get("user_id")
-                if user_id:
-                    identifier = f"user:{user_id}"
-            except Exception:
-                pass
-
-        key = f"rate:{identifier}:{self.action}"
-
         try:
+            redis_client = get_redis_client()
+            
+            # Ambil IP jika belum ada user_id (rute public seperti login)
+            client_ip = request.client.host if request.client else "unknown"
+            identifier = f"ip:{client_ip}"
+            
+            # Coba ambil auth header tapi tidak memaksa 401
+            auth_header = request.headers.get("Authorization")
+            if auth_header and auth_header.startswith("Bearer "):
+                token = auth_header.split(" ")[1]
+                try:
+                    # JWT simple decode (tanpa memvalidasi ke DB) hanya untuk key
+                    import jwt
+                    payload = jwt.decode(token, settings.secret_key, algorithms=["HS256"])
+                    user_id = payload.get("user_id")
+                    if user_id:
+                        identifier = f"user:{user_id}"
+                except Exception:
+                    pass
+
+            key = f"rate:{identifier}:{self.action}"
+
             count = int(redis_client.incr(key))
             if count == 1:
                 redis_client.expire(key, self.window)
@@ -88,7 +88,9 @@ class RateLimiter:
                         "error": f"Terlalu banyak request. Coba lagi dalam {self.window} detik.",
                     },
                 )
-        except redis.RedisError as e:
+        except HTTPException:
+            raise
+        except Exception as e:
             # Log error tapi tetap izinkan request jika Redis fail
             print(f"Redis error during rate limiting: {e}")
 

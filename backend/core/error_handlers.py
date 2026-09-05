@@ -4,11 +4,25 @@ Global FastAPI exception handlers — format respons konsisten.
 """
 
 import logging
+from typing import Dict
 from fastapi import Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 
 logger = logging.getLogger(__name__)
+
+
+def _cors_headers(request: Request) -> Dict[str, str]:
+    """Helper untuk memastikan respons error selalu menyertakan CORS header."""
+    origin = request.headers.get("origin")
+    if origin:
+        return {
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        }
+    return {}
 
 
 async def validation_exception_handler(
@@ -28,6 +42,7 @@ async def validation_exception_handler(
             "error": "Validasi gagal. Periksa input Anda.",
             "details": details,
         },
+        headers=_cors_headers(request),
     )
 
 
@@ -50,7 +65,11 @@ async def http_exception_handler(
     else:
         content["error"] = str(exc.detail)
         
-    return JSONResponse(status_code=exc.status_code, content=content)
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=content,
+        headers=_cors_headers(request),
+    )
 
 
 async def general_exception_handler(
@@ -68,6 +87,7 @@ async def general_exception_handler(
             "success": False,
             "error": "Terjadi kesalahan server. Coba lagi.",
         },
+        headers=_cors_headers(request),
     )
 
 
@@ -76,3 +96,4 @@ def register_error_handlers(app) -> None:
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(HTTPException, http_exception_handler)
     app.add_exception_handler(Exception, general_exception_handler)
+

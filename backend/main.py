@@ -62,13 +62,21 @@ app = FastAPI(title="MBG Catering Backend", version="1.0.2")
 
 
 # ─── CORS ──────────────────────────────────────────────────────────────────
+ALLOWED_ORIGINS = [
+    "https://mbg-project-rzxt.vercel.app",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+ALLOWED_ORIGIN_REGEX = r"^https?:\/\/([a-zA-Z0-9_-]+\.)*(vercel\.app|railway\.app|localhost|127\.0\.0\.1)(:\d+)?$"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex=ALLOWED_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_origin_regex=r"https?://.*",
+    expose_headers=["*"],
 )
 
 app.add_middleware(RequestLoggingMiddleware)

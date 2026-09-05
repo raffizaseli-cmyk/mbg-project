@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
@@ -11,6 +12,8 @@ from core.dependencies import get_current_user
 from core.security import create_access_token, get_password_hash, verify_password
 from middleware.rate_limiter import login_limiter
 from models.user import LoginRequest, TokenResponse, UserCreate, UserInDB, UserResponse
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -138,8 +141,25 @@ def register_tenant(body: Dict[str, Any]):
 @router.post("/login", response_model=Dict[str, Any], dependencies=[Depends(login_limiter)])
 def login(body: LoginRequest):
     supabase = get_supabase()
-    result = supabase.table("users").select("*").eq("email", body.email).execute()
-    users = getattr(result, "data", None) or []
+    try:
+        result = supabase.table("users").select("*").eq("email", body.email).execute()
+        users = getattr(result, "data", None) or []
+    except Exception as e:
+        logger.error("Login database query failed: %s", e)
+        err_msg = str(e)
+        if "infinite recursion" in err_msg or "42P17" in err_msg:
+            return JSONResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content=_build_error(
+                    "Database policy error (infinite recursion pada tabel users). "
+                    "Jalankan script SQL fix di Supabase Dashboard."
+                ),
+            )
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content=_build_error(f"Koneksi database gagal: {err_msg}"),
+        )
+
     if not users:
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
