@@ -10,28 +10,29 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Optional
 
-# Kemasan pabrik: volume di label tidak boleh jadi qty untuk harga
-_PACKAGING_KEYWORDS = re.compile(
-    r"\b("
-    r"kecap|saus|sambal|minyak|susu|sabun|deterjen|rinso|molto|mama\s*lemon|"
-    r"indomie|mie\s*instan|teh\s*|kopi|bubuk|tissue|paseo|lifebuoy|abc|"
-    r"bimoli|tropical|bimoli|gulaku|cap\s*kapal|uht|lemon|shampo|"
-    r"botol|pouch|sachet|karton|kaleng"
-    r")\b",
+_VOLUME_UNITS = frozenset({"ml", "cc", "liter", "l"})
+_WEIGHT_SMALL_UNITS = frozenset({"gram", "g", "gr"})
+_WEIGHT_LARGE_UNITS = frozenset({"kg", "kilogram"})
+
+# Bentuk wadah kemasan fisik universal (retail / grosir Indonesia) - BUKAN daftar merk!
+_CONTAINER_FORMS = frozenset({
+    "botol", "bottle", "pouch", "sachet", "karton", "kaleng", "can",
+    "tube", "cup", "dus", "pack", "strip", "refill", "galon", "gallon",
+    "roll", "jar", "pet", "jerigen", "kotak", "box", "sak", "karung",
+    "ikat", "papan", "ekor", "bks", "bungkus", "buah", "biji", "btr", "butir", "pcs", "pc"
+})
+
+# Ekstraksi ukuran kemasan metrik universal (berlaku untuk SEMUA produk baru/lama: 5kg, 10kg, 2L, 750ml, 500g, dll.)
+_METRIC_SIZE_PATTERN = re.compile(
+    r"\b(\d+(?:\.\d+)?)\s*(kg|liter|l|g|gram|gr|ml|cc)\b",
     re.I,
 )
 
-_VOLUME_UNITS = frozenset({"ml", "cc", "liter", "l"})
-_WEIGHT_SMALL_UNITS = frozenset({"gram", "g", "gr"})
-_COUNT_UNITS = frozenset({
-    "pcs", "pc", "buah", "pack", "bungkus", "botol", "pouch", "sachet",
-    "dus", "ikat", "papan", "ekor", "bks", "karung", "sak", "tabung",
-    "biji", "btr",
-})
-
-# Qty di atas ambang + satuan volume/gram kecil → kemungkinan isi kemasan ter-parse salah
-_ML_QTY_THRESHOLD = 50
-_GRAM_QTY_THRESHOLD = 100
+# Indikator non-pangan universal untuk klasifikasi operasional / sanitasi dapur jika kategori belum terisi
+_NON_FOOD_INDICATORS = re.compile(
+    r"\b(sabun|deterjen|pembersih|tissue|tisu|shampoo|shampo|sikat|plastik|karbol|pel|pewangi|cuci)\b",
+    re.I,
+)
 
 
 def _to_float(val: Any, default: float = 0.0) -> float:
@@ -45,90 +46,20 @@ def _unit_lower(satuan: Any) -> str:
     return str(satuan or "pcs").lower().strip()
 
 
-def _is_packaged_goods(nama: str, kategori: Optional[str], is_kemasan: bool) -> bool:
-    if is_kemasan:
+def _detect_container_unit(nama: str, default: str = "pcs") -> str:
+    nama_lower = nama.lower()
+    for form in ("botol", "pouch", "sachet", "jerigen", "kaleng", "dus", "karton", "tube", "cup", "jar", "roll", "sak", "karung", "pack"):
+        if form in nama_lower:
+            return form
+    return default
+
+
+def _is_non_food_item(nama: str, kategori: Optional[str]) -> bool:
+    """Deteksi universal apakah item adalah perlengkapan non-pangan (kebersihan/operasional)."""
+    kat = str(kategori or "").lower().strip()
+    if kat in ("kebersihan_dapur", "operasional", "bahan_kemasan", "alat_tulis"):
         return True
-    if kategori and str(kategori).lower() in ("kemasan", "operasional"):
-        return True
-    return bool(_PACKAGING_KEYWORDS.search(nama or ""))
-
-
-def _looks_like_label_volume_qty(qty: float, unit: str, subtotal: float) -> bool:
-    u = unit.lower()
-    if u in _VOLUME_UNITS and qty >= _ML_QTY_THRESHOLD and subtotal >= 1000:
-        return True
-    if u in _WEIGHT_SMALL_UNITS and qty >= _GRAM_QTY_THRESHOLD and subtotal >= 1000:
-        return True
-    # Desimal aneh pada qty (520.059 ml)
-    if u in _VOLUME_UNITS and qty != int(qty) and qty > 10:
-        return True
-    return False
-
-
-def _normalize_ons(item: Dict[str, Any]) -> None:
-    unit = _unit_lower(item.get("satuan"))
-    if unit != "ons":
-        return
-    qty = _to_float(item.get("qty"), 1.0)
-    sub = _to_float(item.get("subtotal"), 0)
-    item["qty"] = round(qty * 0.1, 3)  # 1 ons = 0.1 kg
-    item["satuan"] = "kg"
-    if sub > 0 and item["qty"] > 0:
-        item["harga_satuan"] = round(sub / item["qty"])
-
-
-def _normalize_gram_to_kg(item: Dict[str, Any]) -> None:
-    unit = _unit_lower(item.get("satuan"))
-    if unit not in _WEIGHT_SMALL_UNITS:
-        return
-    qty = _to_float(item.get("qty"), 0)
-    sub = _to_float(item.get("subtotal"), 0)
-    if qty < _GRAM_QTY_THRESHOLD:
-        return
-    item["qty"] = round(qty / 1000, 3)
-    item["satuan"] = "kg"
-    if sub > 0 and item["qty"] > 0:
-        item["harga_satuan"] = round(sub / item["qty"])
-
-
-def _collapse_packaging_to_pcs(item: Dict[str, Any], nama: str) -> None:
-    """Kemasan: qty = jumlah botol/pouch, harga = subtotal per kemasan."""
-    qty = _to_float(item.get("qty"), 1.0)
-    sub = _to_float(item.get("subtotal"), 0)
-    harga = _to_float(item.get("harga_satuan"), 0)
-    unit = _unit_lower(item.get("satuan"))
-
-    # Jika sudah pcs/botol dengan qty masuk akal, JANGAN timpa harga
-    # Hanya isi harga jika kosong (fallback)
-    if unit in _COUNT_UNITS and qty <= 100:
-        if sub > 0 and harga <= 0:
-            item["harga_satuan"] = round(sub / max(qty, 1))
-        return
-
-    if not _looks_like_label_volume_qty(qty, unit, sub):
-        return
-
-    # Satu baris harga total per kemasan
-    item["qty"] = 1.0
-    if "botol" in nama.lower() or unit in ("liter", "l"):
-        item["satuan"] = "botol"
-    elif "pouch" in nama.lower() or "sachet" in nama.lower():
-        item["satuan"] = "pouch"
-    else:
-        item["satuan"] = "pcs"
-    if sub > 0:
-        item["harga_satuan"] = round(sub)
-
-
-_BULK_STAPLES_PATTERN = re.compile(
-    r"\b(beras|minyak|gula|terigu|tepung|telur|telor)\b",
-    re.I,
-)
-
-_PACKAGING_PATTERN = re.compile(
-    r"\b(\d+(?:\.\d+)?)\s*(kg|liter|l|g|gram|ml)\b",
-    re.I,
-)
+    return bool(_NON_FOOD_INDICATORS.search(nama))
 
 
 def _normalize_multiplier_in_name(item: Dict[str, Any], nama: str) -> None:
@@ -147,49 +78,109 @@ def _normalize_multiplier_in_name(item: Dict[str, Any], nama: str) -> None:
         unit_hint = (match.group(2) or "").lower().strip()
         if mult_val > 1:
             item["qty"] = mult_val
-            if unit_hint in _COUNT_UNITS or unit_hint in ("kg", "liter", "bks", "pcs"):
+            if unit_hint in _CONTAINER_FORMS:
                 item["satuan"] = unit_hint
 
 
-def _normalize_bulk_packaging(item: Dict[str, Any], nama: str) -> bool:
+def _normalize_packaging_and_metrics(item: Dict[str, Any], nama: str, kategori: Optional[str], is_kemasan: bool) -> None:
     """
-    Jika bahan pokok curah dapur (beras, minyak, gula, terigu) dibeli dalam kemasan
-    berisi berat/volume (misal 'Beras Pandan Wangi 5kg' atau 'Minyak Tropical 2L'),
-    pastikan kuantitas stok mencerminkan total berat/volume riil (kg/liter),
-    bukan '1 kg' atau '1 liter'.
+    Penanganan metrik kemasan secara universal tanpa hardcode merek:
+    1. Barang Non-Pangan (kebersihan dapur, tisu, dsb):
+       Distok per kemasan fisik (pouch/botol/pack/pcs).
+       Jika OCR salah menyalin volume (misal '750 ml') ke qty, dikoreksi ke 1 pouch/botol.
+    2. Bahan Pangan / Masakan Dapur:
+       - Kemasan berlabel KG atau LITER (misal 5kg, 10kg, 25kg, 2L, 5L):
+         Dikonversi ke total metrik riil (kg / liter) agar stok & resep dapur akurat.
+       - Kemasan kecil berlabel ML atau Gram dalam sachet/kotak (misal 520ml, 340ml, 160g):
+         Tetap distok per wadah (pouch, botol, kotak) dengan harga per kemasan.
     """
-    if not _BULK_STAPLES_PATTERN.search(nama):
-        return False
-
-    pack_match = _PACKAGING_PATTERN.search(nama)
-    if not pack_match:
-        return False
-
-    pack_val = float(pack_match.group(1))
-    pack_unit = pack_match.group(2).lower()
-    if pack_unit in ("l", "liter"):
-        target_unit = "liter"
-    elif pack_unit in ("g", "gram"):
-        pack_val = round(pack_val / 1000.0, 3)
-        target_unit = "kg"
-    elif pack_unit == "kg":
-        target_unit = "kg"
-    else:
-        return False
-
     qty = _to_float(item.get("qty"), 1.0)
     sub = _to_float(item.get("subtotal"), 0.0)
-    current_unit = _unit_lower(item.get("satuan"))
+    satuan = _unit_lower(item.get("satuan"))
+    attr_kemasan = item.get("atribut_kemasan") or item.get("kemasan_info")
 
-    # Jika di nota qty adalah jumlah kemasan (misal 1 sak/pouch atau qty=1)
-    if current_unit in ("pcs", "pack", "bks", "sak", "karung", "pouch", "botol", target_unit) and qty <= 50:
-        real_qty = round(qty * pack_val, 3)
-        item["qty"] = real_qty
-        item["satuan"] = target_unit
+    # Ekstraksi ukuran kemasan metrik dari nama atau atribut
+    pack_match = _METRIC_SIZE_PATTERN.search(attr_kemasan or "") or _METRIC_SIZE_PATTERN.search(nama)
+    metric_val = 0.0
+    metric_unit = ""
+    if pack_match:
+        metric_val = float(pack_match.group(1))
+        metric_unit = pack_match.group(2).lower()
+        if metric_unit in ("l", "liter"):
+            metric_unit = "liter"
+        elif metric_unit in ("ml", "cc"):
+            metric_unit = "ml"
+        elif metric_unit in ("g", "gram", "gr"):
+            metric_unit = "gram"
+        elif metric_unit in ("kg", "kilogram"):
+            metric_unit = "kg"
+
+    # Disambiguasi ekonomi: apakah OCR salah memasukkan volume isi label ke kuantitas?
+    # Contoh: Sunlight 750ml dibaca qty=750 ml, subtotal=18.000. Rasio Rp 24/botol = mustahil.
+    is_volume_as_qty = False
+    if satuan in _VOLUME_UNITS and qty >= 50 and sub > 0:
+        if (sub / qty) < 100 or sub <= 250000:
+            is_volume_as_qty = True
+    elif satuan in _WEIGHT_SMALL_UNITS and qty >= 100 and sub > 0:
+        if is_kemasan and (sub / qty) < 100 and sub <= 200000:
+            is_volume_as_qty = True
+
+    # A. NON-PANGAN (Kebersihan Dapur, Operasional, Bahan Kemasan, Alat Tulis)
+    if _is_non_food_item(nama, kategori):
+        if is_volume_as_qty or satuan in _VOLUME_UNITS or satuan in _WEIGHT_SMALL_UNITS:
+            container_unit = _detect_container_unit(
+                nama,
+                "pouch" if "pouch" in nama.lower() or "refill" in nama.lower() else "botol" if "botol" in nama.lower() else "pcs"
+            )
+            item["qty"] = 1.0
+            item["satuan"] = container_unit
+            if sub > 0:
+                item["harga_satuan"] = round(sub)
+        return
+
+    # B. BAHAN PANGAN / MASAKAN DAPUR
+    # Kasus: Kemasan curah besar bertanda 'kg' atau 'liter' (Beras 5kg, Ketan 10kg, Minyak 2L, Kedelai 25kg, dsb.)
+    if metric_val > 0 and metric_unit in ("kg", "liter"):
+        target_unit = metric_unit
+        if satuan in _CONTAINER_FORMS or satuan in (target_unit, "pcs"):
+            if qty <= 100:  # batas wajar pembelian dapur
+                real_qty = round(qty * metric_val, 3)
+                item["qty"] = real_qty
+                item["satuan"] = target_unit
+                if sub > 0:
+                    item["harga_satuan"] = round(sub / real_qty)
+        return
+
+    # Kasus: Kemasan pabrik kecil (Kecap 520ml, Saus 340ml, Mama Lemon, Sabun, dll)
+    # Jika salah ter-parse sebagai ml/gram di kolom qty:
+    if is_volume_as_qty:
+        container_unit = _detect_container_unit(
+            nama,
+            "pouch" if "pouch" in nama.lower() or "refill" in nama.lower() else "botol" if "botol" in nama.lower() else "bks"
+        )
+        item["qty"] = 1.0
+        item["satuan"] = container_unit
         if sub > 0:
-            item["harga_satuan"] = round(sub / real_qty)
-        return True
-    return False
+            item["harga_satuan"] = round(sub)
+
+
+def _normalize_loose_produce(item: Dict[str, Any]) -> None:
+    """Normalisasi komoditas curah pasar segar (ons/gram ke kg)."""
+    unit = _unit_lower(item.get("satuan"))
+    qty = _to_float(item.get("qty"), 0.0)
+    sub = _to_float(item.get("subtotal"), 0.0)
+
+    if unit == "ons" and qty > 0:
+        item["qty"] = round(qty * 0.1, 3)
+        item["satuan"] = "kg"
+        if sub > 0 and item["qty"] > 0:
+            item["harga_satuan"] = round(sub / item["qty"])
+
+    elif unit in _WEIGHT_SMALL_UNITS and qty >= 100:
+        item["qty"] = round(qty / 1000.0, 3)
+        item["satuan"] = "kg"
+        if sub > 0 and item["qty"] > 0:
+            item["harga_satuan"] = round(sub / item["qty"])
 
 
 def _normalize_borongan(item: Dict[str, Any]) -> None:
@@ -204,7 +195,7 @@ def _normalize_borongan(item: Dict[str, Any]) -> None:
         unit = _unit_lower(item.get("satuan"))
         if unit in _VOLUME_UNITS or unit in _WEIGHT_SMALL_UNITS:
             item["satuan"] = "bks"
-        elif unit not in _COUNT_UNITS and unit not in ("kg", "ons"):
+        elif unit not in _CONTAINER_FORMS and unit not in ("kg", "ons"):
             item["satuan"] = item.get("satuan") or "bks"
         item["harga_satuan"] = round(sub)
 
@@ -331,13 +322,8 @@ def normalize_item(item: Dict[str, Any]) -> Dict[str, Any]:
         item["kemasan_info"] = item["atribut_kemasan"]
 
     _normalize_multiplier_in_name(item, nama)
-    _normalize_ons(item)
-    _normalize_gram_to_kg(item)
-    is_bulk = _normalize_bulk_packaging(item, nama)
-
-    if not is_bulk and _is_packaged_goods(nama, kategori, is_kemasan):
-        _collapse_packaging_to_pcs(item, nama)
-
+    _normalize_packaging_and_metrics(item, nama, kategori, is_kemasan)
+    _normalize_loose_produce(item)
     _normalize_borongan(item)
     reconcile_row_math(item)
 
