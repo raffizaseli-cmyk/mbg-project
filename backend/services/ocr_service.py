@@ -70,6 +70,53 @@ Return HANYA JSON valid tanpa teks lain:
 ]
 
 ══════════════════════════════════════════════════════════════════
+█ PENALARAN TATA LETAK & PEMETAAN KOLOM (SPATIAL COLUMN REASONING) █
+══════════════════════════════════════════════════════════════════
+Amati dengan teliti struktur dan tata letak horizontal baris/kolom pada nota:
+
+1. PEMBACAAN KOLOM TABEL NOTA KONTAN / FAKTUR / STRUK:
+   Header kolom nota pada umumnya:
+   [No] | [Banyaknya / Qty] | [Nama Barang / Uraian] | [Harga / Harga Satuan] | [Jumlah / Total]
+   atau
+   [No] | [Nama Barang / Uraian] | [Banyaknya / Qty] | [Harga Satuan] | [Jumlah / Subtotal]
+
+2. CARA MEMBEDAKAN HARGA SATUAN (raw_price) vs JUMLAH (raw_subtotal):
+   - KASUS KOLOM "HARGA SATUAN" KOSONG ATAU DIBERI STRIP ('-'):
+     Banyak kasir pasar tradisional HANYA menulis angka di kolom "Jumlah / Total" dan mengosongkan kolom "Harga Satuan".
+     Contoh di nota: "Kacang Tanah | Banyak: 1/2 kg | Harga: - | Jumlah: 15.500"
+     → raw_name: "Kacang Tanah"
+     → raw_qty: 0.5
+     → satuan: "kg"
+     → raw_price: null   <-- WAJIB NULL! JANGAN salin angka 15500 ke raw_price!
+     → raw_subtotal: 15500
+     (Alasan: Angka 15.500 adalah subtotal untuk 1/2 kg, BUKAN harga per 1 kg!)
+
+   - KASUS KOLOM "HARGA SATUAN" DAN "JUMLAH" TERISI LENGKAP:
+     Contoh di nota: "Beras | Banyak: 12 kg | Harga: 9.850 | Jumlah: 118.200"
+     → raw_name: "Beras"
+     → raw_qty: 12.0
+     → satuan: "kg"
+     → raw_price: 9850   (karena berada di kolom Harga Satuan per kg)
+     → raw_subtotal: 118200 (karena berada di kolom Jumlah/Total)
+
+   - KASUS STRUK DENGAN PENGALI (MULTIPLIER):
+     Contoh di nota: "Indomie Goreng (x15 bks): Rp 45.000"
+     → raw_name: "Indomie Goreng"
+     → raw_qty: 15.0
+     → satuan: "bks"
+     → raw_price: null   (jika harga satuan per bungkus tidak ditulis terpisah di nota)
+     → raw_subtotal: 45000
+
+   - KASUS BARANG KEMASAN POKOK CURAH (Beras 5kg, Minyak 2L, dll):
+     Contoh di nota: "Beras Pandan Wangi 5kg: Rp 75.000"
+     → raw_name: "Beras Pandan Wangi 5kg"
+     → raw_qty: 1.0 (atau 5.0 jika di nota ditulis 5 kg)
+     → satuan: "sak" atau "kg"
+     → atribut_kemasan: "5kg"
+     → raw_price: 75000 (atau null jika dianggap harga total per karung)
+     → raw_subtotal: 75000
+
+══════════════════════════════════════════════════════════════════
 █ ATURAN MUTLAK #1: DILARANG KERAS MEMPERBAIKI MATEMATIKA KASIR █
 ══════════════════════════════════════════════════════════════════
 - Salin qty, harga_satuan, dan subtotal PERSIS seperti yang tertulis di nota.
@@ -77,6 +124,7 @@ Return HANYA JSON valid tanpa teks lain:
   → SALIN: raw_qty=2, raw_price=18000, raw_subtotal=54000
   → JANGAN ubah raw_price menjadi 27000 supaya "2 x 27000 = 54000".
   → JANGAN ubah raw_qty menjadi 3 supaya "3 x 18000 = 54000".
+- Jika kolom harga satuan kosong / tanda strip '-', isi raw_price: null (JANGAN salin raw_subtotal ke raw_price).
 - Jika qty × harga ≠ subtotal, BIARKAN. Masukkan ke "math_mismatches" dengan merujuk nama itemnya langsung sebagai jangkar (anchor), BUKAN nomor baris.
   Contoh: ["Item 'Gula Pasir': qty 2 x harga 18000 ≠ subtotal 54000"]
 - Kamu BUKAN akuntan. Kamu BUKAN kalkulator. JANGAN pernah menghitung ulang.
@@ -137,6 +185,7 @@ NOTA PASAR TRADISIONAL:
 - sak/goni = karung (raw_qty jumlah sak/goni, BUKAN kg kecuali tertulis)
 
 CHECKLIST TERAKHIR SEBELUM RETURN:
+✓ Apakah kolom harga strip '-' diisi null pada raw_price?
 ✓ Apakah semua raw_price PERSIS dari nota? (bukan hasil bagi subtotal/qty)
 ✓ Apakah semua raw_qty PERSIS dari nota? (bukan hasil bagi subtotal/harga)
 ✓ Apakah nama brand/merek dipertahankan di raw_name?
