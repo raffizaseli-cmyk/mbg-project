@@ -845,30 +845,30 @@ export default function PenyetelanDapurPage() {
         {/* Header */}
         <div className="pt-2 mb-6">
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="px-2.5 py-0.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-700 text-[11px] font-bold flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
-              Intelligence Engine & Nutrisi BGN
+            <span className="px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+              Engine Nutrisi BGN
             </span>
             <span className="text-xs text-slate-400">•</span>
             <span className="text-xs font-semibold text-slate-500">Konfigurasi Dapur Mandiri</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
             Pusat Penyetelan Dapur & Nutrisi
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium max-w-3xl">
-            Kelola graf rantai satuan bobot, database komposisi pangan TKPI Kemenkes, dan pemetaan cerdas alias bahan baku OCR.
+            Kelola graf rantai satuan bobot, database komposisi pangan TKPI Kemenkes, dan pemetaan alias bahan baku OCR.
           </p>
         </div>
 
         {/* Main Tabs Navigation */}
         <div className="sticky top-0 z-20 pt-1 pb-2 backdrop-blur-md mb-6">
-          <div className="flex gap-2.5 bg-white/85 backdrop-blur-xl rounded-2xl p-2 border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] overflow-x-auto no-scrollbar">
+          <div className="flex gap-2 bg-white rounded-2xl p-1.5 border border-slate-200 shadow-xs overflow-x-auto no-scrollbar">
             <button
               onClick={() => setActiveTab("satuan")}
-              className={`flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 activeTab === "satuan"
-                  ? "bg-slate-900 text-white shadow-md shadow-slate-900/10"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
               <Weight className="w-4 h-4" />
@@ -876,10 +876,10 @@ export default function PenyetelanDapurPage() {
             </button>
             <button
               onClick={() => setActiveTab("nutrisi")}
-              className={`flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 activeTab === "nutrisi"
-                  ? "bg-slate-900 text-white shadow-md shadow-slate-900/10"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
               <Stethoscope className="w-4 h-4" />
@@ -887,10 +887,10 @@ export default function PenyetelanDapurPage() {
             </button>
             <button
               onClick={() => setActiveTab("mapping")}
-              className={`flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 activeTab === "mapping"
-                  ? "bg-slate-900 text-white shadow-md shadow-slate-900/10"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
               <LinkIcon className="w-4 h-4" />
@@ -900,13 +900,13 @@ export default function PenyetelanDapurPage() {
         </div>
 
         {/* Main Content Panels */}
-        <div className="bg-white/85 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] border border-slate-200/80 min-h-[500px]">
+        <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-xs border border-slate-200 min-h-[500px]">
 
           {/* 1. REFERENSI SATUAN TAB */}
           {activeTab === "satuan" && (
             <div className="space-y-6 animate-in fade-in duration-300">
               {/* Header Info Banner */}
-              <div className="rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50/90 via-indigo-50/50 to-blue-50/90 p-5 sm:p-6 shadow-sm">
+              <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-5 sm:p-6">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="flex gap-3.5">
                     <div className="rounded-2xl bg-white p-3 text-blue-600 shadow-sm border border-blue-100/50 shrink-0">
@@ -1534,7 +1534,7 @@ export default function PenyetelanDapurPage() {
                               </>
                             )}
                             <td className="px-4 py-3">
-                              <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${isGlobal ? "bg-emerald-50 text-emerald-700" : "bg-purple-50 text-purple-700"
+                              <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${isGlobal ? "bg-emerald-50 text-emerald-700" : "bg-blue-50 text-blue-700"
                                 }`}>
                                 {isGlobal ? "Global" : "Custom"}
                               </span>
@@ -1719,7 +1719,7 @@ export default function PenyetelanDapurPage() {
                                       <span className="px-2 py-1 bg-orange-50 text-orange-700 rounded-lg border border-orange-100">{Math.round(nutRef.calories)} kkal</span>
                                       <span className="px-2 py-1 bg-red-50 text-red-700 rounded-lg border border-red-100">P: {Number(nutRef.proteins).toFixed(1)}g</span>
                                       <span className="px-2 py-1 bg-yellow-50 text-yellow-700 rounded-lg border border-yellow-100">L: {Number(nutRef.fat).toFixed(1)}g</span>
-                                      <span className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded-lg border border-indigo-100">K: {Number(nutRef.carbohydrate).toFixed(1)}g</span>
+                                      <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-lg border border-blue-100">K: {Number(nutRef.carbohydrate).toFixed(1)}g</span>
                                     </div>
                                     <button
                                       onClick={(e) => {
@@ -1772,9 +1772,9 @@ export default function PenyetelanDapurPage() {
                                         <p className="text-[10px] text-yellow-600 font-semibold uppercase">Lemak</p>
                                         <p className="text-sm font-bold text-yellow-700">{Number(nutRef.fat).toFixed(1)} g</p>
                                       </div>
-                                      <div className="px-3 py-2 bg-indigo-50 rounded-lg border border-indigo-100">
-                                        <p className="text-[10px] text-indigo-500 font-semibold uppercase">Karbohidrat</p>
-                                        <p className="text-sm font-bold text-indigo-700">{Number(nutRef.carbohydrate).toFixed(1)} g</p>
+                                      <div className="px-3 py-2 bg-blue-50 rounded-lg border border-blue-100">
+                                        <p className="text-[10px] text-blue-500 font-semibold uppercase">Karbohidrat</p>
+                                        <p className="text-sm font-bold text-blue-700">{Number(nutRef.carbohydrate).toFixed(1)} g</p>
                                       </div>
                                       <div className="px-3 py-2 bg-green-50 rounded-lg border border-green-100">
                                         <p className="text-[10px] text-green-500 font-semibold uppercase">Serat</p>
@@ -1805,7 +1805,7 @@ export default function PenyetelanDapurPage() {
                                             </span>
                                           </td>
                                           <td className="px-4 py-3">
-                                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-100">
+                                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100">
                                               {a.source || "web_mapping"}
                                             </span>
                                           </td>

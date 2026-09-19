@@ -70,13 +70,13 @@ export default function DokumenLegalPage() {
                 <div>
                     <Link 
                         href="/pembukuan" 
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-indigo-600 transition-colors mb-2 group"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors mb-2 group"
                     >
                         <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
                         <span>Kembali ke Pembukuan</span>
                     </Link>
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+                        <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
                             <FolderCheck className="w-5 h-5" />
                         </div>
                         <div>
@@ -95,7 +95,7 @@ export default function DokumenLegalPage() {
             <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] border border-slate-200/80 overflow-hidden">
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-24 space-y-4">
-                        <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+                        <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
                         <p className="text-xs sm:text-sm text-slate-500 font-semibold">Memuat arsip dokumen legal...</p>
                     </div>
                 ) : docs.length === 0 ? (
@@ -137,7 +137,7 @@ export default function DokumenLegalPage() {
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2.5">
                                                     <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
-                                                        isExcel ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" : "bg-indigo-500/10 text-indigo-600 border border-indigo-500/20"
+                                                        isExcel ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" : "bg-blue-500/10 text-blue-600 border border-blue-500/20"
                                                     }`}>
                                                         {isExcel ? <FileSpreadsheet className="w-4 h-4" /> : <FileText className="w-4 h-4" />}
                                                     </div>
@@ -198,7 +198,7 @@ export default function DokumenLegalPage() {
                                                         <button 
                                                             disabled={updatingId === doc.id}
                                                             onClick={() => handleUpdateStatus(doc.id, "submitted")} 
-                                                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold transition-all cursor-pointer disabled:opacity-50"
+                                                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold transition-all cursor-pointer disabled:opacity-50"
                                                         >
                                                             <ShieldCheck className="w-3 h-3" />
                                                             <span>Tandai Terkirim</span>

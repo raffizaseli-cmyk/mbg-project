@@ -177,14 +177,14 @@ export function TabKomponen() {
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
-          <h2 className="text-xl font-bold text-gray-900 border-l-4 border-purple-500 pl-3 leading-none py-0.5">🧩 Dapur Komponen Resep</h2>
+          <h2 className="text-xl font-bold text-gray-900 border-l-4 border-teal-500 pl-3 leading-none py-0.5">🧩 Dapur Komponen Resep</h2>
           <p className="text-gray-500 text-sm mt-2 ml-4 max-w-xl">
             Buat racikan / bumbu khas di sini untuk dipakai ke banyak resep makanan. Jika Anda menaruh &quot;Bumbu Halus&quot; di menu Nasi Goreng, semua bahan di dalam bumbu ini akan ditarik secara otomatis.
           </p>
         </div>
         <button 
           onClick={() => openCompForm()} 
-          className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-600/20 rounded-xl hover:shadow-purple-600/40 hover:-translate-y-0.5 transition-all font-bold text-sm whitespace-nowrap"
+          className="px-5 py-2.5 bg-teal-600 text-white shadow-sm rounded-xl hover:bg-teal-700 hover:shadow-md transition-all font-bold text-sm whitespace-nowrap"
         >
           + Resep Komponen Baru
         </button>
@@ -202,7 +202,7 @@ export function TabKomponen() {
             <div key={comp.id} className="border border-gray-100/50 rounded-3xl p-6 bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-gray-200 transition-all group flex flex-col">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1 pr-3">
-                  <h3 className="font-bold text-gray-900 text-lg group-hover:text-purple-700 transition-colors">🧩 {comp.name}</h3>
+                  <h3 className="font-bold text-gray-900 text-lg group-hover:text-teal-700 transition-colors">🧩 {comp.name}</h3>
                   {comp.description && <p className="text-gray-500 text-sm mt-1 line-clamp-2 leading-relaxed">{comp.description}</p>}
                 </div>
                 <div className="flex gap-2 opacity-0 lg:opacity-100 group-hover:opacity-100 transition-opacity">
@@ -212,7 +212,7 @@ export function TabKomponen() {
               </div>
 
               <div className="bg-gray-50/50 rounded-2xl p-4 border border-gray-100 flex-1 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-purple-100/30 to-transparent rounded-bl-full pointer-events-none" />
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-teal-100/30 to-transparent rounded-bl-full pointer-events-none" />
                 <h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-3 ml-1">Kandungan Racikan:</h4>
                 <div className="space-y-2">
                   {comp.items.length === 0 ? (
@@ -221,7 +221,7 @@ export function TabKomponen() {
                     comp.items.map(item => (
                       <div key={item.id} className="text-sm bg-white/80 backdrop-blur border border-gray-100 px-3 py-2 rounded-xl text-gray-700 flex justify-between items-center shadow-sm">
                         <span className="font-medium truncate pr-3">{item.product_name || getIngName(item.ingredient_id)}</span>
-                        <span className="text-purple-600 font-bold bg-purple-50 px-2 py-0.5 rounded-md text-xs whitespace-nowrap">
+                        <span className="text-teal-600 font-bold bg-teal-50 px-2 py-0.5 rounded-md text-xs whitespace-nowrap">
                           {item.qty_needed} <span className="font-medium opacity-80">{item.unit}</span>
                         </span>
                       </div>
@@ -243,7 +243,7 @@ export function TabKomponen() {
         footer={
           <>
             <button type="button" onClick={() => setShowCompModal(false)} className="px-6 py-2.5 rounded-xl text-gray-700 font-bold hover:bg-gray-200 transition-colors tracking-wide">Batal</button>
-            <button type="submit" form="comp-form" disabled={saving || !compFormValid} className="px-8 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl shadow-md shadow-purple-600/30 hover:shadow-lg disabled:opacity-50 disabled:grayscale font-bold tracking-wide transition-all">
+            <button type="submit" form="comp-form" disabled={saving || !compFormValid} className="px-8 py-2.5 bg-teal-600 text-white rounded-xl shadow-sm hover:bg-teal-700 hover:shadow-md disabled:opacity-50 disabled:grayscale font-bold tracking-wide transition-all">
               {saving ? "Memproses..." : "Simpan Permanen"}
             </button>
           </>
@@ -253,11 +253,11 @@ export function TabKomponen() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="col-span-2 sm:col-span-1">
               <label className="block text-sm font-semibold text-gray-700 mb-1.5 pl-1">Nama Racikan Komponen</label>
-              <input required autoFocus type="text" placeholder="Cth: Bumbu Halus, Bumbu Merah" value={compForm.name} onChange={e => setCompForm({ ...compForm, name: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 font-medium transition-all outline-none" />
+              <input required autoFocus type="text" placeholder="Cth: Bumbu Halus, Bumbu Merah" value={compForm.name} onChange={e => setCompForm({ ...compForm, name: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 font-medium transition-all outline-none" />
             </div>
             <div className="col-span-2 sm:col-span-1">
               <label className="block text-sm font-semibold text-gray-700 mb-1.5 pl-1">Deskripsi &amp; Panduan</label>
-              <input type="text" placeholder="Keterangan cara pakai (Opsional)" value={compForm.description} onChange={e => setCompForm({ ...compForm, description: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 font-medium transition-all outline-none" />
+              <input type="text" placeholder="Keterangan cara pakai (Opsional)" value={compForm.description} onChange={e => setCompForm({ ...compForm, description: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 font-medium transition-all outline-none" />
             </div>
           </div>
 
@@ -275,17 +275,17 @@ export function TabKomponen() {
               <div className="space-y-3">
                 {compFormItems.map((row, idx) => (
                   <div key={idx} className="flex flex-col">
-                    <div className="flex gap-3 items-center bg-white p-2 border border-gray-100 rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:border-purple-200 transition-colors group">
+                    <div className="flex gap-3 items-center bg-white p-2 border border-gray-100 rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:border-blue-200 transition-colors group">
                       <div className="hidden sm:flex text-gray-300 w-4 justify-center pointer-events-none opacity-50 shrink-0">::</div>
                       <input required type="text" list="bahan-list" placeholder="Pilih / ketik bahan..."
                         value={row.ingredient_name} onChange={e => updateCompRowName(idx, e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 font-medium outline-none" />
+                        className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 font-medium outline-none" />
                       <input required type="number" step="0.001" min="0" placeholder="Qty" value={row.qty_needed || ""}
                         onChange={e => setCompFormItems(prev => prev.map((r, i) => i === idx ? { ...r, qty_needed: parseFloat(e.target.value) || 0 } : r))}
-                        className="w-[100px] px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 font-mono outline-none" />
+                        className="w-[100px] px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 font-mono outline-none" />
                       <input required type="text" placeholder="Satuan" value={row.unit}
                         onChange={e => setCompFormItems(prev => prev.map((r, i) => i === idx ? { ...r, unit: e.target.value } : r))}
-                        className="w-20 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 font-medium text-center outline-none" />
+                        className="w-20 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 font-medium text-center outline-none" />
                       <button type="button" onClick={() => setCompFormItems(prev => prev.filter((_, i) => i !== idx))}
                         disabled={compFormItems.length <= 1} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 disabled:opacity-20 shrink-0 outline-none transition-colors">✕</button>
                     </div>
@@ -314,7 +314,7 @@ export function TabKomponen() {
                 ))}
               </div>
               <button type="button" onClick={() => setCompFormItems(prev => [...prev, { ingredient_name: "", ingredient_id: null, qty_needed: 0, unit: "", usage_type: "per_porsi", unit_weight_gram: undefined }])}
-                className="w-full mt-4 py-3 border-2 border-dashed border-purple-200 rounded-xl text-purple-600 hover:bg-purple-50 hover:border-purple-300 transition-colors font-bold text-sm tracking-wide">
+                className="w-full mt-4 py-3 border-2 border-dashed border-teal-200 rounded-xl text-teal-600 hover:bg-teal-50 hover:border-teal-300 transition-colors font-bold text-sm tracking-wide">
                 + Tambah Baris Bahan
               </button>
             </div>

@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { ToastProvider } from "@/components/ui/toast";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
-
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "MBG Catering",
@@ -18,9 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className={inter.className}>
+    <html lang="id" className={`${inter.variable} font-sans`}>
       <head />
-      <body className="bg-background text-foreground antialiased selection:bg-primary-100 selection:text-primary-900">
+      <body className="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
         <ErrorBoundary>
           <ToastProvider>
             {children}

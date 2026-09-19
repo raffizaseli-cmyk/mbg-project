@@ -300,7 +300,7 @@ export function TabMenuBOM() {
         </div>
         <button 
           onClick={() => openMenuForm()} 
-          className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/20 rounded-xl hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all font-bold text-sm whitespace-nowrap"
+          className="px-5 py-2.5 bg-orange-600 text-white shadow-sm rounded-xl hover:bg-orange-700 hover:shadow-md transition-all font-bold text-sm whitespace-nowrap"
         >
           + Ciptakan Menu Baru
         </button>
@@ -335,7 +335,7 @@ export function TabMenuBOM() {
                   </div>
                   <div className="flex flex-col items-end gap-2 text-right">
                     <span className="text-xs font-bold px-3 py-1 bg-white border border-gray-100 rounded-lg shadow-sm text-gray-600">
-                      <span className="text-purple-600 font-black">{compRecipes.length}</span> Modul <span className="text-gray-300 px-1">|</span> <span className="text-green-600 font-black">{directRecipes.length}</span> Direct
+                      <span className="text-teal-600 font-bold">{compRecipes.length}</span> Modul <span className="text-gray-300 px-1">|</span> <span className="text-green-600 font-bold">{directRecipes.length}</span> Direct
                     </span>
                     <div className="flex gap-2">
                        <span onClick={(e) => { e.stopPropagation(); openMenuForm(menu); }} className="text-blue-600 hover:text-white px-2.5 py-1 bg-blue-50 hover:bg-blue-600 rounded text-xs font-bold transition-colors cursor-pointer shadow-sm">
@@ -353,16 +353,16 @@ export function TabMenuBOM() {
 
                     <div className="grid md:grid-cols-2 gap-6">
                       {/* Modul Komponen */}
-                      <div className="bg-purple-50/30 border border-purple-100 rounded-2xl p-4 shadow-sm relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-purple-100/50 to-transparent rounded-bl-full pointer-events-none" />
-                        <h4 className="font-bold text-purple-900 mb-3 text-sm flex items-center gap-2">
+                      <div className="bg-teal-50/30 border border-teal-100 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-teal-100/50 to-transparent rounded-bl-full pointer-events-none" />
+                        <h4 className="font-bold text-teal-900 mb-3 text-sm flex items-center gap-2">
                           🧩 Modul Komponen Gabungan
                         </h4>
                         {compRecipes.length === 0
                           ? <p className="text-gray-400 text-sm italic ml-1">Tidak memakai sistem komponen.</p>
                           : <div className="space-y-2">{compRecipes.map(r => (
-                              <div key={r.id} className="flex justify-between items-center bg-white border border-purple-100 px-4 py-2.5 rounded-xl shadow-sm hover:border-purple-200 transition-colors">
-                                <span className="text-purple-800 font-semibold">{getCompName(r.component_id!)}</span>
+                              <div key={r.id} className="flex justify-between items-center bg-white border border-teal-100 px-4 py-2.5 rounded-xl shadow-sm hover:border-teal-200 transition-colors">
+                                <span className="text-teal-800 font-semibold">{getCompName(r.component_id!)}</span>
                                 <button onClick={() => deleteRecipe(r.id, menu.id)} className="w-8 h-8 rounded-lg bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">✕</button>
                               </div>
                             ))}</div>}
@@ -390,7 +390,7 @@ export function TabMenuBOM() {
                                   <div className="flex-1 pr-3">
                                     <div className={`font-semibold ${isDaily ? 'text-orange-900' : 'text-green-900'}`}>
                                       {getIngName(r.ingredient_id!)}
-                                      {isDaily && <span className="ml-2 text-[10px] font-black uppercase tracking-wider bg-orange-200/50 text-orange-700 px-1.5 py-0.5 rounded-md">FIXED BIAYA HARIAN</span>}
+                                      {isDaily && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider bg-orange-200/50 text-orange-700 px-1.5 py-0.5 rounded-md">FIXED BIAYA HARIAN</span>}
                                     </div>
                                     <div className={`text-xs font-medium mt-0.5 ${isDaily ? 'text-orange-600' : 'text-green-600'}`}>{qtyLabel}</div>
                                   </div>
@@ -466,29 +466,29 @@ export function TabMenuBOM() {
                           <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-5">
                             <div className="bg-orange-50 border border-orange-100 p-3 rounded-2xl flex flex-col items-center text-center">
                               <span className="text-[10px] font-bold text-orange-600 uppercase tracking-widest mb-0.5">Kalori</span>
-                              <span className="text-xl font-black text-orange-900">{nutritionDetails[menu.id].totals.calories.toLocaleString("id-ID")} <span className="text-xs font-semibold">kkal</span></span>
+                              <span className="text-xl font-bold text-orange-900">{nutritionDetails[menu.id].totals.calories.toLocaleString("id-ID")} <span className="text-xs font-semibold">kkal</span></span>
                             </div>
                             <div className="bg-blue-50 border border-blue-100 p-3 rounded-2xl flex flex-col items-center text-center">
                               <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-0.5">Protein</span>
-                              <span className="text-xl font-black text-blue-900">{nutritionDetails[menu.id].totals.proteins.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
+                              <span className="text-xl font-bold text-blue-900">{nutritionDetails[menu.id].totals.proteins.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
                             </div>
                             <div className="bg-yellow-50 border border-yellow-100 p-3 rounded-2xl flex flex-col items-center text-center">
                               <span className="text-[10px] font-bold text-yellow-600 uppercase tracking-widest mb-0.5">Lemak</span>
-                              <span className="text-xl font-black text-yellow-900">{nutritionDetails[menu.id].totals.fat.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
+                              <span className="text-xl font-bold text-yellow-900">{nutritionDetails[menu.id].totals.fat.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
                             </div>
                             <div className="bg-teal-50 border border-teal-100 p-3 rounded-2xl flex flex-col items-center text-center">
                               <span className="text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-0.5">Karbohidrat</span>
-                              <span className="text-xl font-black text-teal-900">{nutritionDetails[menu.id].totals.carbohydrate.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
+                              <span className="text-xl font-bold text-teal-900">{nutritionDetails[menu.id].totals.carbohydrate.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
                             </div>
                             <div className="bg-green-50 border border-green-100 p-3 rounded-2xl flex flex-col items-center text-center relative">
                               {nutritionDetails[menu.id].totals.fiber > 0 && <span className="absolute -top-1 -right-1 text-xs">🥬</span>}
                               <span className="text-[10px] font-bold text-green-600 uppercase tracking-widest mb-0.5">Serat</span>
-                              <span className="text-xl font-black text-green-900">{nutritionDetails[menu.id].totals.fiber.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
+                              <span className="text-xl font-bold text-green-900">{nutritionDetails[menu.id].totals.fiber.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
                             </div>
                             <div className={`p-3 rounded-2xl flex flex-col items-center text-center border ${nutritionDetails[menu.id].is_balanced ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200 relative overflow-hidden'}`}>
                               {!nutritionDetails[menu.id].is_balanced && <div className="absolute inset-0 bg-red-100/50 flex flex-col items-center justify-center animate-pulse border-2 border-red-400 z-10 p-1"><span className="text-2xl">⚠️</span><span className="text-[9px] font-bold text-red-700 leading-tight text-center">SAYUR &lt;30%</span></div>}
                               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Sayur</span>
-                              <span className={`text-xl font-black ${nutritionDetails[menu.id].is_balanced ? 'text-green-700' : 'text-red-700'}`}>{nutritionDetails[menu.id].sayur_percentage}%</span>
+                              <span className={`text-xl font-bold ${nutritionDetails[menu.id].is_balanced ? 'text-green-700' : 'text-red-700'}`}>{nutritionDetails[menu.id].sayur_percentage}%</span>
                             </div>
                           </div>
                         )}
@@ -524,7 +524,7 @@ export function TabMenuBOM() {
                                     <td className="py-2 px-3 text-right font-mono text-teal-700">{ing.carbohydrate.toLocaleString("id-ID")}</td>
                                     <td className="py-2 px-3 text-right font-mono text-green-700">{ing.fiber.toLocaleString("id-ID")}</td>
                                     <td className="py-2 px-3 text-center">
-                                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${ing.kategori?.includes('sayur') ? 'bg-green-100 text-green-700' : ing.kategori?.includes('lauk') ? 'bg-purple-100 text-purple-700' : ing.kategori?.includes('buah') ? 'bg-pink-100 text-pink-700' : 'bg-gray-100 text-gray-600'}`}>
+                                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${ing.kategori?.includes('sayur') ? 'bg-green-100 text-green-700' : ing.kategori?.includes('lauk') ? 'bg-sky-100 text-sky-700' : ing.kategori?.includes('buah') ? 'bg-pink-100 text-pink-700' : 'bg-gray-100 text-gray-600'}`}>
                                         {ing.kategori || '-'}
                                       </span>
                                     </td>
@@ -594,7 +594,7 @@ export function TabMenuBOM() {
         footer={
           <>
             <button type="button" onClick={() => setShowMenuModal(false)} className="px-6 py-3 rounded-xl text-gray-700 font-bold hover:bg-gray-200 transition-colors tracking-wide">Batalkan</button>
-            <button type="submit" form="menu-form" disabled={saving || !menuFormValid} className="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 disabled:opacity-50 disabled:grayscale font-bold tracking-wide transition-all">
+            <button type="submit" form="menu-form" disabled={saving || !menuFormValid} className="px-8 py-3 bg-orange-600 text-white rounded-xl shadow-sm hover:bg-orange-700 hover:shadow-md disabled:opacity-50 disabled:grayscale font-bold tracking-wide transition-all">
               {saving ? "Menyimpan Resep..." : "Simpan Resep / Menu BOM"}
             </button>
           </>
@@ -615,15 +615,15 @@ export function TabMenuBOM() {
 
           {/* Komponen Input */}
           <div>
-            <label className="flex items-center gap-2 text-sm font-bold text-purple-900 mb-3 border-b border-purple-100 pb-2">
+            <label className="flex items-center gap-2 text-sm font-bold text-teal-900 mb-3 border-b border-teal-100 pb-2">
               <span>🧩 Bumbu Halus / Sub-Resep Tambahan (Opsional)</span>
             </label>
             <div className="space-y-4">
               {menuFormComps.length === 0 && <p className="text-sm text-gray-400 italic">Resep ini belum menambahkan sub-resep (seperti Bumbu Halus)</p>}
               <div className="grid sm:grid-cols-2 gap-3">
                 {menuFormComps.map((row, idx) => (
-                  <div key={idx} className="flex gap-2 items-center bg-purple-50 p-2 rounded-xl border border-purple-100 shadow-sm animate-in fade-in zoom-in-95">
-                    <select required value={row.component_id} onChange={e => setMenuFormComps(prev => prev.map((r, i) => i===idx ? {component_id: e.target.value} : r))} className="flex-1 px-3 py-2 border-none rounded-lg text-sm bg-white font-semibold text-purple-900 outline-none cursor-pointer">
+                  <div key={idx} className="flex gap-2 items-center bg-teal-50 p-2 rounded-xl border border-teal-100 shadow-sm animate-in fade-in zoom-in-95">
+                    <select required value={row.component_id} onChange={e => setMenuFormComps(prev => prev.map((r, i) => i===idx ? {component_id: e.target.value} : r))} className="flex-1 px-3 py-2 border-none rounded-lg text-sm bg-white font-semibold text-teal-900 outline-none cursor-pointer">
                       <option value="">Pilih sub-resep...</option>
                       {components.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </select>
@@ -631,7 +631,7 @@ export function TabMenuBOM() {
                   </div>
                 ))}
               </div>
-              <button type="button" onClick={() => setMenuFormComps(prev => [...prev, { component_id: "" }])} className="px-5 py-2.5 bg-purple-100 text-purple-700 rounded-xl hover:bg-purple-200 font-bold text-sm tracking-wide transition-colors">
+              <button type="button" onClick={() => setMenuFormComps(prev => [...prev, { component_id: "" }])} className="px-5 py-2.5 bg-teal-100 text-teal-700 rounded-xl hover:bg-teal-200 font-bold text-sm tracking-wide transition-colors">
                 + Tambah Sub-Resep
               </button>
             </div>
@@ -756,7 +756,7 @@ export function TabMenuBOM() {
       >
         {editingNutProd && (
           <div className="space-y-4">
-            <p className="text-sm text-gray-500 mb-6">Penyesuaian manual untuk material <span className="font-bold text-indigo-600">{editingNutProd.name}</span></p>
+            <p className="text-sm text-gray-500 mb-6">Penyesuaian manual untuk material <span className="font-bold text-blue-600">{editingNutProd.name}</span></p>
 
             <div className="space-y-4">
                <div className="bg-orange-50 border border-orange-100 p-3 rounded-xl">

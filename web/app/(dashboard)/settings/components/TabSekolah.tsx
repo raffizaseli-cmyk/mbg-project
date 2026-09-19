@@ -428,7 +428,7 @@ const openForm = (school?: School) => {
 
                                             {/* Save beneficiaries button */}
                                             <button type="button" onClick={saveBeneficiaries} disabled={saving}
-                                                className="w-full mt-3 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 disabled:opacity-50">
+                                                className="w-full mt-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
                                                 {saving ? "Menyimpan..." : `💾 Simpan Penerima Manfaat (Total: ${benTotal} porsi)`}
                                             </button>
                                         </>

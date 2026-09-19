@@ -25,24 +25,14 @@ export default function AuthLayout({
   }
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 sm:p-6 overflow-hidden bg-slate-950">
-      {/* Dynamic Multi-Color Ambient Mesh Background */}
+    <div className="min-h-screen relative flex items-center justify-center p-4 sm:p-6 bg-slate-100/80">
+      {/* Clean subtle ambient pattern */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        {/* Deep gradient base */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950" />
-        
-        {/* Ambient Glow Orbs */}
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/25 rounded-full blur-[120px] animate-pulse-soft" />
-        <div className="absolute top-1/4 -right-20 w-[30rem] h-[30rem] bg-indigo-600/20 rounded-full blur-[140px]" />
-        <div className="absolute -bottom-32 left-1/3 w-[28rem] h-[28rem] bg-violet-600/20 rounded-full blur-[130px]" />
-        <div className="absolute top-10 right-1/4 w-72 h-72 bg-amber-500/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-10 left-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-[100px]" />
-
-        {/* Subtle geometric dot grid pattern */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200/50" />
         <div 
-          className="absolute inset-0 opacity-[0.15] mix-blend-overlay"
+          className="absolute inset-0 opacity-[0.03]"
           style={{
-            backgroundImage: "radial-gradient(rgba(255, 255, 255, 0.25) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(#0f172a 1px, transparent 1px)",
             backgroundSize: "24px 24px"
           }}
         />

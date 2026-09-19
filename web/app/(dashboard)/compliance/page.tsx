@@ -29,10 +29,10 @@ type Tab = "hygiene" | "temperature" | "samples" | "waste" | "incidents" | "slhs
 const TABS: { key: Tab; label: string; desc: string; icon: any; activeClass: string; badgeColor: string }[] = [
     { key: "hygiene",     label: "Higiene Dapur",   desc: "Checklist Sanitasi",       icon: ShieldCheck,     activeClass: "bg-emerald-600 text-white shadow-md shadow-emerald-500/25", badgeColor: "emerald" },
     { key: "temperature", label: "Monitoring Suhu", desc: "Chiller & Freezer",        icon: Thermometer,     activeClass: "bg-cyan-600 text-white shadow-md shadow-cyan-500/25",       badgeColor: "cyan" },
-    { key: "samples",     label: "Bank Sampel",     desc: "Uji Organoleptik 24-48 Jam", icon: FlaskConical,    activeClass: "bg-purple-600 text-white shadow-md shadow-purple-500/25",   badgeColor: "purple" },
+    { key: "samples",     label: "Bank Sampel",     desc: "Uji Organoleptik 24-48 Jam", icon: FlaskConical,    activeClass: "bg-blue-600 text-white shadow-md shadow-blue-500/25",   badgeColor: "blue" },
     { key: "waste",       label: "Sisa Makanan",    desc: "Metode Comstock Siswa",    icon: UtensilsCrossed, activeClass: "bg-amber-600 text-white shadow-md shadow-amber-500/25",     badgeColor: "amber" },
     { key: "incidents",   label: "Log Insiden",     desc: "Tanggap Darurat Medis",    icon: AlertTriangle,   activeClass: "bg-rose-600 text-white shadow-md shadow-rose-500/25",       badgeColor: "rose" },
-    { key: "slhs",        label: "Sertifikasi SLHS",desc: "Dokumen Dinkes & Laik",    icon: FileCheck,       activeClass: "bg-indigo-600 text-white shadow-md shadow-indigo-500/25",   badgeColor: "indigo" },
+    { key: "slhs",        label: "Sertifikasi SLHS",desc: "Dokumen Dinkes & Laik",    icon: FileCheck,       activeClass: "bg-blue-600 text-white shadow-md shadow-blue-500/25",   badgeColor: "blue" },
 ];
 
 const HYGIENE_AREAS = [
@@ -93,9 +93,9 @@ const SectionHeader = ({ icon: Icon, title, actions }: { icon: any; title: strin
     </div>
 );
 
-const SaveBtn = ({ onClick, disabled, saving, label = "Simpan", colorClass = "from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500" }: { onClick: () => void; disabled?: boolean; saving: boolean; label?: string; colorClass?: string }) => (
+const SaveBtn = ({ onClick, disabled, saving, label = "Simpan", colorClass = "bg-emerald-600 hover:bg-emerald-700" }: { onClick: () => void; disabled?: boolean; saving: boolean; label?: string; colorClass?: string }) => (
     <button onClick={onClick} disabled={disabled || saving}
-        className={`w-full py-2.5 bg-gradient-to-r ${colorClass} text-white rounded-xl text-sm font-bold shadow-md shadow-emerald-600/20 hover:-translate-y-0.5 disabled:opacity-50 transition-all cursor-pointer`}>
+        className={`w-full py-2.5 ${colorClass} text-white rounded-xl text-sm font-bold shadow-sm hover:shadow-md disabled:opacity-50 transition-all cursor-pointer`}>
         {saving ? "Menyimpan Data..." : label}
     </button>
 );
@@ -470,7 +470,7 @@ function SamplesTab() {
                     <p className="text-xs sm:text-sm text-slate-500 mt-0.5">Penyimpanan sampel hidangan harian selama 24-48 jam untuk jaminan mutu dan keamanan.</p>
                 </div>
                 <button onClick={() => setShowForm(!showForm)}
-                    className={`text-xs px-4 py-2.5 rounded-xl font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${showForm ? "bg-slate-100 text-slate-600 border-slate-200" : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-md shadow-purple-600/20"}`}>
+                    className={`text-xs px-4 py-2.5 rounded-xl font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${showForm ? "bg-slate-100 text-slate-600 border-slate-200" : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm border-blue-600"}`}>
                     {showForm ? <><X className="w-3.5 h-3.5" /> Batal</> : <><Plus className="w-3.5 h-3.5" /> Ambil Sampel</>}
                 </button>
             </div>
@@ -487,7 +487,7 @@ function SamplesTab() {
                             <GlassInput label="Berat Sampel (gram)" type="number" value={String(form.weight_gram)} onChange={(e) => setForm({ ...form, weight_gram: parseFloat(e.target.value) })} />
                             <GlassInput label="Suhu Freezer Sampel (°C, opsional)" type="number" step="0.1" value={form.storage_temp} onChange={(e) => setForm({ ...form, storage_temp: e.target.value })} />
                         </div>
-                        <SaveBtn onClick={submit} saving={loading} label="Simpan ke Bank Sampel" colorClass="from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500" />
+                        <SaveBtn onClick={submit} saving={loading} label="Simpan ke Bank Sampel" colorClass="bg-blue-600 hover:bg-blue-700" />
                     </div>
                 </SectionCard>
             )}
@@ -503,7 +503,7 @@ function SamplesTab() {
                                         {s.weight_gram} gram
                                     </span>
                                 </div>
-                                <p className="text-sm font-bold text-purple-700 mt-0.5">{s.menu_name}</p>
+                                <p className="text-sm font-bold text-blue-700 mt-0.5">{s.menu_name}</p>
                                 <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5 font-medium">
                                     <Clock className="w-3.5 h-3.5 text-slate-400" /> Waktu Ambil: {fmtDate(s.sample_date)} jam {s.taken_at}
                                 </p>
@@ -854,7 +854,7 @@ function SLHSTab() {
                     <p className="text-xs sm:text-sm text-slate-500 mt-0.5">Pantau masa berlaku sertifikasi resmi dari Dinas Kesehatan / BGN.</p>
                 </div>
                 <button onClick={() => setShowForm(!showForm)}
-                    className={`text-xs px-4 py-2.5 rounded-xl font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${showForm ? "bg-slate-100 text-slate-600 border-slate-200" : "bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white shadow-md shadow-indigo-600/20"}`}>
+                    className={`text-xs px-4 py-2.5 rounded-xl font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${showForm ? "bg-slate-100 text-slate-600 border-slate-200" : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm border-blue-600"}`}>
                     {showForm ? <><X className="w-3.5 h-3.5" /> Batal</> : <><Plus className="w-3.5 h-3.5" /> Sertifikat Baru</>}
                 </button>
             </div>
@@ -870,7 +870,7 @@ function SLHSTab() {
                         <GlassInput label="Tanggal Label Habis (opsional)" type="date" value={form.label_expires} onChange={(e) => setForm({ ...form, label_expires: e.target.value })} />
                         <GlassInput label="URL Dokumen / Scan PDF (opsional)" placeholder="https://..." value={form.file_url} onChange={(e) => setForm({ ...form, file_url: e.target.value })} />
                         <GlassInput label="Catatan Tambahan (opsional)" placeholder="Catatan auditor Dinas Kesehatan..." value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
-                        <SaveBtn onClick={submit} saving={loading} label="Simpan Dokumen SLHS" colorClass="from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500" />
+                        <SaveBtn onClick={submit} saving={loading} label="Simpan Dokumen SLHS" colorClass="bg-blue-600 hover:bg-blue-700" />
                     </div>
                 </SectionCard>
             )}
@@ -884,7 +884,7 @@ function SLHSTab() {
                             <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                 <div>
                                     <p className="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                                        <FileCheck className="w-5 h-5 text-indigo-600" /> {s.cert_number}
+                                        <FileCheck className="w-5 h-5 text-blue-600" /> {s.cert_number}
                                     </p>
                                     <div className="flex items-center gap-3 text-xs text-slate-500 mt-1 font-medium">
                                         <span>Terbit: {fmtDate(s.issued_date)}</span>

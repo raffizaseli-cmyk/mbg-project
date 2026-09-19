@@ -249,7 +249,7 @@ export default function MbgPage() {
                     </div>
                     <button 
                         onClick={() => { fetchData(); if (tabMode === "nutrisi") fetchCalendar(); }} 
-                        className="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-blue-500/20 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+                        className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
                     >
                         <Search className="w-4 h-4" /> Terapkan
                     </button>
@@ -315,7 +315,7 @@ export default function MbgPage() {
             )}
 
             {/* Smart Information Banner */}
-            <div className="rounded-2xl border border-blue-200/60 bg-gradient-to-r from-blue-50/80 via-indigo-50/50 to-blue-50/40 p-4 sm:p-5 flex items-start gap-3.5 backdrop-blur-sm shadow-sm">
+            <div className="rounded-2xl border border-blue-200/60 bg-blue-50/80 p-4 sm:p-5 flex items-start gap-3.5 shadow-sm">
                 <div className="w-9 h-9 rounded-xl bg-blue-600/10 border border-blue-200 flex items-center justify-center shrink-0 text-blue-600 mt-0.5">
                     <Info className="w-5 h-5" />
                 </div>
@@ -680,22 +680,22 @@ export default function MbgPage() {
                                                     <div className="grid grid-cols-4 gap-2.5">
                                                         <div className="bg-orange-50/80 border border-orange-200/70 p-3 rounded-xl text-center">
                                                             <div className="text-[10px] font-bold text-orange-600 uppercase">Kalori</div>
-                                                            <div className="text-lg font-black text-orange-900">{selectedDay.nutrition.totals.calories}</div>
+                                                            <div className="text-lg font-bold text-orange-900">{selectedDay.nutrition.totals.calories}</div>
                                                             <div className="text-[9px] text-orange-500 font-medium">kkal</div>
                                                         </div>
                                                         <div className="bg-blue-50/80 border border-blue-200/70 p-3 rounded-xl text-center">
                                                             <div className="text-[10px] font-bold text-blue-600 uppercase">Protein</div>
-                                                            <div className="text-lg font-black text-blue-900">{selectedDay.nutrition.totals.proteins}</div>
+                                                            <div className="text-lg font-bold text-blue-900">{selectedDay.nutrition.totals.proteins}</div>
                                                             <div className="text-[9px] text-blue-500 font-medium">gram</div>
                                                         </div>
                                                         <div className="bg-amber-50/80 border border-amber-200/70 p-3 rounded-xl text-center">
                                                             <div className="text-[10px] font-bold text-amber-600 uppercase">Lemak</div>
-                                                            <div className="text-lg font-black text-amber-900">{selectedDay.nutrition.totals.fat}</div>
+                                                            <div className="text-lg font-bold text-amber-900">{selectedDay.nutrition.totals.fat}</div>
                                                             <div className="text-[9px] text-amber-500 font-medium">gram</div>
                                                         </div>
                                                         <div className="bg-teal-50/80 border border-teal-200/70 p-3 rounded-xl text-center">
                                                             <div className="text-[10px] font-bold text-teal-600 uppercase">Karbo</div>
-                                                            <div className="text-lg font-black text-teal-900">{selectedDay.nutrition.totals.carbohydrate}</div>
+                                                            <div className="text-lg font-bold text-teal-900">{selectedDay.nutrition.totals.carbohydrate}</div>
                                                             <div className="text-[9px] text-teal-500 font-medium">gram</div>
                                                         </div>
                                                     </div>

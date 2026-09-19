@@ -145,7 +145,7 @@ export default function RiwayatStokPage() {
                 <div>
                     <Link 
                         href="/stok" 
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-indigo-600 transition-colors mb-2 group"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors mb-2 group"
                     >
                         <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
                         <span>Kembali ke Persediaan Stok</span>
@@ -186,7 +186,7 @@ export default function RiwayatStokPage() {
                         <select 
                             value={selectedProduct} 
                             onChange={e => setSelectedProduct(e.target.value)}
-                            className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
+                            className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 transition-all cursor-pointer"
                         >
                             <option value="">— Pilih Bahan Baku —</option>
                             {products.map(p => (
@@ -202,7 +202,7 @@ export default function RiwayatStokPage() {
                         <select 
                             value={period} 
                             onChange={e => setPeriod(e.target.value)}
-                            className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
+                            className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 transition-all cursor-pointer"
                         >
                             <option value="all">Semua Waktu</option>
                             <option value="week">Minggu Ini</option>
@@ -219,7 +219,7 @@ export default function RiwayatStokPage() {
                                     type="date" 
                                     value={customFrom} 
                                     onChange={e => setCustomFrom(e.target.value)}
-                                    className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                                    className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600" 
                                 />
                             </div>
                             <div className="w-36">
@@ -228,7 +228,7 @@ export default function RiwayatStokPage() {
                                     type="date" 
                                     value={customTo} 
                                     onChange={e => setCustomTo(e.target.value)}
-                                    className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                                    className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600" 
                                 />
                             </div>
                         </>
@@ -241,7 +241,7 @@ export default function RiwayatStokPage() {
                         <select 
                             value={filterType} 
                             onChange={e => setFilterType(e.target.value)}
-                            className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
+                            className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 transition-all cursor-pointer"
                         >
                             <option value="all">Semua Jenis</option>
                             <option value="masuk">🟢 Stok Masuk</option>
@@ -262,7 +262,7 @@ export default function RiwayatStokPage() {
                         <span>Keluar (Konsumsi Masak MBG)</span>
                     </span>
                     <span className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
                         <span>Koreksi Fisik (Opname Gudang)</span>
                     </span>
                 </div>
@@ -282,7 +282,7 @@ export default function RiwayatStokPage() {
                     </div>
                 ) : loading ? (
                     <div className="flex flex-col items-center justify-center py-24 space-y-4">
-                        <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+                        <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
                         <p className="text-xs sm:text-sm text-slate-500 font-semibold">Memuat riwayat transaksi mutasi...</p>
                     </div>
                 ) : sorted.length === 0 ? (
@@ -299,7 +299,7 @@ export default function RiwayatStokPage() {
                     <div>
                         <div className="px-6 py-4 bg-slate-50/70 border-b border-slate-200/80 flex items-center justify-between">
                             <span className="text-xs sm:text-sm font-extrabold text-slate-800">
-                                {sorted.length} Rekam Mutasi — <span className="text-indigo-700 font-black">{selectedProd?.name}</span>
+                                {sorted.length} Rekam Mutasi — <span className="text-blue-700 font-bold">{selectedProd?.name}</span>
                             </span>
                             <span className="text-xs text-slate-400 font-medium">Satuan: {selectedProd?.unit}</span>
                         </div>
@@ -329,7 +329,7 @@ export default function RiwayatStokPage() {
                                                 <td className="px-6 py-4 text-right whitespace-nowrap">
                                                     <span className={`inline-flex items-center gap-1 font-mono font-extrabold text-xs px-2.5 py-1 rounded-xl ${
                                                         isAdjust 
-                                                            ? "bg-indigo-50 text-indigo-700 border border-indigo-200" 
+                                                            ? "bg-blue-50 text-blue-700 border border-blue-200" 
                                                             : isPos 
                                                             ? "bg-emerald-500/10 text-emerald-700 border border-emerald-500/20" 
                                                             : "bg-rose-500/10 text-rose-700 border border-rose-500/20"
@@ -353,7 +353,7 @@ export default function RiwayatStokPage() {
                                                             reasonInfo.type === "in" 
                                                                 ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/30" 
                                                                 : reasonInfo.type === "adjust" 
-                                                                ? "bg-indigo-500/10 text-indigo-700 border-indigo-500/30" 
+                                                                ? "bg-blue-500/10 text-blue-700 border-blue-500/30" 
                                                                 : "bg-rose-500/10 text-rose-700 border-rose-500/30"
                                                         }`}>
                                                             {reasonInfo.label}

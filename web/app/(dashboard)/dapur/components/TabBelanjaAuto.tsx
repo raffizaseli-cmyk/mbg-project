@@ -189,8 +189,8 @@ export function TabBelanjaAuto() {
                 </tbody>
                 <tfoot>
                   <tr className="bg-blue-50/30">
-                    <td colSpan={2} className="pt-4 pb-3 px-3 font-black text-right text-gray-800 rounded-l-lg border-t border-blue-100">TOTAL KESELURUHAN</td>
-                    <td className="pt-4 pb-3 pr-3 font-black text-right text-blue-700 text-lg rounded-r-lg border-t border-blue-100">
+                    <td colSpan={2} className="pt-4 pb-3 px-3 font-bold text-right text-gray-800 rounded-l-lg border-t border-blue-100">TOTAL KESELURUHAN</td>
+                    <td className="pt-4 pb-3 pr-3 font-bold text-right text-blue-700 text-lg rounded-r-lg border-t border-blue-100">
                       <Rupiah amount={parsedBelanja.reduce((sum, p) => sum + p.subtotal, 0)} />
                     </td>
                   </tr>
@@ -203,7 +203,7 @@ export function TabBelanjaAuto() {
             <button
               disabled={parsedBelanja.length === 0 || saving}
               onClick={submitBelanja}
-              className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:grayscale font-bold shadow-md shadow-blue-500/20 hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:grayscale font-bold shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2"
             >
               {saving ? (
                 <>

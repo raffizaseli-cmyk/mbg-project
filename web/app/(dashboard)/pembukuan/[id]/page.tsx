@@ -143,7 +143,7 @@ export default function TransactionDetailPage() {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center py-28 space-y-4">
-                <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
                 <p className="text-xs sm:text-sm font-semibold text-slate-500">Memuat rincian transaksi nota...</p>
             </div>
         );
@@ -178,7 +178,7 @@ export default function TransactionDetailPage() {
                 <div>
                     <Link 
                         href="/pembukuan" 
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-indigo-600 transition-colors mb-2 group"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors mb-2 group"
                     >
                         <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
                         <span>Kembali ke Daftar Transaksi</span>
@@ -233,7 +233,7 @@ export default function TransactionDetailPage() {
                     <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] border border-slate-200/80 p-5 sm:p-6 relative overflow-hidden">
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600">
+                                <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600">
                                     <Receipt className="w-4 h-4" />
                                 </div>
                                 <h3 className="text-sm font-bold text-slate-900 tracking-tight">Dokumen Fisik Nota</h3>
@@ -273,7 +273,7 @@ export default function TransactionDetailPage() {
                                         href={trx.photo_url} 
                                         target="_blank" 
                                         rel="noopener noreferrer"
-                                        className="text-indigo-600 hover:text-indigo-700 font-bold inline-flex items-center gap-1"
+                                        className="text-blue-600 hover:text-blue-700 font-bold inline-flex items-center gap-1"
                                     >
                                         <span>Buka di Tab Baru</span>
                                         <ExternalLink className="w-3 h-3" />
@@ -307,7 +307,7 @@ export default function TransactionDetailPage() {
                             </div>
                             <div className="flex justify-between items-center py-1 border-t border-slate-100/60">
                                 <span className="text-slate-400 font-medium">Metode Bayar</span>
-                                <span className="px-2.5 py-0.5 rounded-lg font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60 uppercase text-[10px]">
+                                <span className="px-2.5 py-0.5 rounded-lg font-bold bg-blue-50 text-blue-700 border border-blue-200/60 uppercase text-[10px]">
                                     {trx.payment_method || "Tunai"}
                                 </span>
                             </div>
@@ -418,7 +418,7 @@ export default function TransactionDetailPage() {
                             </div>
                             <div className="flex justify-between items-center pt-2 border-t border-slate-200/70">
                                 <span className="text-sm font-extrabold text-slate-900">Total Nilai Transaksi</span>
-                                <span className="text-xl sm:text-2xl font-black font-mono text-indigo-700 tracking-tight">
+                                <span className="text-xl sm:text-2xl font-bold font-mono text-blue-700 tracking-tight">
                                     {formatRp(trx.total)}
                                 </span>
                             </div>
@@ -519,7 +519,7 @@ export default function TransactionDetailPage() {
                                     onClick={() => setPaymentMethod(m.id)}
                                     className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
                                         paymentMethod === m.id
-                                            ? "border-indigo-600 bg-indigo-50/80 text-indigo-950 font-bold ring-2 ring-indigo-500/20 shadow-sm"
+                                            ? "border-blue-600 bg-blue-50/80 text-blue-950 font-bold ring-2 ring-blue-500/20 shadow-sm"
                                             : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                                     }`}
                                 >
@@ -535,7 +535,7 @@ export default function TransactionDetailPage() {
                             value={confirmNotes}
                             onChange={(e) => setConfirmNotes(e.target.value)}
                             placeholder="Keterangan transaksi atau referensi transfer..."
-                            className="w-full px-3.5 py-2.5 text-xs bg-slate-50/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400"
+                            className="w-full px-3.5 py-2.5 text-xs bg-slate-50/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all placeholder:text-slate-400"
                             rows={2}
                         />
                     </div>

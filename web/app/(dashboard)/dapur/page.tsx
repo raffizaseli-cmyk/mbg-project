@@ -82,7 +82,7 @@ export default function DapurPage() {
         <div className="flex items-center gap-2.5">
           <Link
             href="/penyetelan-dapur?tab=mapping"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-indigo-600/20 hover:-translate-y-0.5 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-sm hover:shadow-md transition-all cursor-pointer"
           >
             <Sparkles className="w-4 h-4" />
             <span>Penyetelan AI & Pemetaan</span>

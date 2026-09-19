@@ -36,7 +36,7 @@ function Warning({ children }: { children: React.ReactNode }) {
 function Step({ num, title, children }: { num: number; title: string; children: React.ReactNode }) {
   return (
     <div className="flex gap-4 items-start mb-5">
-      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-sm font-black shrink-0 shadow-md">{num}</div>
+      <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold shrink-0 shadow-sm">{num}</div>
       <div className="flex-1">
         <h4 className="font-bold text-gray-900 text-sm mb-1">{title}</h4>
         <div className="text-sm text-gray-600 leading-relaxed">{children}</div>
@@ -210,7 +210,7 @@ export function TabTips() {
                 onClick={() => setActive(s.id)}
                 className={`flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200 text-left ${
                   active === s.id
-                    ? "bg-white text-indigo-700 shadow-md ring-1 ring-indigo-100 scale-[1.02]"
+                    ? "bg-white text-blue-700 shadow-md ring-1 ring-blue-100 scale-[1.02]"
                     : "text-gray-500 hover:text-gray-900 hover:bg-white/60"
                 }`}
               >

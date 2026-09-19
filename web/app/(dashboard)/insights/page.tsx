@@ -88,7 +88,7 @@ function HargaTab() {
             <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-[0_2px_15px_-4px_rgba(0,0,0,0.05)] border border-white overflow-hidden mt-2">
                 {loading ? (
                     <div className="flex justify-center py-16">
-                        <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
                     </div>
                 ) : items.length === 0 ? (
                     <div className="text-center py-16 text-gray-400 space-y-2">
@@ -221,7 +221,7 @@ const eventColor = (type: string) => {
         case "cook": return "border-l-4 border-l-orange-400 bg-orange-50/60";
         case "cook_done": return "border-l-4 border-l-emerald-400 bg-emerald-50/60";
         case "depart": return "border-l-4 border-l-blue-400 bg-blue-50/60";
-        case "arrive": return "border-l-4 border-l-purple-400 bg-purple-50/60";
+        case "arrive": return "border-l-4 border-l-blue-400 bg-blue-50/60";
         default: return "border-l-4 border-l-gray-300 bg-gray-50/60";
     }
 };
@@ -427,7 +427,7 @@ function JadwalTab() {
                                     schools: master?.schools || [],
                                 });
                                 setShowMasterModal(true);
-                            }} className="text-sm px-3 py-1.5 border border-purple-200 text-purple-700 bg-purple-50 rounded-lg hover:bg-purple-100 font-medium">
+                            }} className="text-sm px-3 py-1.5 border border-blue-200 text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 font-medium">
                                 ✏️ Edit
                             </button>
                         </div>
@@ -507,7 +507,7 @@ function JadwalTab() {
                             {generating ? "⏳..." : "📋 Load dari Master"}
                         </button>
                         <button onClick={handleAiDraft} disabled={generating}
-                            className="bg-purple-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-purple-700 disabled:opacity-50 transition">
+                            className="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-blue-700 disabled:opacity-50 transition">
                             {generating ? "⏳..." : "🤖 Generate AI Draft"}
                         </button>
                     </div>
@@ -518,7 +518,7 @@ function JadwalTab() {
                 <div className="space-y-4">
                     {displayData.days.map(day => (
                         <div key={day.date} className={`bg-white/90 backdrop-blur-xl rounded-2xl shadow-[0_2px_15px_-4px_rgba(0,0,0,0.05)] overflow-hidden border ${day.is_holiday ? "border-red-200" : "border-white"}`}>
-                            <div className={`px-5 py-3 ${day.is_holiday ? "bg-red-50" : "bg-gradient-to-r from-blue-50 to-indigo-50/30"}`}>
+                            <div className={`px-5 py-3 ${day.is_holiday ? "bg-red-50" : "bg-gradient-to-r from-blue-50 to-blue-50/30"}`}>
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <span className="font-bold text-gray-800">{day.day_name}</span>
@@ -541,7 +541,7 @@ function JadwalTab() {
                                 {!day.is_holiday && (
                                     <div className="mt-1">
                                         {day.has_menu && day.menu_name ? (
-                                            <span className="text-sm text-indigo-700 font-medium">🍽️ Menu: {day.menu_name}</span>
+                                            <span className="text-sm text-blue-700 font-medium">🍽️ Menu: {day.menu_name}</span>
                                         ) : (
                                             <span className="text-sm text-amber-600">⚠️ Menu belum diatur — set via Telegram /menu</span>
                                         )}
@@ -592,7 +592,7 @@ function JadwalTab() {
                                 🔄 Regenerate dari Master
                             </button>
                             <button onClick={handleAiDraft} disabled={generating}
-                                className="text-purple-600 border border-purple-200 px-4 py-2 rounded-xl text-sm font-medium hover:bg-purple-50 disabled:opacity-50">
+                                className="text-blue-600 border border-blue-200 px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-50 disabled:opacity-50">
                                 🤖 Regenerate AI Draft
                             </button>
                         </div>
@@ -601,7 +601,7 @@ function JadwalTab() {
             )}
 
             {displayData?.ai_notes && (
-                <div className="bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 text-sm text-purple-800">
+                <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-800">
                     🤖 <strong>Catatan AI:</strong> {displayData.ai_notes}
                 </div>
             )}
@@ -733,7 +733,7 @@ function InsightsTabs() {
                     <button
                         onClick={() => setTab("harga")}
                         className={`px-4 py-3 font-semibold border-b-[3px] transition-all duration-200 ${
-                            activeTab === "harga" ? "border-purple-600 text-purple-700" : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
+                            activeTab === "harga" ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
                         }`}
                     >
                         📈 Track Harga
@@ -741,7 +741,7 @@ function InsightsTabs() {
                     <button
                         onClick={() => setTab("jadwal")}
                         className={`px-4 py-3 font-semibold border-b-[3px] transition-all duration-200 ${
-                            activeTab === "jadwal" ? "border-purple-600 text-purple-700" : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
+                            activeTab === "jadwal" ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
                         }`}
                     >
                         📅 AI Jadwal

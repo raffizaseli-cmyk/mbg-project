@@ -199,7 +199,7 @@ export default function DashboardPage() {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center h-96 gap-4">
-                <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
+                <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-600 rounded-full animate-spin" />
                 <p className="text-sm font-semibold text-slate-500">Memuat statistik dapur SPPG...</p>
             </div>
         );
@@ -216,7 +216,7 @@ export default function DashboardPage() {
                     <p className="text-xs text-slate-500">{error}</p>
                     <button 
                         onClick={handleRefresh} 
-                        className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-indigo-600/20"
+                        className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-600/20"
                     >
                         Muat Ulang
                     </button>
@@ -242,7 +242,7 @@ export default function DashboardPage() {
 
                     <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
                         {getGreeting()},{" "}
-                        <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                        <span className="text-blue-600">
                             {tenantName}
                         </span>{" "}
                         👋
@@ -258,9 +258,9 @@ export default function DashboardPage() {
                         onClick={handleRefresh}
                         disabled={refreshing}
                         title="Segarkan data"
-                        className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50/50 transition-all shadow-xs disabled:opacity-50"
+                        className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50/50 transition-all shadow-xs disabled:opacity-50"
                     >
-                        <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin text-indigo-600" : ""}`} />
+                        <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin text-blue-600" : ""}`} />
                     </button>
 
                     <button
@@ -310,7 +310,7 @@ export default function DashboardPage() {
                 {/* 1. Input Serah MBG */}
                 <div 
                     onClick={() => router.push('/mbg')} 
-                    className="relative overflow-hidden p-5 rounded-3xl bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white cursor-pointer shadow-lg shadow-blue-600/20 hover:shadow-blue-600/35 hover:-translate-y-1 transition-all group"
+                    className="relative overflow-hidden p-5 rounded-3xl bg-blue-600 text-white cursor-pointer shadow-lg shadow-blue-600/20 hover:shadow-blue-600/35 hover:-translate-y-1 transition-all group"
                 >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-125 transition-transform" />
                     <div className="flex items-center justify-between relative z-10 mb-3">
@@ -336,7 +336,7 @@ export default function DashboardPage() {
                 {/* 2. Master Menu & BOM Gizi */}
                 <div 
                     onClick={() => router.push('/dapur')} 
-                    className="relative overflow-hidden p-5 rounded-3xl bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 text-white cursor-pointer shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 hover:-translate-y-1 transition-all group"
+                    className="relative overflow-hidden p-5 rounded-3xl bg-orange-600 text-white cursor-pointer shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 hover:-translate-y-1 transition-all group"
                 >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-125 transition-transform" />
                     <div className="flex items-center justify-between relative z-10 mb-3">
@@ -362,7 +362,7 @@ export default function DashboardPage() {
                 {/* 3. AI OCR & Catat Belanja */}
                 <div 
                     onClick={() => router.push('/pembukuan')} 
-                    className="relative overflow-hidden p-5 rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-700 to-cyan-800 text-white cursor-pointer shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/35 hover:-translate-y-1 transition-all group"
+                    className="relative overflow-hidden p-5 rounded-3xl bg-emerald-600 text-white cursor-pointer shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/35 hover:-translate-y-1 transition-all group"
                 >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-125 transition-transform" />
                     <div className="flex items-center justify-between relative z-10 mb-3">
@@ -388,24 +388,24 @@ export default function DashboardPage() {
                 {/* 4. Gudang & Opname Stok */}
                 <div 
                     onClick={() => router.push('/stok')} 
-                    className="relative overflow-hidden p-5 rounded-3xl bg-gradient-to-br from-purple-600 via-violet-700 to-indigo-900 text-white cursor-pointer shadow-lg shadow-purple-600/20 hover:shadow-purple-600/35 hover:-translate-y-1 transition-all group"
+                    className="relative overflow-hidden p-5 rounded-3xl bg-slate-700 text-white cursor-pointer shadow-lg shadow-slate-600/20 hover:shadow-slate-600/35 hover:-translate-y-1 transition-all group"
                 >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-125 transition-transform" />
                     <div className="flex items-center justify-between relative z-10 mb-3">
                         <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
                             📦
                         </div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-purple-100">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-slate-200">
                             Gudang Dapur
                         </span>
                     </div>
                     <h3 className="text-base font-bold tracking-tight text-white group-hover:translate-x-0.5 transition-transform">
                         Stok & Opname
                     </h3>
-                    <p className="text-purple-100/80 text-xs mt-1 leading-relaxed">
+                    <p className="text-slate-300 text-xs mt-1 leading-relaxed">
                         Pantau kuota bahan kritis & kartu stok bahan
                     </p>
-                    <div className="mt-4 flex items-center gap-1 text-xs font-bold text-purple-200 group-hover:text-white">
+                    <div className="mt-4 flex items-center gap-1 text-xs font-bold text-slate-300 group-hover:text-white">
                         <span>Cek Persediaan</span>
                         <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                     </div>
@@ -438,7 +438,7 @@ export default function DashboardPage() {
                     value={`${employees.length} Personel`}
                     subtitle="Koki, helper & kurir aktif"
                     icon="👥"
-                    accentColor="purple"
+                    accentColor="blue"
                     trend="neutral"
                     trendValue="Tim SPPG"
                 />
@@ -475,7 +475,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="text-right">
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Pagu Bulan Ini</span>
-                            <p className="text-sm font-extrabold text-indigo-600">{formatRp(budget?.pagu_amount || 0)}</p>
+                            <p className="text-sm font-extrabold text-blue-600">{formatRp(budget?.pagu_amount || 0)}</p>
                         </div>
                     </div>
                     
@@ -588,7 +588,7 @@ export default function DashboardPage() {
                                 <span className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center text-base">📦</span>
                                 Peringatan Stok Gudang
                             </h2>
-                            <Link href="/stok" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+                            <Link href="/stok" className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1">
                                 Semua Stok <ArrowUpRight className="w-3.5 h-3.5" />
                             </Link>
                         </div>
@@ -598,7 +598,7 @@ export default function DashboardPage() {
                                 {daily.stock_alerts.slice(0, 4).map((alert, idx) => (
                                     <div key={idx} className="p-3 rounded-2xl bg-slate-50/80 border border-slate-200/70 flex items-center justify-between group hover:bg-slate-100 transition-colors">
                                         <div className="min-w-0 flex-1 pr-3">
-                                            <h4 className="text-xs font-bold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">
+                                            <h4 className="text-xs font-bold text-slate-900 truncate group-hover:text-blue-600 transition-colors">
                                                 {alert.product_name}
                                             </h4>
                                             <p className="text-[11px] text-slate-500 mt-0.5">
@@ -629,7 +629,7 @@ export default function DashboardPage() {
                             <Clock className="w-3.5 h-3.5 text-slate-400" />
                             Sinkron otomatis tiap ada nota belanja
                         </span>
-                        <Link href="/stok" className="font-semibold text-indigo-600 hover:underline">
+                        <Link href="/stok" className="font-semibold text-blue-600 hover:underline">
                             Input Masuk &rarr;
                         </Link>
                     </div>
@@ -647,7 +647,7 @@ export default function DashboardPage() {
                         </h2>
                         <p className="text-xs text-slate-500 mt-0.5">Nota belanja bahan baku yang baru diunggah dan dianalisis AI</p>
                     </div>
-                    <Link href="/pembukuan" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+                    <Link href="/pembukuan" className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1">
                         Buka Buku Kas <ArrowUpRight className="w-3.5 h-3.5" />
                     </Link>
                 </div>
@@ -678,7 +678,7 @@ export default function DashboardPage() {
                                         </td>
                                         <td className="py-3 px-3">
                                             <div className="flex items-center gap-2.5">
-                                                <div className="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0">
+                                                <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center shrink-0">
                                                     {(trx.nama_toko || "T").charAt(0).toUpperCase()}
                                                 </div>
                                                 <span className="font-bold text-slate-900 text-xs truncate max-w-[200px]" title={trx.nama_toko}>
@@ -695,7 +695,7 @@ export default function DashboardPage() {
                                         <td className="py-3 px-3 text-right whitespace-nowrap">
                                             <Link
                                                 href={`/pembukuan/${trx.id}`}
-                                                className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 text-slate-700 hover:text-indigo-600 text-xs font-semibold shadow-xs transition-all"
+                                                className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-600 text-xs font-semibold shadow-xs transition-all"
                                             >
                                                 Periksa
                                             </Link>

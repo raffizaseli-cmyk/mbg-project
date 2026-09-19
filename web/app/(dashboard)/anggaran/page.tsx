@@ -61,14 +61,14 @@ interface BudgetSummary {
 /* ─── StatCard Component ─── */
 function StatCard({ icon: Icon, label, value, accent }: {
     icon: any; label: string; value: string;
-    accent: "amber" | "emerald" | "orange" | "slate" | "violet";
+    accent: "amber" | "emerald" | "orange" | "slate" | "blue";
 }) {
     const accentMap = {
         amber:   { bg: "bg-amber-50/80",   border: "border-amber-200/80",  iconBg: "bg-amber-100",  iconColor: "text-amber-700",  valColor: "text-amber-900" },
         emerald: { bg: "bg-emerald-50/80", border: "border-emerald-200/80",iconBg: "bg-emerald-100",iconColor: "text-emerald-700",valColor: "text-emerald-900" },
         orange:  { bg: "bg-orange-50/80",  border: "border-orange-200/80", iconBg: "bg-orange-100", iconColor: "text-orange-700", valColor: "text-orange-900" },
         slate:   { bg: "bg-slate-50/80",   border: "border-slate-200/80",  iconBg: "bg-slate-100",  iconColor: "text-slate-700",  valColor: "text-slate-900" },
-        violet:  { bg: "bg-violet-50/80",  border: "border-violet-200/80", iconBg: "bg-violet-100", iconColor: "text-violet-700", valColor: "text-violet-900" },
+        blue:    { bg: "bg-blue-50/80",    border: "border-blue-200/80",   iconBg: "bg-blue-100",   iconColor: "text-blue-700",   valColor: "text-blue-900" },
     };
     const a = accentMap[accent];
     return (
@@ -244,7 +244,7 @@ function OverviewTab() {
                         <StatCard icon={Banknote}          label="Dana Cair"     value={fmtRp(data.total_disbursed)} accent="emerald" />
                         <StatCard icon={TrendingDown}      label="Total Terpakai" value={fmtRp(data.total_spent)}    accent="orange" />
                         <StatCard icon={Wallet}            label="Sisa Anggaran" value={fmtRp(data.sisa_anggaran)}   accent="slate" />
-                        <StatCard icon={UtensilsCrossed}   label="Total Porsi"   value={data.total_porsi.toLocaleString("id-ID")} accent="violet" />
+                        <StatCard icon={UtensilsCrossed}   label="Total Porsi"   value={data.total_porsi.toLocaleString("id-ID")} accent="blue" />
                     </div>
 
                     {/* Two Column: Pagu & Kas */}
@@ -482,7 +482,7 @@ function OverviewTab() {
                 </div>
                 <div className="flex gap-3 pt-5 border-t border-slate-100 mt-4">
                     <button onClick={() => setShowKasModal(false)} className="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all cursor-pointer">Batal</button>
-                    <button onClick={saveKas} disabled={saving} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-blue-600/20 disabled:opacity-50 transition-all cursor-pointer">
+                    <button onClick={saveKas} disabled={saving} className="flex-1 px-4 py-2.5 bg-gradient-to-r bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-blue-600/20 disabled:opacity-50 transition-all cursor-pointer">
                         {saving ? "Menyimpan..." : "Tambah Kas"}
                     </button>
                 </div>
@@ -549,7 +549,7 @@ function BukuKasTab() {
             disbursement:  { bg: "bg-amber-50 border-amber-200", text: "text-amber-800", label: "Pencairan" },
             transfer:      { bg: "bg-cyan-50 border-cyan-200",    text: "text-cyan-800",   label: "Mutasi" },
             expense:       { bg: "bg-rose-50 border-rose-200",    text: "text-rose-800",   label: "Belanja" },
-            payroll:       { bg: "bg-purple-50 border-purple-200", text: "text-purple-800", label: "Honor Staf" },
+            payroll:       { bg: "bg-blue-50 border-blue-200", text: "text-blue-800", label: "Honor Staf" },
             return_to_gov: { bg: "bg-slate-100 border-slate-200", text: "text-slate-800",  label: "Kas Negara" },
             income:        { bg: "bg-emerald-50 border-emerald-200", text: "text-emerald-800", label: "Penerimaan" },
         };

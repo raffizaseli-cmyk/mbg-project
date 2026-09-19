@@ -442,7 +442,7 @@ export function TabImport() {
                                 <p className="text-gray-600">Supplier baru</p>
                             </div>
                             <div className="bg-white rounded-lg p-3 border">
-                                <p className="text-xl font-bold text-purple-600">{result.created_products}</p>
+                                <p className="text-xl font-bold text-teal-600">{result.created_products}</p>
                                 <p className="text-gray-600">Bahan baru</p>
                             </div>
                         </div>

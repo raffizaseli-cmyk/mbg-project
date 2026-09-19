@@ -116,14 +116,14 @@ function PiutangTab() {
                 </div>
                 <button 
                     onClick={fetchData} 
-                    className="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-blue-500/20 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+                    className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
                 >
                     <Search className="w-4 h-4" /> Cari Tagihan
                 </button>
             </div>
 
             {/* Smart Banner */}
-            <div className="rounded-2xl border border-blue-200/60 bg-gradient-to-r from-blue-50/80 via-indigo-50/50 to-blue-50/40 p-4.5 flex items-start gap-3.5 shadow-sm">
+            <div className="rounded-2xl border border-blue-200/60 bg-blue-50/80 p-4.5 flex items-start gap-3.5 shadow-sm">
                 <div className="w-9 h-9 rounded-xl bg-blue-600/10 border border-blue-200 flex items-center justify-center shrink-0 text-blue-600 mt-0.5">
                     <Sparkles className="w-5 h-5" />
                 </div>
@@ -281,8 +281,8 @@ function HutangTab() {
                     <StatCard 
                         title="Total Kewajiban Hutang" 
                         value={formatRp(data.total_all)} 
-                        icon={<CreditCard className="w-5 h-5 text-purple-600" />} 
-                        accentColor="purple"
+                        icon={<CreditCard className="w-5 h-5 text-blue-600" />} 
+                        accentColor="blue"
                         subtitle="Kewajiban pengadaan bahan"
                     />
                     <StatCard 
@@ -356,7 +356,7 @@ function HutangTab() {
                 </div>
                 <button 
                     onClick={fetchData} 
-                    className="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-blue-500/20 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+                    className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
                 >
                     <Search className="w-4 h-4" /> Cari
                 </button>
@@ -366,7 +366,7 @@ function HutangTab() {
             <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] border border-white overflow-hidden relative z-10">
                 <div className="px-6 py-4.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-slate-50/50 to-transparent">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-600">
+                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
                             <Building2 className="w-4 h-4" />
                         </div>
                         <div>
@@ -378,7 +378,7 @@ function HutangTab() {
 
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-16 text-slate-400 gap-3">
-                        <div className="w-9 h-9 border-3 border-purple-600 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-9 h-9 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
                         <p className="text-xs font-medium">Memuat data hutang supplier...</p>
                     </div>
                 ) : sorted.length === 0 ? (
@@ -409,7 +409,7 @@ function HutangTab() {
                                         ? new Date(p.due_date).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
                                         : "—";
                                     return (
-                                        <tr key={p.id} className={`hover:bg-purple-50/20 transition-colors ${i % 2 === 1 ? "bg-slate-50/40" : "bg-white"}`}>
+                                        <tr key={p.id} className={`hover:bg-blue-50/20 transition-colors ${i % 2 === 1 ? "bg-slate-50/40" : "bg-white"}`}>
                                             <td className="px-5 py-3.5 text-slate-600 text-xs font-mono font-medium">
                                                 {p.created_at}
                                             </td>
@@ -469,7 +469,7 @@ function HutangTab() {
                             <p className="text-sm font-semibold text-slate-800">
                                 Supplier: <strong>{confirmModal.payable.supplier_name}</strong>
                             </p>
-                            <p className="text-lg font-black text-emerald-700 font-mono">
+                            <p className="text-lg font-bold text-emerald-700 font-mono">
                                 {formatRp(confirmModal.payable.total_bayar || confirmModal.payable.amount)}
                             </p>
                         </div>
@@ -528,7 +528,7 @@ function KeuanganTabs() {
                     onClick={() => setTab("piutang")}
                     className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 ${
                         activeTab === "piutang" 
-                            ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20" 
+                            ? "bg-blue-600 text-white shadow-md" 
                             : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/60"
                     }`}
                 >
@@ -538,7 +538,7 @@ function KeuanganTabs() {
                     onClick={() => setTab("hutang")}
                     className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 ${
                         activeTab === "hutang" 
-                            ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/20" 
+                            ? "bg-slate-700 text-white shadow-md" 
                             : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/60"
                     }`}
                 >

@@ -253,7 +253,7 @@ export default function TrackHargaDetailPage() {
                 </div>
                 <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
                     <span className="text-xs text-gray-500 block mb-1">📉 Volatilitas</span>
-                    <p className="font-bold text-lg text-purple-700">{detail.stats.price_volatility}%</p>
+                    <p className="font-bold text-lg text-amber-700">{detail.stats.price_volatility}%</p>
                 </div>
             </div>
 

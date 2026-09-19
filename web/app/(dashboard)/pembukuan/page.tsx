@@ -255,7 +255,7 @@ export default function PembukuanPage() {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setShowOpsModal(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 hover:-translate-y-0.5 transition-all cursor-pointer"
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer"
                     >
                         <Plus className="w-4 h-4" />
                         <span>Catat Biaya Operasional</span>
@@ -347,12 +347,12 @@ export default function PembukuanPage() {
 
                 {/* BAP KAS */}
                 <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] border border-slate-200/80 p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden group hover:shadow-lg transition-all">
-                    <div className="absolute top-0 right-0 w-36 h-36 bg-indigo-500/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-500 pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-36 h-36 bg-blue-500/5 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500 pointer-events-none" />
 
                     <div>
                         <div className="flex justify-between items-start mb-5 relative z-10">
                             <div className="flex items-center gap-3.5">
-                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500/15 to-violet-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+                                <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-sm shrink-0">
                                     <FileText className="w-6 h-6" />
                                 </div>
                                 <div>
@@ -360,7 +360,7 @@ export default function PembukuanPage() {
                                         <h3 className="text-base font-bold text-slate-900 tracking-tight">
                                             BAP Rekonsiliasi Kas
                                         </h3>
-                                        <span className="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px] font-extrabold">
+                                        <span className="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-extrabold">
                                             Berita Acara
                                         </span>
                                     </div>
@@ -434,11 +434,11 @@ export default function PembukuanPage() {
                         <button 
                             onClick={handleGenerateBAP} 
                             disabled={bapLoading} 
-                            className="w-full py-2.5 border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/40 text-slate-700 hover:text-indigo-700 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                            className="w-full py-2.5 border border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 text-slate-700 hover:text-blue-700 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                         >
                             {bapLoading ? (
                                 <>
-                                    <Clock className="w-4 h-4 animate-spin text-indigo-600" />
+                                    <Clock className="w-4 h-4 animate-spin text-blue-600" />
                                     <span>Memproses BAP...</span>
                                 </>
                             ) : bapDoc ? (
@@ -448,7 +448,7 @@ export default function PembukuanPage() {
                                 </>
                             ) : (
                                 <>
-                                    <Plus className="w-4 h-4 text-indigo-600" />
+                                    <Plus className="w-4 h-4 text-blue-600" />
                                     <span>Hitung Sisa & Terbitkan BAP</span>
                                 </>
                             )}
@@ -459,7 +459,7 @@ export default function PembukuanPage() {
 
             <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                    <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
                         <Receipt className="w-5 h-5" />
                     </div>
                     <div>
@@ -486,7 +486,7 @@ export default function PembukuanPage() {
                         <select
                             value={bulan}
                             onChange={(e) => { setBulan(Number(e.target.value)); setPage(0); }}
-                            className="bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm w-full font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
+                            className="bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm w-full font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 transition-all cursor-pointer"
                         >
                             {MONTHS_FULL.slice(1).map((m, i) => (
                                 <option key={i + 1} value={i + 1}>{m}</option>
@@ -499,7 +499,7 @@ export default function PembukuanPage() {
                             type="number"
                             value={tahun}
                             onChange={(e) => { setTahun(Number(e.target.value)); setPage(0); }}
-                            className="bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm w-full font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-mono"
+                            className="bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm w-full font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 transition-all font-mono"
                         />
                     </div>
                     <div className="w-40">
@@ -507,7 +507,7 @@ export default function PembukuanPage() {
                         <select
                             value={status}
                             onChange={(e) => { setStatus(e.target.value); setPage(0); }}
-                            className="bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm w-full font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
+                            className="bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm w-full font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 transition-all cursor-pointer"
                         >
                             <option value="all">Semua Status</option>
                             <option value="pending_confirm">⏳ Siap Dikonfirmasi</option>
@@ -522,7 +522,7 @@ export default function PembukuanPage() {
                         <select
                             value={juknisCat}
                             onChange={(e) => { setJuknisCat(e.target.value); setPage(0); }}
-                            className="bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm w-full font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
+                            className="bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs sm:text-sm w-full font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 transition-all cursor-pointer"
                         >
                             <option value="all">Semua Kategori</option>
                             <option value="bahan_pangan">🥦 Bahan Pangan</option>
@@ -541,7 +541,7 @@ export default function PembukuanPage() {
                                 placeholder="Cari nama supplier atau toko..."
                                 value={supplier}
                                 onChange={(e) => setSupplier(e.target.value)}
-                                className="bg-slate-50/80 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-xs sm:text-sm w-full font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all placeholder:text-slate-400"
+                                className="bg-slate-50/80 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-xs sm:text-sm w-full font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 transition-all placeholder:text-slate-400"
                             />
                         </div>
                     </div>
@@ -590,7 +590,7 @@ export default function PembukuanPage() {
                     <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] border border-slate-200/80 p-5 sm:p-6 flex flex-col justify-between hover:shadow-lg transition-all relative overflow-hidden group">
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Status Laporan</span>
-                            <span className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 flex items-center justify-center text-sm font-bold">
+                            <span className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-600 flex items-center justify-center text-sm font-bold">
                                 📊
                             </span>
                         </div>
@@ -618,7 +618,7 @@ export default function PembukuanPage() {
 
             {/* ─── Banner: Nota Siap Dikonfirmasi ────────────────────────── */}
             {transactions.some(t => t.status === "pending_confirm" || t.status === "unmapped_hold") && (
-                <div className="bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-blue-500/10 border border-amber-400/30 rounded-3xl p-5 sm:p-6 backdrop-blur-md relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+                <div className="bg-amber-50/80 border border-amber-300/50 rounded-3xl p-5 sm:p-6 relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
                     <div className="flex items-center gap-3.5">
                         <div className="w-11 h-11 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-600 shrink-0">
                             <Clock className="w-5 h-5 animate-pulse" />
@@ -655,7 +655,7 @@ export default function PembukuanPage() {
             <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] border border-slate-200/80 overflow-hidden">
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-24 space-y-4">
-                        <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+                        <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
                         <p className="text-xs sm:text-sm text-slate-500 font-semibold">Memuat riwayat transaksi...</p>
                     </div>
                 ) : error ? (
@@ -699,7 +699,7 @@ export default function PembukuanPage() {
                                                 </td>
                                                 <td className="px-6 py-4 font-bold text-slate-900 max-w-[200px] truncate" title={trx.nama_toko}>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 group-hover:bg-indigo-600 transition-colors" />
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 group-hover:bg-blue-600 transition-colors" />
                                                         <span className="truncate">{trx.nama_toko || "—"}</span>
                                                     </div>
                                                 </td>
@@ -717,7 +717,7 @@ export default function PembukuanPage() {
                                                         const colors: Record<string, string> = {
                                                             bahan_pangan: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30",
                                                             operasional: "bg-blue-500/10 text-blue-700 border-blue-500/30",
-                                                            insentif: "bg-purple-500/10 text-purple-700 border-purple-500/30",
+                                                            insentif: "bg-blue-500/10 text-blue-700 border-blue-500/30",
                                                             dana_masuk: "bg-amber-500/10 text-amber-700 border-amber-500/30",
                                                             lainnya: "bg-slate-500/10 text-slate-700 border-slate-500/30",
                                                         };
@@ -809,7 +809,7 @@ export default function PembukuanPage() {
                             placeholder="Contoh: Gas Elpiji 12kg, Kantong Plastik, Tissue" 
                             value={opsForm.name} 
                             onChange={e => setOpsForm({...opsForm, name: e.target.value})} 
-                            className="w-full px-3.5 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all" 
+                            className="w-full px-3.5 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all" 
                         />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
@@ -822,7 +822,7 @@ export default function PembukuanPage() {
                                 placeholder="0"
                                 value={opsForm.amount} 
                                 onChange={e => setOpsForm({...opsForm, amount: e.target.value})} 
-                                className="w-full px-3.5 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono font-bold focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all" 
+                                className="w-full px-3.5 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono font-bold focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all" 
                             />
                         </div>
                         <div>
@@ -832,7 +832,7 @@ export default function PembukuanPage() {
                                 type="date" 
                                 value={opsForm.cost_date} 
                                 onChange={e => setOpsForm({...opsForm, cost_date: e.target.value})} 
-                                className="w-full px-3.5 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all" 
+                                className="w-full px-3.5 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all" 
                             />
                         </div>
                     </div>
@@ -842,7 +842,7 @@ export default function PembukuanPage() {
                             id="is_recurring" 
                             checked={opsForm.is_recurring} 
                             onChange={e => setOpsForm({...opsForm, is_recurring: e.target.checked})} 
-                            className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500/20 cursor-pointer" 
+                            className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500/10 cursor-pointer" 
                         />
                         <label htmlFor="is_recurring" className="text-xs font-semibold text-slate-700 cursor-pointer">
                             Biaya Rutin Bulanan (Tetap)
@@ -853,7 +853,7 @@ export default function PembukuanPage() {
                         <textarea 
                             value={opsForm.notes} 
                             onChange={e => setOpsForm({...opsForm, notes: e.target.value})} 
-                            className="w-full px-3.5 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400" 
+                            className="w-full px-3.5 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all placeholder:text-slate-400" 
                             rows={2} 
                             placeholder="Keterangan pengadaan atau bukti fisik..."
                         />
@@ -869,7 +869,7 @@ export default function PembukuanPage() {
                         <button 
                             type="submit" 
                             disabled={opsSaving} 
-                            className="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-md shadow-indigo-500/20 disabled:opacity-50 cursor-pointer transition-all"
+                            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm disabled:opacity-50 cursor-pointer transition-all"
                         >
                             {opsSaving ? "Menyimpan..." : "Simpan Operasional"}
                         </button>
@@ -881,7 +881,7 @@ export default function PembukuanPage() {
             <BaseModal isOpen={!!confirmModalTrx} onClose={() => setConfirmModalTrx(null)} title="Konfirmasi Nota & Sinkronisasi Stok" maxWidth="max-w-md">
                 {confirmModalTrx && (
                     <div className="space-y-4 pt-1">
-                        <div className="rounded-2xl bg-gradient-to-br from-slate-50 to-indigo-50/40 p-4 text-xs space-y-1.5 border border-slate-200/80">
+                        <div className="rounded-2xl bg-slate-50 p-4 text-xs space-y-1.5 border border-slate-200/80">
                             <div className="flex justify-between items-center pb-1.5 border-b border-slate-200/60">
                                 <span className="text-slate-500 font-medium">Supplier / Toko</span>
                                 <strong className="text-slate-900 font-bold">{confirmModalTrx.nama_toko || "Nota Belanja"}</strong>
@@ -892,7 +892,7 @@ export default function PembukuanPage() {
                             </div>
                             <div className="flex justify-between items-center pt-1.5 border-t border-slate-200/60">
                                 <span className="text-slate-500 font-medium">Total Tagihan</span>
-                                <strong className="text-emerald-700 font-black text-sm">{formatRp(confirmModalTrx.total)}</strong>
+                                <strong className="text-emerald-700 font-bold text-sm">{formatRp(confirmModalTrx.total)}</strong>
                             </div>
                         </div>
 
@@ -913,7 +913,7 @@ export default function PembukuanPage() {
                                             onClick={() => setConfirmPaymentMethod(m.id)}
                                             className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
                                                 confirmPaymentMethod === m.id
-                                                    ? "border-indigo-600 bg-indigo-50/80 text-indigo-950 font-bold ring-2 ring-indigo-500/20 shadow-sm"
+                                                    ? "border-blue-600 bg-blue-50/80 text-blue-950 font-bold ring-2 ring-blue-500/20 shadow-sm"
                                                     : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                                             }`}
                                         >
@@ -932,7 +932,7 @@ export default function PembukuanPage() {
                                     value={confirmNotes}
                                     onChange={(e) => setConfirmNotes(e.target.value)}
                                     placeholder="Tambahkan nomor referensi transfer atau catatan..."
-                                    className="w-full px-3.5 py-2.5 text-xs bg-slate-50/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400"
+                                    className="w-full px-3.5 py-2.5 text-xs bg-slate-50/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all placeholder:text-slate-400"
                                     rows={2}
                                 />
                             </div>

@@ -89,8 +89,25 @@ module.exports = {
 
       /* Font Configuration */
       fontFamily: {
-        'sans': 'var(--font-sans)',
-        'mono': 'var(--font-mono)',
+        sans: [
+          'var(--font-inter)',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
+          'sans-serif',
+        ],
+        mono: [
+          'ui-monospace',
+          'SFMono-Regular',
+          'Menlo',
+          'Monaco',
+          'Consolas',
+          'monospace',
+        ],
       },
 
       /* Animation Keyframes */

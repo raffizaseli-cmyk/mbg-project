@@ -41,7 +41,7 @@ export function TabTelegram() {
                 {code ? (
                     <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-center mb-6">
                         <p className="text-xs text-blue-600 font-medium uppercase tracking-wider mb-2">Kode Token Login Anda</p>
-                        <p className="text-3xl font-mono tracking-widest font-black text-blue-800 p-2 bg-white rounded border border-blue-100 relative inline-block">
+                        <p className="text-3xl font-mono tracking-widest font-bold text-blue-800 p-2 bg-white rounded border border-blue-100 relative inline-block">
                             {code}
                         </p>
                         <p className="text-xs text-gray-500 mt-4">
