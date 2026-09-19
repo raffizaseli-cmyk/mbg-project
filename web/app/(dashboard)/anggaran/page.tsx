@@ -5,6 +5,12 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { apiGet, apiPost } from "@/lib/api";
 import { PageHeader } from "@/components/layout/page-header";
 import { BaseModal } from "@/components/ui/BaseModal";
+import {
+    Landmark, Banknote, TrendingDown, Wallet, UtensilsCrossed,
+    ArrowRightLeft, Plus, Pencil, AlertTriangle, CheckCircle2,
+    Search, Download, BookOpen, BarChart3, ChevronRight,
+    CalendarDays, Receipt, CircleDollarSign, Undo2, PieChart
+} from "lucide-react";
 
 /* ─── Helpers ─── */
 const fmtRp = (v: string | number) => {
@@ -14,6 +20,30 @@ const fmtRp = (v: string | number) => {
 };
 
 const MONTHS = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+/* ─── Shared Styled Input ─── */
+const GlassInput = ({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) => (
+    <div>
+        <label className="block text-xs font-semibold text-slate-700 mb-1.5">{label}</label>
+        <input {...props} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all" />
+    </div>
+);
+
+const GlassSelect = ({ label, children, ...props }: { label: string; children: React.ReactNode } & React.SelectHTMLAttributes<HTMLSelectElement>) => (
+    <div>
+        <label className="block text-xs font-semibold text-slate-700 mb-1.5">{label}</label>
+        <select {...props} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
+            {children}
+        </select>
+    </div>
+);
+
+const GlassTextarea = ({ label, ...props }: { label: string } & React.TextareaHTMLAttributes<HTMLTextAreaElement>) => (
+    <div>
+        <label className="block text-xs font-semibold text-slate-700 mb-1.5">{label}</label>
+        <textarea {...props} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all" />
+    </div>
+);
 
 /* ─── Types ─── */
 interface JuknisBreakdown { realisasi: string; target: string; label: string; pct: number; over_budget: boolean; }
@@ -26,6 +56,32 @@ interface BudgetSummary {
     avg_harga_porsi: string; kas_balances: KasBalance[];
     juknis_breakdown: Record<string, JuknisBreakdown>;
     disbursements: Disbursement[]; fund_return: any;
+}
+
+/* ─── StatCard Component ─── */
+function StatCard({ icon: Icon, label, value, accent }: {
+    icon: any; label: string; value: string;
+    accent: "amber" | "emerald" | "orange" | "slate" | "violet";
+}) {
+    const accentMap = {
+        amber:   { bg: "bg-amber-50/80",   border: "border-amber-200/80",  iconBg: "bg-amber-100",  iconColor: "text-amber-700",  valColor: "text-amber-900" },
+        emerald: { bg: "bg-emerald-50/80", border: "border-emerald-200/80",iconBg: "bg-emerald-100",iconColor: "text-emerald-700",valColor: "text-emerald-900" },
+        orange:  { bg: "bg-orange-50/80",  border: "border-orange-200/80", iconBg: "bg-orange-100", iconColor: "text-orange-700", valColor: "text-orange-900" },
+        slate:   { bg: "bg-slate-50/80",   border: "border-slate-200/80",  iconBg: "bg-slate-100",  iconColor: "text-slate-700",  valColor: "text-slate-900" },
+        violet:  { bg: "bg-violet-50/80",  border: "border-violet-200/80", iconBg: "bg-violet-100", iconColor: "text-violet-700", valColor: "text-violet-900" },
+    };
+    const a = accentMap[accent];
+    return (
+        <div className={`bg-white/85 backdrop-blur-xl rounded-2xl border ${a.border} p-5 shadow-xs hover:shadow-md transition-all duration-200`}>
+            <div className="flex items-center gap-3 mb-2">
+                <div className={`w-9 h-9 ${a.iconBg} rounded-xl flex items-center justify-center`}>
+                    <Icon className={`w-4.5 h-4.5 ${a.iconColor}`} />
+                </div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</p>
+            </div>
+            <p className={`text-xl font-extrabold ${a.valColor}`}>{value}</p>
+        </div>
+    );
 }
 
 /* ─── Overview Tab ─── */
@@ -122,7 +178,7 @@ function OverviewTab() {
         setSaving(true);
         try {
             await apiPost("/budget/fund-transfer", {
-                from_account_id: tfFrom, to_account_id: tfTo,
+                from_kas_account_id: tfFrom, to_kas_account_id: tfTo,
                 amount: parseFloat(tfAmount), transfer_date: tfDate, notes: tfNotes || null,
             });
             setShowTransfer(false); setTfAmount(""); setTfNotes(""); fetchData();
@@ -138,7 +194,7 @@ function OverviewTab() {
                 year, month, amount: parseFloat(retAmount),
                 return_date: retDate, reference_number: retRef || null,
             });
-            setShowReturn(false); fetchData();
+            setShowReturn(false); setRetAmount(""); setRetRef(""); fetchData();
         } catch (e: any) { alert(e?.response?.data?.detail || "Gagal"); }
         setSaving(false);
     };
@@ -158,236 +214,278 @@ function OverviewTab() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-end gap-2 mb-4">
-                <select value={month} onChange={e => setMonth(Number(e.target.value))} className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
-                    {MONTHS.slice(1).map((m, i) => <option key={i + 1} value={i + 1}>{m}</option>)}
-                </select>
-                <select value={year} onChange={e => setYear(Number(e.target.value))} className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
-                    {[2025, 2026, 2027].map(y => <option key={y} value={y}>{y}</option>)}
-                </select>
+            {/* Period Selector */}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Periode Anggaran:</span>
+                    <span className="font-extrabold text-slate-900 text-sm">{MONTHS[month]} {year}</span>
+                </div>
+                <div className="flex gap-2.5">
+                    <select value={month} onChange={e => setMonth(Number(e.target.value))}
+                        className="bg-white/90 border border-slate-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 shadow-xs cursor-pointer">
+                        {MONTHS.slice(1).map((m, i) => <option key={i + 1} value={i + 1}>{m}</option>)}
+                    </select>
+                    <select value={year} onChange={e => setYear(Number(e.target.value))}
+                        className="bg-white/90 border border-slate-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 shadow-xs cursor-pointer">
+                        {[2025, 2026, 2027].map(y => <option key={y} value={y}>{y}</option>)}
+                    </select>
+                </div>
             </div>
 
             {loading ? (
-                <div className="flex justify-center py-16"><div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+                <div className="flex justify-center py-20">
+                    <div className="w-10 h-10 border-[3px] border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+                </div>
             ) : data ? (
                 <>
+                    {/* Stat Cards */}
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                        {[
-                            { label: "Pagu Anggaran", value: fmtRp(data.pagu_amount), icon: "🏛️", color: "blue" },
-                            { label: "Dana Cair", value: fmtRp(data.total_disbursed), icon: "💰", color: "green" },
-                            { label: "Total Terpakai", value: fmtRp(data.total_spent), icon: "💸", color: "orange" },
-                            { label: "Sisa Anggaran", value: fmtRp(data.sisa_anggaran), icon: "⏳", color: "gray" },
-                            { label: "Total Porsi", value: data.total_porsi.toLocaleString("id-ID"), icon: "🍱", color: "purple" },
-                        ].map(card => (
-                            <div key={card.label} className={`bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border p-5 ${card.color === "red" ? "border-red-200 bg-red-50/50" : "border-white"}`}>
-                                <p className="text-xs text-gray-500 mb-1">{card.icon} {card.label}</p>
-                                <p className={`text-lg font-bold ${card.color === "red" ? "text-red-700" : "text-gray-900"}`}>{card.value}</p>
-                            </div>
-                        ))}
+                        <StatCard icon={Landmark}          label="Pagu Anggaran" value={fmtRp(data.pagu_amount)}     accent="amber" />
+                        <StatCard icon={Banknote}          label="Dana Cair"     value={fmtRp(data.total_disbursed)} accent="emerald" />
+                        <StatCard icon={TrendingDown}      label="Total Terpakai" value={fmtRp(data.total_spent)}    accent="orange" />
+                        <StatCard icon={Wallet}            label="Sisa Anggaran" value={fmtRp(data.sisa_anggaran)}   accent="slate" />
+                        <StatCard icon={UtensilsCrossed}   label="Total Porsi"   value={data.total_porsi.toLocaleString("id-ID")} accent="violet" />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-white overflow-hidden">
-                            <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-                                <h2 className="font-bold text-gray-900">💰 Pagu & Pencairan Dana</h2>
+                    {/* Two Column: Pagu & Kas */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {/* Pagu & Pencairan */}
+                        <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-slate-200/80 overflow-hidden shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)]">
+                            <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-8 h-8 bg-emerald-50 border border-emerald-200/60 rounded-xl flex items-center justify-center">
+                                        <CircleDollarSign className="w-4 h-4 text-emerald-600" />
+                                    </div>
+                                    <h2 className="font-bold text-slate-900 text-sm sm:text-base">Pagu & Pencairan Dana</h2>
+                                </div>
                                 <div className="flex gap-2">
                                     <button onClick={() => { setPaguAmount(data.pagu_amount !== "0" ? data.pagu_amount : ""); setShowPagu(true); }}
-                                        className="text-xs px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-medium">
-                                        {parseFloat(data.pagu_amount) > 0 ? "✏️ Edit Pagu" : "⚠️ Set Pagu"}
+                                        className="text-xs px-3 py-1.5 bg-amber-50 text-amber-700 rounded-xl hover:bg-amber-100 font-bold border border-amber-200 transition-all flex items-center gap-1.5 cursor-pointer">
+                                        {parseFloat(data.pagu_amount) > 0 ? <><Pencil className="w-3 h-3" /> Edit Pagu</> : <><AlertTriangle className="w-3 h-3" /> Set Pagu</>}
                                     </button>
                                     <button onClick={() => setShowCair(true)}
-                                        className="text-xs px-3 py-1.5 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 font-medium">
-                                        + Catat Pencairan
+                                        className="text-xs px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-xl hover:bg-emerald-100 font-bold border border-emerald-200 transition-all flex items-center gap-1.5 cursor-pointer">
+                                        <Plus className="w-3 h-3" /> Pencairan
                                     </button>
                                 </div>
                             </div>
-                            <div className="p-4">
-                                <div className="flex justify-between text-sm mb-3">
-                                    <span className="text-gray-500">Pagu bulan ini:</span>
-                                    <span className="font-bold">{fmtRp(data.pagu_amount)}</span>
+                            <div className="p-5 space-y-4">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-500 font-medium">Pagu Anggaran Disetujui:</span>
+                                    <span className="font-bold text-slate-900">{fmtRp(data.pagu_amount)}</span>
                                 </div>
                                 {data.disbursements.length > 0 ? (
                                     <div className="space-y-2">
                                         {data.disbursements.map(d => (
-                                            <div key={d.id} className="flex justify-between items-center bg-green-50 rounded-lg px-3 py-2 text-sm">
-                                                <span className="text-green-800">{d.date} {d.reference_number ? `(Ref: ${d.reference_number})` : ""}</span>
-                                                <span className="font-bold text-green-900">{fmtRp(d.amount)}</span>
+                                            <div key={d.id} className="flex justify-between items-center bg-emerald-50/60 border border-emerald-200/70 rounded-xl px-4 py-2.5 text-sm">
+                                                <div className="flex items-center gap-2">
+                                                    <Receipt className="w-4 h-4 text-emerald-600" />
+                                                    <span className="text-emerald-900 font-semibold">{d.date} {d.reference_number ? `(Ref: ${d.reference_number})` : ""}</span>
+                                                </div>
+                                                <span className="font-extrabold text-emerald-800">{fmtRp(d.amount)}</span>
                                             </div>
                                         ))}
-                                        <div className="flex justify-between text-sm font-bold pt-2 border-t border-gray-100">
-                                            <span>Total Cair</span>
-                                            <span className="text-green-700">{fmtRp(data.total_disbursed)}</span>
+                                        <div className="flex justify-between text-sm font-bold pt-3 border-t border-slate-100">
+                                            <span className="text-slate-700">Total Dana Dicairkan</span>
+                                            <span className="text-emerald-700 font-extrabold">{fmtRp(data.total_disbursed)}</span>
                                         </div>
                                     </div>
                                 ) : (
-                                    <p className="text-gray-400 text-sm italic">Belum ada pencairan bulan ini</p>
+                                    <p className="text-slate-400 text-xs italic py-2">Belum ada pencairan dana tercatat bulan ini.</p>
                                 )}
                             </div>
                         </div>
 
-                        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-white overflow-hidden">
-                            <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-                                <h2 className="font-bold text-gray-900">🏦 Saldo Kas</h2>
+                        {/* Saldo Kas */}
+                        <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-slate-200/80 overflow-hidden shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)]">
+                            <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-8 h-8 bg-cyan-50 border border-cyan-200/60 rounded-xl flex items-center justify-center">
+                                        <Landmark className="w-4 h-4 text-cyan-600" />
+                                    </div>
+                                    <h2 className="font-bold text-slate-900 text-sm sm:text-base">Saldo Rekening Kas</h2>
+                                </div>
                                 <div className="flex gap-2">
                                     <button onClick={() => setShowTransfer(true)}
-                                        className="text-xs px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-medium">
-                                        ↔️ Transfer Antar Kas
+                                        className="text-xs px-3 py-1.5 bg-cyan-50 text-cyan-700 rounded-xl hover:bg-cyan-100 font-bold border border-cyan-200 transition-all flex items-center gap-1.5 cursor-pointer">
+                                        <ArrowRightLeft className="w-3 h-3" /> Mutasi
                                     </button>
                                     <button onClick={() => setShowKasModal(true)}
-                                        className="text-xs px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 font-medium">
-                                        + Tambah Kas
+                                        className="text-xs px-3 py-1.5 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 font-bold border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer">
+                                        <Plus className="w-3 h-3" /> Tambah Kas
                                     </button>
                                 </div>
                             </div>
-                            <div className="p-4">
+                            <div className="p-5">
                                 {data.kas_balances.length > 0 ? (
                                     <div className="space-y-2">
                                         {data.kas_balances.map(k => (
-                                            <div key={k.id} className="flex justify-between items-center bg-blue-50 rounded-lg px-4 py-3">
-                                                <span className="text-blue-800 font-medium">{k.name}</span>
-                                                <span className="font-bold text-blue-900">{fmtRp(k.balance)}</span>
+                                            <div key={k.id} className="flex justify-between items-center bg-cyan-50/60 border border-cyan-200/70 rounded-xl px-4 py-3">
+                                                <div className="flex items-center gap-2.5">
+                                                    <Wallet className="w-4 h-4 text-cyan-600" />
+                                                    <span className="text-cyan-950 font-bold text-sm">{k.name}</span>
+                                                </div>
+                                                <span className="font-extrabold text-cyan-900 text-sm">{fmtRp(k.balance)}</span>
                                             </div>
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="text-gray-400 text-sm italic">Belum ada kas. Tambahkan kas (VA Bank, Kas Kecil).</p>
+                                    <p className="text-slate-400 text-xs italic py-2">Belum ada kas terdaftar. Tambahkan kas (VA Bank, Kas Kecil).</p>
                                 )}
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-white p-6">
-                        <h2 className="font-bold text-gray-900 mb-4">📊 Realisasi vs Budget Keseluruhan (Bulan Ini)</h2>
-                        <div className="space-y-4">
+                    {/* Realisasi vs Budget Keseluruhan */}
+                    <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-slate-200/80 p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)]">
+                        <div className="flex items-center gap-2.5 mb-5">
+                            <div className="w-8 h-8 bg-amber-50 border border-amber-200/60 rounded-xl flex items-center justify-center">
+                                <BarChart3 className="w-4 h-4 text-amber-600" />
+                            </div>
+                            <h2 className="font-bold text-slate-900 text-sm sm:text-base">Realisasi Pos Anggaran vs Juknis BGN</h2>
+                        </div>
+                        <div className="space-y-5">
                             {Object.values(data.juknis_breakdown).filter((bd: any) => parseFloat(bd.target) > 0 || parseFloat(bd.realisasi) > 0).map((bd: any, idx) => {
                                 const barPct = Math.min(bd.pct, 150);
                                 return (
                                     <div key={idx}>
-                                        <div className="flex justify-between text-sm mb-1">
-                                            <span className="font-medium text-gray-700">{bd.label}</span>
-                                            <span className={bd.over_budget ? "text-red-600 font-bold" : "text-gray-600"}>
+                                        <div className="flex justify-between text-xs sm:text-sm mb-2">
+                                            <span className="font-bold text-slate-800">{bd.label}</span>
+                                            <span className={bd.over_budget ? "text-rose-600 font-extrabold" : "text-slate-600 font-semibold"}>
                                                 {fmtRp(bd.realisasi)} / {fmtRp(bd.target)} — {bd.pct}%
                                             </span>
                                         </div>
-                                        <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                                        <div className="h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200/60">
                                             <div
-                                                className={`h-full rounded-full transition-all ${bd.over_budget ? "bg-red-500" : bd.pct > 90 ? "bg-yellow-400" : "bg-green-500"}`}
+                                                className={`h-full rounded-full transition-all duration-700 ${bd.over_budget ? "bg-rose-500" : bd.pct > 90 ? "bg-amber-500" : "bg-emerald-500"}`}
                                                 style={{ width: `${Math.min(barPct, 100)}%` }}
                                             />
                                         </div>
-                                        {bd.over_budget && <p className="text-xs text-red-500 mt-1">⚠️ Melebihi target alokasi!</p>}
+                                        {bd.over_budget && (
+                                            <p className="text-xs text-rose-600 font-bold mt-1.5 flex items-center gap-1">
+                                                <AlertTriangle className="w-3.5 h-3.5" /> Peringatan: Melebihi plafon alokasi belanja juknis!
+                                            </p>
+                                        )}
                                     </div>
                                 );
                             })}
                         </div>
                     </div>
 
+                    {/* Fund Return / Sisa Dana */}
                     {hasSisa && (
-                        <div className="bg-orange-50 border border-orange-200 rounded-xl p-5">
-                            <p className="text-orange-800 font-bold text-lg">💡 Sisa Dana Berjalan: {fmtRp(data.sisa_anggaran)}</p>
-                            <p className="text-orange-600 text-sm mt-1">Sisa dana ini direkap di akhir periode (Jika ada kelebihan wajib dikembalikan ke Kas Negara).</p>
+                        <div className="bg-amber-50/90 border border-amber-200/90 rounded-2xl p-5 sm:p-6 shadow-xs">
+                            <p className="text-amber-900 font-extrabold text-base sm:text-lg flex items-center gap-2">
+                                <Wallet className="w-5 h-5 text-amber-600" /> Sisa Dana Berjalan: {fmtRp(data.sisa_anggaran)}
+                            </p>
+                            <p className="text-amber-800/80 text-xs sm:text-sm mt-1 font-medium">
+                                Sisa saldo ini direkapitulasi saat tutup buku bulanan. Jika terdapat kelebihan wajib disetorkan kembali ke Kas Negara.
+                            </p>
                             <button onClick={() => { setRetAmount(data.sisa_anggaran); setShowReturn(true); }}
-                                className="mt-3 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm font-medium">
-                                📤 Catat Pengembalian (Tutup Bulan)
+                                className="mt-4 px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs transition-all flex items-center gap-2 cursor-pointer">
+                                <Undo2 className="w-4 h-4" /> Catat Pengembalian (Tutup Buku)
                             </button>
                         </div>
                     )}
                     {data.fund_return && (
-                        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-                            <p className="text-green-800 font-bold">✅ Dana sudah dikembalikan: {fmtRp(data.fund_return.amount)}</p>
-                            <p className="text-green-600 text-sm">Tanggal: {data.fund_return.return_date} | Ref: {data.fund_return.reference_number || "-"}</p>
+                        <div className="bg-emerald-50/90 border border-emerald-200/90 rounded-2xl p-5">
+                            <p className="text-emerald-900 font-bold flex items-center gap-2">
+                                <CheckCircle2 className="w-5 h-5 text-emerald-600" /> Sisa Dana Telah Disetor ke Kas Negara: {fmtRp(data.fund_return.amount)}
+                            </p>
+                            <p className="text-emerald-800 text-xs mt-1 font-medium">Tanggal Setor: {data.fund_return.return_date} | No. Referensi: {data.fund_return.reference_number || "-"}</p>
                         </div>
                     )}
                 </>
             ) : (
-                <div className="text-center py-12 text-gray-400">Tidak ada data anggaran</div>
+                <div className="text-center py-16 text-slate-400 text-sm">Tidak ada data anggaran untuk periode ini.</div>
             )}
 
-            <BaseModal isOpen={showPagu} onClose={() => setShowPagu(false)} title="🏛️ Set Pagu Anggaran" maxWidth="max-w-md">
-                        <p className="text-sm text-gray-500 mb-3">Pagu untuk {MONTHS[month]} {year}</p>
-                        <div className="space-y-3">
-                            <input type="number" value={paguAmount} onChange={e => setPaguAmount(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" placeholder="Nominal pagu (Rp)" />
-                            <input type="text" value={paguNotes} onChange={e => setPaguNotes(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" placeholder="Catatan (opsional)" />
-                        </div>
-                        <div className="flex gap-3 pt-4">
-                            <button onClick={() => setShowPagu(false)} className="flex-1 px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Batal</button>
-                            <button onClick={savePagu} disabled={saving} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50">
-                                {saving ? "Menyimpan..." : "✅ Simpan"}
-                            </button>
-                        </div>
-            </BaseModal>
-            
-            <BaseModal isOpen={showCair} onClose={() => setShowCair(false)} title="💰 Catat Pencairan Dana" maxWidth="max-w-md">
-                        <div className="space-y-3">
-                            <div><label className="block text-xs text-gray-500 mb-1">Tanggal Cair</label><input type="date" value={cairDate} onChange={e => setCairDate(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" /></div>
-                            <div><label className="block text-xs text-gray-500 mb-1">Nominal</label><input type="number" value={cairAmount} onChange={e => setCairAmount(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" placeholder="Nominal pencairan" /></div>
-                            <div><label className="block text-xs text-gray-500 mb-1">No. Referensi</label><input type="text" value={cairRef} onChange={e => setCairRef(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" placeholder="TRF001" /></div>
-                            <div><label className="block text-xs text-gray-500 mb-1">Catatan</label><textarea value={cairNotes} onChange={e => setCairNotes(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" rows={2} /></div>
-                        </div>
-                        <div className="flex gap-3 pt-4">
-                            <button onClick={() => setShowCair(false)} className="flex-1 px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Batal</button>
-                            <button onClick={saveCair} disabled={saving} className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 disabled:opacity-50">
-                                {saving ? "Menyimpan..." : "✅ Simpan"}
-                            </button>
-                        </div>
+            {/* ─── Modals ─── */}
+            <BaseModal isOpen={showPagu} onClose={() => setShowPagu(false)} title="Set Pagu Anggaran BGN" maxWidth="max-w-md">
+                <p className="text-xs text-slate-500 mb-4">Pagu anggaran resmi untuk bulan {MONTHS[month]} {year}</p>
+                <div className="space-y-4">
+                    <GlassInput label="Nominal Pagu (Rp)" type="number" value={paguAmount} onChange={e => setPaguAmount(e.target.value)} placeholder="Contoh: 150000000" />
+                    <GlassInput label="Catatan Tambahan (opsional)" type="text" value={paguNotes} onChange={e => setPaguNotes(e.target.value)} placeholder="Nomor DIPA / SK Pagu..." />
+                </div>
+                <div className="flex gap-3 pt-5 border-t border-slate-100 mt-4">
+                    <button onClick={() => setShowPagu(false)} className="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all cursor-pointer">Batal</button>
+                    <button onClick={savePagu} disabled={saving} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-amber-600/20 disabled:opacity-50 transition-all cursor-pointer">
+                        {saving ? "Menyimpan..." : "Simpan Pagu"}
+                    </button>
+                </div>
             </BaseModal>
 
-            <BaseModal isOpen={showTransfer && !!data} onClose={() => setShowTransfer(false)} title="↔️ Transfer Dana Antar Kas" maxWidth="max-w-md">
+            <BaseModal isOpen={showCair} onClose={() => setShowCair(false)} title="Catat Pencairan Dana Termin" maxWidth="max-w-md">
+                <div className="space-y-4 pt-1">
+                    <GlassInput label="Tanggal Pencairan" type="date" value={cairDate} onChange={e => setCairDate(e.target.value)} />
+                    <GlassInput label="Nominal Pencairan (Rp)" type="number" value={cairAmount} onChange={e => setCairAmount(e.target.value)} placeholder="Nominal dana cair" />
+                    <GlassInput label="No. SP2D / Referensi Bank" type="text" value={cairRef} onChange={e => setCairRef(e.target.value)} placeholder="SP2D-2026-001" />
+                    <GlassTextarea label="Catatan Tambahan" value={cairNotes} onChange={e => setCairNotes(e.target.value)} rows={2} />
+                </div>
+                <div className="flex gap-3 pt-5 border-t border-slate-100 mt-4">
+                    <button onClick={() => setShowCair(false)} className="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all cursor-pointer">Batal</button>
+                    <button onClick={saveCair} disabled={saving} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-emerald-600/20 disabled:opacity-50 transition-all cursor-pointer">
+                        {saving ? "Menyimpan..." : "Simpan Pencairan"}
+                    </button>
+                </div>
+            </BaseModal>
+
+            <BaseModal isOpen={showTransfer && !!data} onClose={() => setShowTransfer(false)} title="Mutasi Dana Antar Kas" maxWidth="max-w-md">
                 {data && (
                     <>
-                        <div className="space-y-3">
-                            <div><label className="block text-xs text-gray-500 mb-1">Dari Kas</label>
-                            <select value={tfFrom} onChange={e => setTfFrom(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm">
+                        <div className="space-y-4 pt-1">
+                            <GlassSelect label="Kas Sumber (Asal)" value={tfFrom} onChange={e => setTfFrom(e.target.value)}>
                                 <option value="">Pilih kas asal</option>
                                 {data.kas_balances.map(k => <option key={k.id} value={k.id}>{k.name} ({fmtRp(k.balance)})</option>)}
-                            </select></div>
-                            <div><label className="block text-xs text-gray-500 mb-1">Ke Kas</label>
-                            <select value={tfTo} onChange={e => setTfTo(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm">
+                            </GlassSelect>
+                            <GlassSelect label="Kas Tujuan" value={tfTo} onChange={e => setTfTo(e.target.value)}>
                                 <option value="">Pilih kas tujuan</option>
                                 {data.kas_balances.filter(k => k.id !== tfFrom).map(k => <option key={k.id} value={k.id}>{k.name} ({fmtRp(k.balance)})</option>)}
-                            </select></div>
-                            <div><label className="block text-xs text-gray-500 mb-1">Nominal</label><input type="number" value={tfAmount} onChange={e => setTfAmount(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" placeholder="Nominal transfer" /></div>
-                            <div><label className="block text-xs text-gray-500 mb-1">Tanggal</label><input type="date" value={tfDate} onChange={e => setTfDate(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" /></div>
+                            </GlassSelect>
+                            <GlassInput label="Nominal Mutasi (Rp)" type="number" value={tfAmount} onChange={e => setTfAmount(e.target.value)} placeholder="Nominal transfer" />
+                            <GlassInput label="Tanggal Mutasi" type="date" value={tfDate} onChange={e => setTfDate(e.target.value)} />
                         </div>
-                        <div className="flex gap-3 pt-4">
-                            <button onClick={() => setShowTransfer(false)} className="flex-1 px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Batal</button>
-                            <button onClick={saveTransfer} disabled={saving} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50">
-                                {saving ? "Memproses..." : "✅ Transfer"}
+                        <div className="flex gap-3 pt-5 border-t border-slate-100 mt-4">
+                            <button onClick={() => setShowTransfer(false)} className="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all cursor-pointer">Batal</button>
+                            <button onClick={saveTransfer} disabled={saving} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-cyan-600/20 disabled:opacity-50 transition-all cursor-pointer">
+                                {saving ? "Memproses..." : "Transfer Dana"}
                             </button>
                         </div>
                     </>
                 )}
             </BaseModal>
 
-            <BaseModal isOpen={showReturn} onClose={() => setShowReturn(false)} title="📤 Catat Pengembalian ke Kas Negara" maxWidth="max-w-md">
-                        <p className="text-sm text-gray-500 mb-3">Bulan: {MONTHS[month]} {year}</p>
-                        <div className="space-y-3">
-                            <div><label className="block text-xs text-gray-500 mb-1">Nominal</label><input type="number" value={retAmount} onChange={e => setRetAmount(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" /></div>
-                            <div><label className="block text-xs text-gray-500 mb-1">Tanggal Setor</label><input type="date" value={retDate} onChange={e => setRetDate(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" /></div>
-                            <div><label className="block text-xs text-gray-500 mb-1">No. Bukti</label><input type="text" value={retRef} onChange={e => setRetRef(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" placeholder="Nomor bukti setor" /></div>
-                        </div>
-                        <div className="flex gap-3 pt-4">
-                            <button onClick={() => setShowReturn(false)} className="flex-1 px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Batal</button>
-                            <button onClick={saveReturn} disabled={saving} className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 disabled:opacity-50">
-                                {saving ? "Memproses..." : "✅ Catat Pengembalian"}
-                            </button>
-                        </div>
+            <BaseModal isOpen={showReturn} onClose={() => setShowReturn(false)} title="Pengembalian Sisa ke Kas Negara" maxWidth="max-w-md">
+                <p className="text-xs text-slate-500 mb-4">Setoran sisa saldo anggaran periode {MONTHS[month]} {year}</p>
+                <div className="space-y-4">
+                    <GlassInput label="Nominal Setoran (Rp)" type="number" value={retAmount} onChange={e => setRetAmount(e.target.value)} />
+                    <GlassInput label="Tanggal Penyetoran" type="date" value={retDate} onChange={e => setRetDate(e.target.value)} />
+                    <GlassInput label="Nomor Bukti Setor / BPN" type="text" value={retRef} onChange={e => setRetRef(e.target.value)} placeholder="Contoh: NTPN-2026-999" />
+                </div>
+                <div className="flex gap-3 pt-5 border-t border-slate-100 mt-4">
+                    <button onClick={() => setShowReturn(false)} className="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all cursor-pointer">Batal</button>
+                    <button onClick={saveReturn} disabled={saving} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-rose-600/20 disabled:opacity-50 transition-all cursor-pointer">
+                        {saving ? "Memproses..." : "Catat Setoran"}
+                    </button>
+                </div>
             </BaseModal>
 
-            <BaseModal isOpen={showKasModal} onClose={() => setShowKasModal(false)} title="🏦 Tambah Kas Baru" maxWidth="max-w-md">
-                        <div className="space-y-3">
-                            <div><label className="block text-xs text-gray-500 mb-1">Nama Kas</label><input type="text" value={kasName} onChange={e => setKasName(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" placeholder="VA Bank / Kas Kecil" /></div>
-                            <div><label className="block text-xs text-gray-500 mb-1">Tipe</label>
-                            <select value={kasType} onChange={e => setKasType(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm">
-                                <option value="va_bank">VA Bank</option>
-                                <option value="kas_kecil">Kas Kecil</option>
-                                <option value="rekening_lain">Rekening Lain</option>
-                            </select></div>
-                            <div><label className="block text-xs text-gray-500 mb-1">Saldo Awal</label><input type="number" value={kasBal} onChange={e => setKasBal(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm" /></div>
-                        </div>
-                        <div className="flex gap-3 pt-4">
-                            <button onClick={() => setShowKasModal(false)} className="flex-1 px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Batal</button>
-                        </div>
+            <BaseModal isOpen={showKasModal} onClose={() => setShowKasModal(false)} title="Tambah Akun Kas Baru" maxWidth="max-w-md">
+                <div className="space-y-4 pt-1">
+                    <GlassInput label="Nama Rekening Kas" type="text" value={kasName} onChange={e => setKasName(e.target.value)} placeholder="Contoh: Kas Operasional Dapur" />
+                    <GlassSelect label="Tipe Akun" value={kasType} onChange={e => setKasType(e.target.value)}>
+                        <option value="va_bank">Rekening Bank / VA</option>
+                        <option value="kas_kecil">Kas Kecil (Petty Cash)</option>
+                        <option value="rekening_lain">Rekening Lain</option>
+                    </GlassSelect>
+                    <GlassInput label="Saldo Awal (Rp)" type="number" value={kasBal} onChange={e => setKasBal(e.target.value)} />
+                </div>
+                <div className="flex gap-3 pt-5 border-t border-slate-100 mt-4">
+                    <button onClick={() => setShowKasModal(false)} className="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all cursor-pointer">Batal</button>
+                    <button onClick={saveKas} disabled={saving} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-blue-600/20 disabled:opacity-50 transition-all cursor-pointer">
+                        {saving ? "Menyimpan..." : "Tambah Kas"}
+                    </button>
+                </div>
             </BaseModal>
         </div>
     );
@@ -401,12 +499,12 @@ function BukuKasTab() {
     const [pageState, setPageState] = useState<"loading" | "ready" | "error">("loading");
     const [kasAccounts, setKasAccounts] = useState<KasAccount[]>([]);
     const [accountId, setAccountId] = useState("");
-    
+
     const today = new Date();
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
     const [startDate, setStartDate] = useState(firstDay);
     const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
-    
+
     const [entries, setEntries] = useState<LedgerEntry[]>([]);
     const [ledgerLoading, setLedgerLoading] = useState(false);
 
@@ -447,15 +545,16 @@ function BukuKasTab() {
     }, [pageState, accountId, fetchLedger]);
 
     const getBadge = (refType: string) => {
-        switch (refType) {
-            case "disbursement": return <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium">🟡 Pencairan</span>;
-            case "transfer": return <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">🔵 Transfer</span>;
-            case "expense": return <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-medium">🔴 Pengeluaran</span>;
-            case "payroll": return <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full font-medium">🟣 Gaji</span>;
-            case "return_to_gov": return <span className="bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded-full font-medium">⚫ Kembali Negara</span>;
-            case "income": return <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">🟢 Pemasukan</span>;
-            default: return <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full font-medium">{refType}</span>;
-        }
+        const badges: Record<string, { bg: string; text: string; label: string }> = {
+            disbursement:  { bg: "bg-amber-50 border-amber-200", text: "text-amber-800", label: "Pencairan" },
+            transfer:      { bg: "bg-cyan-50 border-cyan-200",    text: "text-cyan-800",   label: "Mutasi" },
+            expense:       { bg: "bg-rose-50 border-rose-200",    text: "text-rose-800",   label: "Belanja" },
+            payroll:       { bg: "bg-purple-50 border-purple-200", text: "text-purple-800", label: "Honor Staf" },
+            return_to_gov: { bg: "bg-slate-100 border-slate-200", text: "text-slate-800",  label: "Kas Negara" },
+            income:        { bg: "bg-emerald-50 border-emerald-200", text: "text-emerald-800", label: "Penerimaan" },
+        };
+        const b = badges[refType] || { bg: "bg-slate-100 border-slate-200", text: "text-slate-700", label: refType };
+        return <span className={`${b.bg} ${b.text} text-xs px-2.5 py-0.5 rounded-full font-bold border`}>{b.label}</span>;
     };
 
     const exportCSV = () => {
@@ -473,78 +572,82 @@ function BukuKasTab() {
     };
 
     if (pageState === "loading") {
-        return <div className="flex justify-center py-16"><div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>;
+        return <div className="flex justify-center py-20"><div className="w-10 h-10 border-[3px] border-amber-500/30 border-t-amber-500 rounded-full animate-spin" /></div>;
     }
 
     if (pageState === "error") {
-        return <div className="text-center py-12 text-red-500">Gagal memuat akun kas. Coba segarkan halaman.</div>;
+        return <div className="text-center py-16 text-rose-600 font-medium">Gagal memuat akun kas. Coba segarkan halaman.</div>;
     }
 
     return (
-        <div className="space-y-6">
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-white p-5 relative z-20">
+        <div className="space-y-5">
+            {/* Filters */}
+            <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-slate-200/80 p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)]">
                 <div className="flex flex-col sm:flex-row gap-4 items-end">
                     <div className="flex-1">
-                        <label className="block text-xs text-gray-500 mb-1">Pilih Akun Kas</label>
-                        <select value={accountId} onChange={e => setAccountId(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
+                        <GlassSelect label="Pilih Akun Kas" value={accountId} onChange={e => setAccountId(e.target.value)}>
                             <optgroup label="Tersedia">
                                 {kasAccounts.map(k => <option key={k.id} value={k.id}>{k.name}</option>)}
                             </optgroup>
-                        </select>
+                        </GlassSelect>
                     </div>
                     <div className="flex-1">
-                        <label className="block text-xs text-gray-500 mb-1">Dari</label>
-                        <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+                        <GlassInput label="Dari Tanggal" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                     </div>
                     <div className="flex-1">
-                        <label className="block text-xs text-gray-500 mb-1">Sampai</label>
-                        <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+                        <GlassInput label="Sampai Tanggal" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
                     </div>
                     <div className="flex gap-2">
-                        <button onClick={fetchLedger} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2">
-                            🔍 Cari
+                        <button onClick={fetchLedger} className="px-4 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-amber-600/20 flex items-center gap-2 transition-all cursor-pointer">
+                            <Search className="w-4 h-4" /> Cari
                         </button>
-                        <button onClick={exportCSV} className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2">
-                            📥 CSV
+                        <button onClick={exportCSV} className="px-4 py-2.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs sm:text-sm font-bold shadow-xs flex items-center gap-2 transition-all cursor-pointer">
+                            <Download className="w-4 h-4 text-emerald-600" /> Ekspor CSV
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-[0_2px_15px_-4px_rgba(0,0,0,0.05)] border border-white overflow-hidden mt-2 relative z-10">
+            {/* Table */}
+            <div className="bg-white/85 backdrop-blur-xl rounded-3xl border border-slate-200/80 overflow-hidden shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)]">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse text-sm">
                         <thead>
-                            <tr className="bg-gray-50 border-b border-gray-100/50 text-xs text-gray-500 uppercase tracking-wider">
-                                <th className="p-4 font-medium">Tanggal</th>
-                                <th className="p-4 font-medium">Keterangan</th>
-                                <th className="p-4 font-medium min-w-[130px]">Jenis</th>
-                                <th className="p-4 font-medium text-right">Masuk</th>
-                                <th className="p-4 font-medium text-right">Keluar</th>
-                                <th className="p-4 font-medium text-right bg-blue-50/30">Saldo</th>
+                            <tr className="bg-slate-50/90 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                <th className="p-4">Tanggal</th>
+                                <th className="p-4">Keterangan Transaksi</th>
+                                <th className="p-4 min-w-[130px]">Kategori</th>
+                                <th className="p-4 text-right">Debet (Masuk)</th>
+                                <th className="p-4 text-right">Kredit (Keluar)</th>
+                                <th className="p-4 text-right">Saldo Akhir</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100/50 text-sm">
+                        <tbody className="divide-y divide-slate-100">
                             {kasAccounts.length === 0 ? (
-                                <tr><td colSpan={6} className="p-8 text-center text-gray-400 italic">Tidak ada kas yang tersedia. Silakan buat kas terlebih dahulu.</td></tr>
+                                <tr><td colSpan={6} className="p-10 text-center text-slate-400 italic">Tidak ada rekening kas yang tersedia.</td></tr>
                             ) : ledgerLoading ? (
-                                <tr><td colSpan={6} className="p-8 text-center text-gray-400 italic">Memuat riwayat transaksi...</td></tr>
+                                <tr><td colSpan={6} className="p-10 text-center text-slate-500 italic">
+                                    <div className="flex items-center justify-center gap-3">
+                                        <div className="w-5 h-5 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+                                        Memuat riwayat transaksi kas...
+                                    </div>
+                                </td></tr>
                             ) : entries.length > 0 ? (
                                 entries.map(l => {
                                     const isDebit = l.entry_type === "debit";
                                     return (
-                                        <tr key={l.id} className="hover:bg-gray-50/50 transition-colors">
-                                            <td className="p-4 text-gray-500 whitespace-nowrap">{new Date(l.entry_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric'})}</td>
-                                            <td className="p-4 font-medium text-gray-800">{l.description}</td>
+                                        <tr key={l.id} className="hover:bg-slate-50/80 transition-colors">
+                                            <td className="p-4 text-slate-600 font-medium whitespace-nowrap">{new Date(l.entry_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric'})}</td>
+                                            <td className="p-4 font-bold text-slate-900">{l.description}</td>
                                             <td className="p-4">{getBadge(l.reference_type)}</td>
-                                            <td className="p-4 text-right">{isDebit && <span className="text-green-600 font-medium">+{fmtRp(l.amount)}</span>}</td>
-                                            <td className="p-4 text-right">{!isDebit && <span className="text-red-500 font-medium">-{fmtRp(l.amount)}</span>}</td>
-                                            <td className="p-4 text-right bg-blue-50/10 font-bold text-gray-800">{fmtRp(l.balance_after)}</td>
+                                            <td className="p-4 text-right font-bold">{isDebit && <span className="text-emerald-700">+{fmtRp(l.amount)}</span>}</td>
+                                            <td className="p-4 text-right font-bold">{!isDebit && <span className="text-rose-700">-{fmtRp(l.amount)}</span>}</td>
+                                            <td className="p-4 text-right font-extrabold text-slate-900">{fmtRp(l.balance_after)}</td>
                                         </tr>
                                     );
                                 })
                             ) : (
-                                <tr><td colSpan={6} className="p-8 text-center text-gray-400 italic">Tidak ada transaksi ditemukan pada filter tersebut.</td></tr>
+                                <tr><td colSpan={6} className="p-10 text-center text-slate-400 italic">Tidak ada transaksi ditemukan pada rentang tanggal tersebut.</td></tr>
                             )}
                         </tbody>
                     </table>
@@ -564,28 +667,65 @@ function AnggaranTabs() {
         router.push(`/anggaran?tab=${tab}`);
     };
 
-    return (
-        <div className="space-y-6 sm:space-y-8 max-w-6xl mx-auto pb-20 animate-in">
-            <PageHeader title="📊 Keuangan & Anggaran" subtitle="Pantau realisasi anggaran dan riwayat kas" />
+    const tabs = [
+        { key: "overview", label: "Ringkasan Pagu & Alokasi", desc: "Statistik Realisasi Juknis", icon: BarChart3 },
+        { key: "buku-kas", label: "Buku Kas & Mutasi", desc: "Rekening Bank & Kas Kecil", icon: BookOpen },
+    ];
 
-            <div className="border-b border-gray-200/50 sticky top-0 lg:-top-4 bg-gray-50/80 backdrop-blur-md z-10 mb-4 mt-2">
-                <div className="flex space-x-8 px-2">
-                    <button onClick={() => setTab("overview")}
-                        className={`px-4 py-3 font-semibold border-b-[3px] transition-all duration-200 ${
-                            activeTab === "overview" ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
-                        }`}>
-                        📊 Overview
-                    </button>
-                    <button onClick={() => setTab("buku-kas")}
-                        className={`px-4 py-3 font-semibold border-b-[3px] transition-all duration-200 ${
-                            activeTab === "buku-kas" ? "border-blue-600 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
-                        }`}>
-                        📒 Buku Kas Lengkap
-                    </button>
+    return (
+        <div className="space-y-6 max-w-7xl mx-auto pb-20 animate-fade-in">
+            {/* Header */}
+            <div className="pt-1">
+                <div className="flex items-center gap-2 mb-1.5">
+                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 text-[11px] font-bold flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse" />
+                        Pengawasan Pagu BGN & Arus Kas
+                    </span>
+                    <span className="text-xs text-slate-400">•</span>
+                    <span className="text-xs font-semibold text-slate-500">Akuntabilitas Negara</span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+                    Pagu Anggaran & Buku Kas
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+                    Monitoring penyerapan dana pagu, pencairan termin, pembagian alokasi juknis 70:30, dan mutasi kas bank.
+                </p>
+            </div>
+
+            {/* Tab Navigation */}
+            <div className="sticky top-0 z-20 pt-1 pb-2 backdrop-blur-md">
+                <div className="flex gap-2.5 bg-white/85 backdrop-blur-xl rounded-2xl p-2 border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] w-fit">
+                    {tabs.map(t => {
+                        const active = activeTab === t.key;
+                        const Icon = t.icon;
+                        return (
+                            <button
+                                key={t.key}
+                                onClick={() => setTab(t.key)}
+                                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+                                    active
+                                        ? "bg-slate-900 text-white shadow-md shadow-slate-900/10"
+                                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs transition-colors ${
+                                    active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
+                                }`}>
+                                    <Icon className="w-4 h-4" />
+                                </div>
+                                <div className="text-left">
+                                    <div>{t.label}</div>
+                                    <div className={`text-[10px] font-normal hidden sm:block ${active ? "text-white/80" : "text-slate-400"}`}>
+                                        {t.desc}
+                                    </div>
+                                </div>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 
-            <div className="mt-4">
+            <div className="transition-all duration-200">
                 {activeTab === "overview" && <OverviewTab />}
                 {activeTab === "buku-kas" && <BukuKasTab />}
             </div>
@@ -595,7 +735,7 @@ function AnggaranTabs() {
 
 export default function AnggaranPage() {
     return (
-        <Suspense fallback={<div className="p-8 text-center text-gray-500">Memuat anggaran...</div>}>
+        <Suspense fallback={<div className="p-8 text-center text-slate-400 text-sm">Memuat modul anggaran...</div>}>
             <AnggaranTabs />
         </Suspense>
     );

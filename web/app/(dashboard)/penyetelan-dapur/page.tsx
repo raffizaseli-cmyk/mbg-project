@@ -844,52 +844,63 @@ export default function PenyetelanDapurPage() {
       <div className="max-w-7xl mx-auto pb-20 animate-in mt-2">
         {/* Header */}
         <div className="pt-2 mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
-            Penyetelan Dapur
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="px-2.5 py-0.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-700 text-[11px] font-bold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
+              Intelligence Engine & Nutrisi BGN
+            </span>
+            <span className="text-xs text-slate-400">•</span>
+            <span className="text-xs font-semibold text-slate-500">Konfigurasi Dapur Mandiri</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            Pusat Penyetelan Dapur & Nutrisi
           </h1>
-          <p className="text-gray-500 font-medium text-sm mt-1">
-            Kelola referensi satuan, database nutrisi bahan pokok, dan pemetaan bahan masakan.
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium max-w-3xl">
+            Kelola graf rantai satuan bobot, database komposisi pangan TKPI Kemenkes, dan pemetaan cerdas alias bahan baku OCR.
           </p>
         </div>
 
         {/* Main Tabs Navigation */}
-        <div className="sticky top-0 z-20 mt-0 pt-2 pb-2 bg-gray-50/90 backdrop-blur-md border-b border-gray-200/50 mb-6">
-          <div className="flex gap-2 bg-white/70 backdrop-blur-xl rounded-2xl p-1.5 overflow-x-auto flex-nowrap no-scrollbar border border-white shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+        <div className="sticky top-0 z-20 pt-1 pb-2 backdrop-blur-md mb-6">
+          <div className="flex gap-2.5 bg-white/85 backdrop-blur-xl rounded-2xl p-2 border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] overflow-x-auto no-scrollbar">
             <button
               onClick={() => setActiveTab("satuan")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-300 ${activeTab === "satuan"
-                  ? "bg-white text-blue-700 shadow-sm ring-1 ring-gray-200/50"
-                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+              className={`flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+                activeTab === "satuan"
+                  ? "bg-slate-900 text-white shadow-md shadow-slate-900/10"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+              }`}
             >
               <Weight className="w-4 h-4" />
-              <span>Referensi Satuan</span>
+              <span>Rantai Konversi Satuan</span>
             </button>
             <button
               onClick={() => setActiveTab("nutrisi")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-300 ${activeTab === "nutrisi"
-                  ? "bg-white text-blue-700 shadow-sm ring-1 ring-gray-200/50"
-                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+              className={`flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+                activeTab === "nutrisi"
+                  ? "bg-slate-900 text-white shadow-md shadow-slate-900/10"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+              }`}
             >
               <Stethoscope className="w-4 h-4" />
-              <span>Database Nutrisi</span>
+              <span>Database Nutrisi & TKPI</span>
             </button>
             <button
               onClick={() => setActiveTab("mapping")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-300 ${activeTab === "mapping"
-                  ? "bg-white text-blue-700 shadow-sm ring-1 ring-gray-200/50"
-                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+              className={`flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+                activeTab === "mapping"
+                  ? "bg-slate-900 text-white shadow-md shadow-slate-900/10"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+              }`}
             >
               <LinkIcon className="w-4 h-4" />
-              <span>Mapping Bahan</span>
+              <span>Pemetaan Bahan OCR (Alias)</span>
             </button>
           </div>
         </div>
 
         {/* Main Content Panels */}
-        <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white min-h-[500px]">
+        <div className="bg-white/85 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] border border-slate-200/80 min-h-[500px]">
 
           {/* 1. REFERENSI SATUAN TAB */}
           {activeTab === "satuan" && (

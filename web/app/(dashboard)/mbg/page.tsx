@@ -4,10 +4,36 @@ import { useState, useEffect, useCallback } from "react";
 import { apiGet, apiPost } from "@/lib/api";
 import { PageHeader } from "@/components/layout/page-header";
 import { StatCard } from "@/components/ui/stat-card";
+import { 
+  Truck, 
+  Calendar, 
+  CalendarDays, 
+  CheckCircle2, 
+  AlertTriangle, 
+  Download, 
+  Utensils, 
+  ChevronDown, 
+  ChevronRight, 
+  School, 
+  Apple, 
+  Sparkles, 
+  Search, 
+  ArrowRight, 
+  FileText, 
+  Layers,
+  Info,
+  Users,
+  Flame,
+  ShieldCheck,
+  Edit3,
+  Save,
+  Check,
+  Building2,
+  TrendingUp
+} from "lucide-react";
 
 const MONTHS_FULL = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
     "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-
 
 function formatRp(val: string | number): string {
     const n = typeof val === "string" ? parseFloat(val) || 0 : val || 0;
@@ -164,11 +190,10 @@ export default function MbgPage() {
                 menu_id: selectedMenuId
             };
             await apiPost("/mbg/weekly-menus", payload);
-            alert("Menu berhasil disimpan!");
             setIsEditingMenu(false);
             fetchCalendar();
         } catch (e) {
-            alert("Gagal menyimpan menu.");
+            alert("Gagal menyimpan menu. Periksa koneksi atau hak akses.");
         }
         setIsSavingMenu(false);
     };
@@ -178,137 +203,270 @@ export default function MbgPage() {
 
     // Nutrition color helpers
     const calBg = (day: CalendarDay) => {
-        if (!day.is_weekday) return "bg-gray-100 opacity-50";
-        if (!day.has_menu) return "bg-white border-dashed";
-        if (day.nutrition?.is_balanced) return "bg-emerald-50 border-emerald-200";
-        if (day.nutrition && !day.nutrition.is_balanced) return "bg-red-50 border-red-200";
-        return "bg-amber-50 border-amber-200";
+        if (!day.is_weekday) return "bg-slate-100/60 border-slate-200/50 opacity-60";
+        if (!day.has_menu) return "bg-white/80 border-slate-200 border-dashed hover:border-slate-300";
+        if (day.nutrition?.is_balanced) return "bg-emerald-50/70 border-emerald-200/80 hover:border-emerald-300";
+        if (day.nutrition && !day.nutrition.is_balanced) return "bg-rose-50/70 border-rose-200/80 hover:border-rose-300";
+        return "bg-amber-50/70 border-amber-200/80 hover:border-amber-300";
     };
 
     return (
-        <div className="space-y-6 sm:space-y-8 animate-in mt-2">
-            <PageHeader title="MBG — Penyerahan & Nutrisi" subtitle={`${MONTHS_FULL[bulan]} ${tahun}`} />
+        <div className="space-y-6 sm:space-y-8 animate-in mt-2 pb-16">
+            <PageHeader 
+                title="Operasional MBG & Nutrisi" 
+                subtitle={`Monitoring Distribusi, Verifikasi Porsi, & Audit Gizi Seimbang — ${MONTHS_FULL[bulan]} ${tahun}`} 
+                actions={
+                    <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm">
+                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                            Standar BGN Terpantau
+                        </span>
+                    </div>
+                }
+            />
 
-            {/* Filter + Tab Toggle */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-white p-5 flex flex-wrap gap-4 items-end overflow-visible z-20 relative">
-                <div>
-                    <label className="block text-xs text-gray-500 mb-1">Bulan</label>
-                    <select value={bulan} onChange={e => { setBulan(Number(e.target.value)); }}
-                        className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm">
-                        {MONTHS_FULL.slice(1).map((m, i) => <option key={i + 1} value={i + 1}>{m}</option>)}
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-xs text-gray-500 mb-1">Tahun</label>
-                    <input type="number" value={tahun} onChange={e => setTahun(Number(e.target.value))}
-                        className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm w-24" />
-                </div>
-                <button onClick={() => { fetchData(); if (tabMode === "nutrisi") fetchCalendar(); }} className="px-4 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">
-                    🔍 Terapkan
-                </button>
-                <div className="ml-auto flex bg-gray-100 rounded-xl p-0.5 gap-0.5">
-                    <button onClick={() => setTabMode("penyerahan")} className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${tabMode === "penyerahan" ? "bg-white shadow text-blue-700" : "text-gray-500 hover:text-gray-700"}`}>
-                        📋 Riwayat Penyerahan
+            {/* Filter & Sub-Nav Hub */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-white p-5 flex flex-wrap gap-4 items-end justify-between relative z-20">
+                <div className="flex flex-wrap gap-3 items-end">
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-500 mb-1.5">Bulan Pelaksanaan</label>
+                        <select 
+                            value={bulan} 
+                            onChange={e => setBulan(Number(e.target.value))}
+                            className="border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-medium bg-slate-50/50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none"
+                        >
+                            {MONTHS_FULL.slice(1).map((m, i) => <option key={i + 1} value={i + 1}>{m}</option>)}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-500 mb-1.5">Tahun</label>
+                        <input 
+                            type="number" 
+                            value={tahun} 
+                            onChange={e => setTahun(Number(e.target.value))}
+                            className="border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-medium w-28 bg-slate-50/50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none" 
+                        />
+                    </div>
+                    <button 
+                        onClick={() => { fetchData(); if (tabMode === "nutrisi") fetchCalendar(); }} 
+                        className="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-blue-500/20 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+                    >
+                        <Search className="w-4 h-4" /> Terapkan
                     </button>
-                    <button onClick={() => setTabMode("nutrisi")} className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${tabMode === "nutrisi" ? "bg-white shadow text-emerald-700" : "text-gray-500 hover:text-gray-700"}`}>
-                        📅 Jadwal Menu & Kalender
+                </div>
+
+                {/* Segmented Mode Selector */}
+                <div className="flex bg-slate-100/80 p-1 rounded-xl gap-1 border border-slate-200/60 self-stretch sm:self-auto justify-center">
+                    <button 
+                        onClick={() => setTabMode("penyerahan")} 
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+                            tabMode === "penyerahan" 
+                                ? "bg-white shadow-sm text-blue-700 font-bold" 
+                                : "text-slate-600 hover:text-slate-900"
+                        }`}
+                    >
+                        <Truck className="w-4 h-4" /> Riwayat Penyerahan
+                    </button>
+                    <button 
+                        onClick={() => setTabMode("nutrisi")} 
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+                            tabMode === "nutrisi" 
+                                ? "bg-white shadow-sm text-emerald-700 font-bold" 
+                                : "text-slate-600 hover:text-slate-900"
+                        }`}
+                    >
+                        <Apple className="w-4 h-4" /> Jadwal Menu & Nutrisi
                     </button>
                 </div>
             </div>
 
-            {/* Summary Cards */}
+            {/* Summary Metrics Cards */}
             {monthly && (
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <StatCard title="Total Porsi" value={`${monthly.mbg?.total_portions?.toLocaleString("id-ID")} porsi`} icon="🍱" />
-                    <StatCard title="Hari Kirim" value={`${monthly.mbg?.total_delivery_days} hari`} icon="📅" />
-                    <StatCard title="Tagihan Terbentuk" value={formatRp(monthly.mbg?.revenue_gross)} icon="💰" />
-                    <StatCard title="Rata-rata/Hari" value={`${monthly.mbg?.avg_portions_per_day} porsi`} icon="📊" />
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                    <StatCard 
+                        title="Total Porsi Disalurkan" 
+                        value={`${monthly.mbg?.total_portions?.toLocaleString("id-ID") || 0} porsi`} 
+                        icon={<Utensils className="w-5 h-5 text-emerald-600" />} 
+                        accentColor="emerald"
+                        subtitle="Akumulasi bulan berjalan"
+                    />
+                    <StatCard 
+                        title="Hari Operasional Pengiriman" 
+                        value={`${monthly.mbg?.total_delivery_days || 0} hari`} 
+                        icon={<CalendarDays className="w-5 h-5 text-blue-600" />} 
+                        accentColor="blue"
+                        subtitle="Hari kerja aktif"
+                    />
+                    <StatCard 
+                        title="Nilai Hak Tagih Terbentuk" 
+                        value={formatRp(monthly.mbg?.revenue_gross || 0)} 
+                        icon={<Sparkles className="w-5 h-5 text-amber-600" />} 
+                        accentColor="amber"
+                        subtitle={`Tarif acuan ${formatRp(pricePerPortion)}/porsi`}
+                    />
+                    <StatCard 
+                        title="Rata-rata Distribusi / Hari" 
+                        value={`${monthly.mbg?.avg_portions_per_day || 0} porsi`} 
+                        icon={<Truck className="w-5 h-5 text-cyan-600" />} 
+                        accentColor="cyan"
+                        subtitle="Kapasitas harian dapur"
+                    />
                 </div>
             )}
 
-            {/* Info Box */}
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-blue-700">
-                💡 Input penyerahan MBG via Telegram Bot <code className="bg-blue-100 px-1 rounded">/serah</code>
-                &nbsp;— web hanya untuk monitoring dan download laporan
+            {/* Smart Information Banner */}
+            <div className="rounded-2xl border border-blue-200/60 bg-gradient-to-r from-blue-50/80 via-indigo-50/50 to-blue-50/40 p-4 sm:p-5 flex items-start gap-3.5 backdrop-blur-sm shadow-sm">
+                <div className="w-9 h-9 rounded-xl bg-blue-600/10 border border-blue-200 flex items-center justify-center shrink-0 text-blue-600 mt-0.5">
+                    <Info className="w-5 h-5" />
+                </div>
+                <div className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                    <span className="font-bold text-blue-900">Otomasi Pelaporan Telegram & Rekonsiliasi Nota:</span> Data pengiriman harian dicatat langsung oleh tim logistik lapangan via perintah Telegram Bot <code className="bg-blue-100 text-blue-800 font-mono px-1.5 py-0.5 rounded text-xs font-semibold">/serah</code>. Modul ini menyajikan telemetri real-time, validasi kepatuhan menu, serta dokumen rekap format resmi dinas.
+                </div>
             </div>
 
             {/* ═══════════════════════════════════════════════════════════════════ */}
             {/* TAB: Penyerahan */}
             {/* ═══════════════════════════════════════════════════════════════════ */}
             {tabMode === "penyerahan" && (
-                <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-[0_2px_15px_-4px_rgba(0,0,0,0.05)] border border-white overflow-hidden mt-2 relative z-10">
-                    <div className="px-5 py-4 border-b border-gray-100">
-                        <h2 className="font-semibold text-gray-800">📋 Riwayat Penyerahan ({summaries.length} hari)</h2>
+                <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] border border-white overflow-hidden relative z-10">
+                    <div className="px-6 py-4.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-slate-50/50 to-transparent">
+                        <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
+                                <FileText className="w-4 h-4" />
+                            </div>
+                            <div>
+                                <h2 className="font-bold text-slate-800 text-base">Riwayat Distribusi Fisik & Berita Acara</h2>
+                                <p className="text-xs text-slate-500 font-medium">Tercatat {summaries.length} hari operasional pengiriman</p>
+                            </div>
+                        </div>
                     </div>
+
                     {loading ? (
-                        <div className="flex justify-center py-12">
-                            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        <div className="flex flex-col items-center justify-center py-16 text-slate-400 gap-3">
+                            <div className="w-9 h-9 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                            <p className="text-xs font-medium">Memuat log distribusi...</p>
                         </div>
                     ) : summaries.length === 0 ? (
-                        <div className="text-center py-12 text-gray-400">
-                            <p className="text-3xl mb-2">📭</p>
-                            <p>Belum ada penyerahan di bulan ini</p>
+                        <div className="text-center py-16 text-slate-400 space-y-3">
+                            <div className="w-14 h-14 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-2xl">
+                                📭
+                            </div>
+                            <p className="font-semibold text-slate-600 text-sm">Belum ada pengiriman tercatat pada periode ini</p>
+                            <p className="text-xs text-slate-400 max-w-sm mx-auto">Gunakan bot Telegram atau pastikan input nota penyerahan telah diproses.</p>
                         </div>
                     ) : (
-                        <>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-sm">
-                                    <thead className="bg-gray-50">
-                                        <tr>
-                                            {["Tanggal", "Menu", "Sekolah", "Total Porsi", "Gross", "PDF"].map(h => (
-                                                <th key={h} className="text-left px-4 py-2.5 text-gray-500 font-medium text-xs">{h}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {summaries.map((s, i) => {
-                                            const gross = s.total_portions * pricePerPortion;
-                                            const isExp = expanded[s.date];
-                                            const d = new Date(s.date);
-                                            return (
-                                                <>
-                                                    <tr key={s.date} className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer ${i % 2 === 1 ? "bg-gray-50/40" : ""}`}
-                                                        onClick={() => setExpanded(e => ({ ...e, [s.date]: !e[s.date] }))}>
-                                                        <td className="px-4 py-2.5 font-medium">
-                                                            {isExp ? "▼" : "▶"}&nbsp;
-                                                            {d.toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short" })}
-                                                        </td>
-                                                        <td className="px-4 py-2.5 text-gray-600">{s.menu_name || "—"}</td>
-                                                        <td className="px-4 py-2.5 text-center">{s.schools_count || (s.deliveries?.length ?? "—")}</td>
-                                                        <td className="px-4 py-2.5 font-semibold">{s.total_portions.toLocaleString("id-ID")}</td>
-                                                        <td className="px-4 py-2.5 text-right">{formatRp(gross)}</td>
-                                                        <td className="px-4 py-2.5">
-                                                            {s.pdf_draft_url
-                                                                ? <a href={s.pdf_draft_url} target="_blank" rel="noopener noreferrer"
-                                                                    className="text-blue-600 hover:underline text-xs" onClick={e => e.stopPropagation()}>📄 Download</a>
-                                                                : <span className="text-gray-300">—</span>}
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                        <th className="text-left px-5 py-3.5">Tanggal Operasional</th>
+                                        <th className="text-left px-4 py-3.5">Menu Sajian</th>
+                                        <th className="text-center px-4 py-3.5">Titik Sekolah</th>
+                                        <th className="text-right px-4 py-3.5">Total Porsi</th>
+                                        <th className="text-right px-5 py-3.5">Estimasi Gross</th>
+                                        <th className="text-center px-4 py-3.5">Draft Bukti</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                    {summaries.map((s, i) => {
+                                        const gross = s.total_portions * pricePerPortion;
+                                        const isExp = expanded[s.date];
+                                        const d = new Date(s.date);
+                                        return (
+                                            <div key={s.date} className="contents">
+                                                <tr 
+                                                    className={`hover:bg-blue-50/40 transition-colors cursor-pointer group ${isExp ? "bg-blue-50/20" : i % 2 === 1 ? "bg-slate-50/30" : "bg-white"}`}
+                                                    onClick={() => setExpanded(e => ({ ...e, [s.date]: !e[s.date] }))}
+                                                >
+                                                    <td className="px-5 py-3.5 font-semibold text-slate-800 flex items-center gap-2">
+                                                        <span className="text-slate-400 group-hover:text-blue-600 transition-colors">
+                                                            {isExp ? <ChevronDown className="w-4 h-4 text-blue-600" /> : <ChevronRight className="w-4 h-4" />}
+                                                        </span>
+                                                        <span>{d.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" })}</span>
+                                                    </td>
+                                                    <td className="px-4 py-3.5 text-slate-700 font-medium">
+                                                        {s.menu_name ? (
+                                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold">
+                                                                <Utensils className="w-3 h-3 text-emerald-600" /> {s.menu_name}
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-slate-400 italic text-xs">Belum dikaitkan resep</span>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-4 py-3.5 text-center">
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                                                            <School className="w-3 h-3 text-slate-500" />
+                                                            {s.schools_count || (s.deliveries?.length ?? 0)} Sekolah
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-4 py-3.5 text-right font-mono font-bold text-slate-900">
+                                                        {s.total_portions.toLocaleString("id-ID")} <span className="text-xs font-normal text-slate-400">porsi</span>
+                                                    </td>
+                                                    <td className="px-5 py-3.5 text-right font-mono font-bold text-emerald-700">
+                                                        {formatRp(gross)}
+                                                    </td>
+                                                    <td className="px-4 py-3.5 text-center">
+                                                        {s.pdf_draft_url ? (
+                                                            <a 
+                                                                href={s.pdf_draft_url} 
+                                                                target="_blank" 
+                                                                rel="noopener noreferrer"
+                                                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-semibold text-xs transition-colors" 
+                                                                onClick={e => e.stopPropagation()}
+                                                            >
+                                                                <Download className="w-3.5 h-3.5" /> PDF
+                                                            </a>
+                                                        ) : (
+                                                            <span className="text-slate-300 text-xs">—</span>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                                {isExp && s.deliveries && s.deliveries.length > 0 && (
+                                                    <tr>
+                                                        <td colSpan={6} className="bg-slate-50/70 p-0 border-b border-blue-100">
+                                                            <div className="py-3 px-8 space-y-2 border-l-4 border-blue-500 ml-4 my-2">
+                                                                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Breakdown Distribusi Sekolah:</p>
+                                                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                                                                    {s.deliveries.map((school, si) => (
+                                                                        <div key={`${s.date}-${si}`} className="bg-white rounded-xl p-2.5 border border-slate-200/80 shadow-xs flex items-center justify-between">
+                                                                            <div className="flex items-center gap-2">
+                                                                                <div className="w-6 h-6 rounded bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                                                                                    <School className="w-3.5 h-3.5" />
+                                                                                </div>
+                                                                                <span className="text-xs font-semibold text-slate-800 truncate max-w-[140px]" title={school.school_name}>
+                                                                                    {school.school_name}
+                                                                                </span>
+                                                                            </div>
+                                                                            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100">
+                                                                                {school.portions_sent} porsi
+                                                                            </span>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                     </tr>
-                                                    {isExp && s.deliveries && s.deliveries.map((school, si) => (
-                                                        <tr key={`${s.date}-${si}`} className="bg-blue-50/40 border-b border-blue-50">
-                                                            <td className="px-4 py-1.5 pl-10 text-xs text-gray-500 italic" colSpan={3}>
-                                                                🏫 {school.school_name}
-                                                            </td>
-                                                            <td className="px-4 py-1.5 text-xs text-center">{school.portions_sent}</td>
-                                                            <td colSpan={1} />
-                                                            <td className="px-4 py-1.5 text-xs text-gray-400">{school.status}</td>
-                                                        </tr>
-                                                    ))}
-                                                </>
-                                            );
-                                        })}
-                                    </tbody>
-                                    <tfoot className="bg-gray-50 border-t-2 border-gray-200">
-                                        <tr>
-                                            <td className="px-4 py-2.5 font-bold" colSpan={3}>TOTAL</td>
-                                            <td className="px-4 py-2.5 font-bold">{totalPortions.toLocaleString("id-ID")}</td>
-                                            <td className="px-4 py-2.5 font-bold text-right">{formatRp(totalGross)}</td>
-                                            <td />
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </tbody>
+                                <tfoot className="bg-slate-100/80 border-t-2 border-slate-200 font-bold text-slate-900">
+                                    <tr>
+                                        <td className="px-5 py-4 uppercase tracking-wider text-xs" colSpan={3}>
+                                            Total Akumulasi Periode Ini
+                                        </td>
+                                        <td className="px-4 py-4 text-right font-mono text-base text-blue-900">
+                                            {totalPortions.toLocaleString("id-ID")} <span className="text-xs font-normal text-slate-500">porsi</span>
+                                        </td>
+                                        <td className="px-5 py-4 text-right font-mono text-base text-emerald-800">
+                                            {formatRp(totalGross)}
+                                        </td>
+                                        <td />
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     )}
                 </div>
             )}
@@ -317,299 +475,431 @@ export default function MbgPage() {
             {/* TAB: Kalender Nutrisi */}
             {/* ═══════════════════════════════════════════════════════════════════ */}
             {tabMode === "nutrisi" && (
-                <>
+                <div className="space-y-6">
                     {calLoading ? (
-                        <div className="flex justify-center py-12">
-                            <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                        <div className="flex flex-col items-center justify-center py-20 text-slate-400 gap-3">
+                            <div className="w-10 h-10 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+                            <p className="text-sm font-medium">Menghitung formulasi nutrisi TKPI & kalender...</p>
                         </div>
                     ) : !calendarData ? (
-                        <div className="text-center py-12 text-gray-400">Data tidak tersedia</div>
+                        <div className="bg-white rounded-2xl p-12 text-center text-slate-400 border border-slate-100">
+                            Data kalender nutrisi tidak tersedia
+                        </div>
                     ) : (
                         <>
-                            {/* Calendar Grid */}
-                            <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-[0_2px_15px_-4px_rgba(0,0,0,0.05)] border border-white p-5">
-                                <h2 className="font-bold text-gray-800 text-lg mb-4">📅 Kalender Nutrisi — {MONTHS_FULL[bulan]} {tahun}</h2>
-                                <div className="grid grid-cols-7 gap-1.5 mb-2">
-                                    {["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"].map(h => (
-                                        <div key={h} className="text-center text-xs font-bold text-gray-400 uppercase py-1">{h}</div>
+                            {/* Calendar Matrix Card */}
+                            <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] border border-white p-5 sm:p-6">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                                            <Calendar className="w-4 h-4" />
+                                        </div>
+                                        <div>
+                                            <h2 className="font-bold text-slate-800 text-base">Matriks Jadwal Menu & Status Nutrisi</h2>
+                                            <p className="text-xs text-slate-500 font-medium">{MONTHS_FULL[bulan]} {tahun} — Klik kartu tanggal untuk melihat & mengedit komposisi</p>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Quick Summary Pill */}
+                                    <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200/60 text-xs font-semibold text-slate-600">
+                                        <span>Total Terjadwal: <strong className="text-emerald-700">{calendarData.monthly_summary.total_portions.toLocaleString("id-ID")} porsi</strong></span>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-7 gap-2 mb-2">
+                                    {["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"].map(h => (
+                                        <div key={h} className="text-center text-[11px] font-bold text-slate-500 uppercase tracking-wider py-1.5 bg-slate-50/70 rounded-lg">
+                                            {h}
+                                        </div>
                                     ))}
                                 </div>
-                                <div className="grid grid-cols-7 gap-1.5">
-                                    {/* Empty cells for days before the 1st */}
+
+                                <div className="grid grid-cols-7 gap-2">
+                                    {/* Empty cells for leading offset */}
                                     {Array.from({ length: new Date(tahun, bulan - 1, 1).getDay() === 0 ? 6 : new Date(tahun, bulan - 1, 1).getDay() - 1 }).map((_, i) => (
-                                        <div key={`empty-${i}`} className="h-28" />
+                                        <div key={`empty-${i}`} className="min-h-[110px] rounded-xl bg-slate-50/30 border border-slate-100" />
                                     ))}
+
                                     {calendarData.days.map(day => (
-                                        <div key={day.date}
-                                            className={`h-28 rounded-xl border p-1.5 cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] ${calBg(day)} ${selectedDay?.date === day.date ? "ring-2 ring-blue-500 shadow-lg" : ""}`}
+                                        <div 
+                                            key={day.date}
+                                            className={`min-h-[115px] rounded-xl border p-2 flex flex-col justify-between cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.01] ${calBg(day)} ${
+                                                selectedDay?.date === day.date ? "ring-2 ring-blue-600 shadow-md scale-[1.02]" : ""
+                                            }`}
                                             onClick={() => {
                                                 setSelectedDay(selectedDay?.date === day.date ? null : day);
                                                 setIsEditingMenu(false);
                                                 setSearchMenuText(day.menu_name || "");
                                                 setSelectedMenuId(day.menu_id || null);
-                                            }}>
-                                            <div className="flex justify-between items-start">
-                                                <span className={`text-xs font-bold ${day.is_weekday ? "text-gray-700" : "text-gray-400"}`}>{day.day}</span>
-                                                {day.has_delivery && <span className="text-[9px] bg-blue-600 text-white px-1 rounded font-bold">{day.total_portions}</span>}
+                                            }}
+                                        >
+                                            <div className="flex justify-between items-start gap-1">
+                                                <span className={`text-xs font-bold px-1.5 py-0.5 rounded-md ${
+                                                    day.is_weekday ? "bg-white/80 text-slate-800 shadow-xs" : "text-slate-400"
+                                                }`}>
+                                                    {day.day}
+                                                </span>
+                                                {day.has_delivery && (
+                                                    <span className="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded-md font-bold shadow-xs">
+                                                        {day.total_portions}
+                                                    </span>
+                                                )}
                                             </div>
-                                            {day.has_menu && (
-                                                <p className="text-[10px] font-medium text-gray-700 mt-0.5 leading-tight line-clamp-2">{day.menu_name}</p>
-                                            )}
-                                            {day.nutrition && (
-                                                <div className="mt-auto pt-0.5">
-                                                    <div className="text-[8px] font-bold text-orange-600">{day.nutrition.totals.calories} kkal</div>
-                                                    <div className="flex gap-1">
-                                                        <span className="text-[7px] text-blue-600">P:{day.nutrition.totals.proteins}g</span>
-                                                        <span className="text-[7px] text-yellow-600">L:{day.nutrition.totals.fat}g</span>
-                                                        <span className="text-[7px] text-teal-600">K:{day.nutrition.totals.carbohydrate}g</span>
+
+                                            {day.has_menu ? (
+                                                <p className="text-[11px] font-bold text-slate-800 mt-1 leading-tight line-clamp-2">
+                                                    {day.menu_name}
+                                                </p>
+                                            ) : day.is_weekday ? (
+                                                <p className="text-[10px] text-slate-400 italic mt-1 font-medium">Belum ada menu</p>
+                                            ) : null}
+
+                                            {day.nutrition ? (
+                                                <div className="mt-1 pt-1 border-t border-black/5">
+                                                    <div className="flex items-center justify-between text-[9px] font-bold">
+                                                        <span className="text-orange-700">{day.nutrition.totals.calories} kkal</span>
+                                                        <span className="text-blue-700">P:{day.nutrition.totals.proteins}g</span>
                                                     </div>
-                                                    {!day.nutrition.is_balanced && <span className="text-[7px] text-red-600 font-bold">⚠️ Sayur {day.nutrition.sayur_percentage}%</span>}
+                                                    <div className="flex items-center justify-between text-[8px] mt-0.5">
+                                                        <span className="text-amber-700">L:{day.nutrition.totals.fat}g</span>
+                                                        <span className="text-teal-700">K:{day.nutrition.totals.carbohydrate}g</span>
+                                                    </div>
+                                                    {!day.nutrition.is_balanced && (
+                                                        <span className="text-[8px] bg-rose-100 text-rose-700 px-1 rounded font-bold block mt-1 text-center">
+                                                            ⚠️ Sayur {day.nutrition.sayur_percentage}%
+                                                        </span>
+                                                    )}
                                                 </div>
-                                            )}
-                                            {!day.has_menu && day.is_weekday && (
-                                                <p className="text-[9px] text-gray-400 italic mt-1">Belum ada menu</p>
-                                            )}
+                                            ) : null}
                                         </div>
                                     ))}
                                 </div>
 
-                                {/* Legend */}
-                                <div className="flex gap-4 mt-4 text-[10px] font-medium text-gray-500">
-                                    <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-emerald-100 border border-emerald-300 inline-block" /> Gizi Seimbang</span>
-                                    <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-100 border border-red-300 inline-block" /> Sayur &lt;30%</span>
-                                    <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-amber-100 border border-amber-300 inline-block" /> Belum Ada Nutrisi</span>
-                                    <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-100 border border-gray-200 inline-block" /> Libur</span>
+                                {/* Modern Legend Bar */}
+                                <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-5 pt-4 border-t border-slate-100 text-xs font-medium text-slate-600">
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="w-3.5 h-3.5 rounded-md bg-emerald-100 border border-emerald-300 inline-block" /> 
+                                        Gizi Seimbang (BGN)
+                                    </span>
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="w-3.5 h-3.5 rounded-md bg-rose-100 border border-rose-300 inline-block" /> 
+                                        Porsi Sayur Kurang (&lt;30%)
+                                    </span>
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="w-3.5 h-3.5 rounded-md bg-amber-100 border border-amber-300 inline-block" /> 
+                                        Belum Ada Analisis TKPI
+                                    </span>
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="w-3.5 h-3.5 rounded-md bg-slate-100 border border-slate-300 inline-block" /> 
+                                        Hari Libur / Non-Aktif
+                                    </span>
                                 </div>
                             </div>
 
-                            {/* Selected Day Detail */}
+                            {/* Selected Day Detail Card */}
                             {selectedDay && (
-                                <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg border border-white p-5 animate-in">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h3 className="font-bold text-gray-900">
-                                            📊 Detail — {selectedDay.day_name}, {new Date(selectedDay.date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
-                                        </h3>
-                                        <button onClick={() => setSelectedDay(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
+                                <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-blue-200/80 p-6 animate-in">
+                                    <div className="flex items-center justify-between pb-4 mb-5 border-b border-slate-100">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-blue-600/10 text-blue-700 flex items-center justify-center font-bold">
+                                                {selectedDay.day}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-slate-900 text-base sm:text-lg">
+                                                    Detail Operasional — {selectedDay.day_name}, {new Date(selectedDay.date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                                                </h3>
+                                                <p className="text-xs text-slate-500 font-medium">Analisis nilai gizi per porsi serta penetapan menu</p>
+                                            </div>
+                                        </div>
+                                        <button 
+                                            onClick={() => setSelectedDay(null)} 
+                                            className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 flex items-center justify-center text-sm font-bold transition-colors cursor-pointer"
+                                        >
+                                            ✕
+                                        </button>
                                     </div>
 
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        {/* Left: Nutrition */}
-                                        <div>
-                                            <div className="flex items-center justify-between mb-3">
-                                                <h4 className="text-sm font-bold text-gray-700">🍽 Menu: <span className="text-emerald-700">{selectedDay.menu_name || "(Belum diset)"}</span></h4>
+                                    <div className="grid lg:grid-cols-2 gap-8">
+                                        {/* Left Side: Nutrition & Menu Management */}
+                                        <div className="space-y-5">
+                                            <div className="flex items-center justify-between bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60">
+                                                <div>
+                                                    <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Menu Sajian Terpilih</p>
+                                                    <p className="text-base font-bold text-slate-800 mt-0.5">
+                                                        {selectedDay.menu_name || <span className="text-slate-400 italic">(Belum ada menu)</span>}
+                                                    </p>
+                                                </div>
                                                 {!selectedDay.has_delivery && selectedDay.is_weekday && (
-                                                    <button onClick={() => {
-                                                        setIsEditingMenu(!isEditingMenu);
-                                                        setSearchMenuText(selectedDay.menu_name || "");
-                                                        setSelectedMenuId(selectedDay.menu_id || null);
-                                                    }} className="text-xs text-blue-600 hover:text-blue-800 font-bold border border-blue-200 bg-blue-50 px-2 py-1 rounded">
-                                                        {isEditingMenu ? "Batal Edit" : "✏️ Atur Menu"}
+                                                    <button 
+                                                        onClick={() => {
+                                                            setIsEditingMenu(!isEditingMenu);
+                                                            setSearchMenuText(selectedDay.menu_name || "");
+                                                            setSelectedMenuId(selectedDay.menu_id || null);
+                                                        }} 
+                                                        className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-white border border-blue-200 px-3 py-1.5 rounded-lg shadow-xs hover:bg-blue-50 transition-colors cursor-pointer"
+                                                    >
+                                                        <Edit3 className="w-3.5 h-3.5" />
+                                                        {isEditingMenu ? "Batal" : "Atur / Ganti Menu"}
                                                     </button>
                                                 )}
                                             </div>
 
                                             {isEditingMenu && (
-                                                <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 mb-4 animate-in fade-in slide-in-from-top-2">
-                                                    <label className="block text-xs font-bold text-gray-700 mb-1">Cari / Ketik Nama Menu</label>
-                                                    <div className="relative">
-                                                        <input 
-                                                            type="text" 
-                                                            list="menus-list"
-                                                            value={searchMenuText}
-                                                            onChange={e => {
-                                                                setSearchMenuText(e.target.value);
-                                                                const found = menus.find(m => m.name.toLowerCase() === e.target.value.toLowerCase());
-                                                                setSelectedMenuId(found ? found.id : null);
-                                                            }}
-                                                            placeholder="Ketik untuk mencari menu..."
-                                                            className="w-full text-sm border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 mb-2"
-                                                        />
-                                                        <datalist id="menus-list">
-                                                            {menus.map(m => (
-                                                                <option key={m.id} value={m.name} />
-                                                            ))}
-                                                        </datalist>
-                                                    </div>
+                                                <div className="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-4 space-y-3 animate-in">
+                                                    <label className="block text-xs font-bold text-blue-900">Pilih / Ketik Nama Menu Resep</label>
+                                                    <input 
+                                                        type="text" 
+                                                        list="menus-list"
+                                                        value={searchMenuText}
+                                                        onChange={e => {
+                                                            setSearchMenuText(e.target.value);
+                                                            const found = menus.find(m => m.name.toLowerCase() === e.target.value.toLowerCase());
+                                                            setSelectedMenuId(found ? found.id : null);
+                                                        }}
+                                                        placeholder="Cari menu resep terdaftar..."
+                                                        className="w-full text-sm bg-white border border-blue-300 rounded-xl px-3.5 py-2 outline-none focus:ring-2 focus:ring-blue-500/20"
+                                                    />
+                                                    <datalist id="menus-list">
+                                                        {menus.map(m => (
+                                                            <option key={m.id} value={m.name} />
+                                                        ))}
+                                                    </datalist>
                                                     <button 
                                                         onClick={handleSaveMenu} 
                                                         disabled={!searchMenuText.trim() || isSavingMenu}
-                                                        className="w-full bg-blue-600 text-white font-bold py-1.5 rounded-lg text-sm disabled:opacity-50 hover:bg-blue-700 transition-colors">
-                                                        {isSavingMenu ? "Menyimpan..." : "💾 Simpan Menu Hari Ini"}
+                                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl text-sm disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm shadow-blue-500/20"
+                                                    >
+                                                        <Save className="w-4 h-4" />
+                                                        {isSavingMenu ? "Menyimpan Perubahan..." : "Simpan Menu Hari Ini"}
                                                     </button>
                                                 </div>
                                             )}
 
                                             {selectedDay.nutrition ? (
                                                 <>
-                                                    <div className="grid grid-cols-4 gap-2 mb-4">
-                                                        <div className="bg-orange-50 border border-orange-100 p-2 rounded-xl text-center">
-                                                            <div className="text-[9px] font-bold text-orange-600 uppercase">Kalori</div>
-                                                            <div className="text-sm font-black text-orange-800">{selectedDay.nutrition.totals.calories}</div>
-                                                            <div className="text-[8px] text-orange-500">kkal</div>
+                                                    <div className="grid grid-cols-4 gap-2.5">
+                                                        <div className="bg-orange-50/80 border border-orange-200/70 p-3 rounded-xl text-center">
+                                                            <div className="text-[10px] font-bold text-orange-600 uppercase">Kalori</div>
+                                                            <div className="text-lg font-black text-orange-900">{selectedDay.nutrition.totals.calories}</div>
+                                                            <div className="text-[9px] text-orange-500 font-medium">kkal</div>
                                                         </div>
-                                                        <div className="bg-blue-50 border border-blue-100 p-2 rounded-xl text-center">
-                                                            <div className="text-[9px] font-bold text-blue-600 uppercase">Protein</div>
-                                                            <div className="text-sm font-black text-blue-800">{selectedDay.nutrition.totals.proteins}</div>
-                                                            <div className="text-[8px] text-blue-500">gram</div>
+                                                        <div className="bg-blue-50/80 border border-blue-200/70 p-3 rounded-xl text-center">
+                                                            <div className="text-[10px] font-bold text-blue-600 uppercase">Protein</div>
+                                                            <div className="text-lg font-black text-blue-900">{selectedDay.nutrition.totals.proteins}</div>
+                                                            <div className="text-[9px] text-blue-500 font-medium">gram</div>
                                                         </div>
-                                                        <div className="bg-yellow-50 border border-yellow-100 p-2 rounded-xl text-center">
-                                                            <div className="text-[9px] font-bold text-yellow-600 uppercase">Lemak</div>
-                                                            <div className="text-sm font-black text-yellow-800">{selectedDay.nutrition.totals.fat}</div>
-                                                            <div className="text-[8px] text-yellow-500">gram</div>
+                                                        <div className="bg-amber-50/80 border border-amber-200/70 p-3 rounded-xl text-center">
+                                                            <div className="text-[10px] font-bold text-amber-600 uppercase">Lemak</div>
+                                                            <div className="text-lg font-black text-amber-900">{selectedDay.nutrition.totals.fat}</div>
+                                                            <div className="text-[9px] text-amber-500 font-medium">gram</div>
                                                         </div>
-                                                        <div className="bg-teal-50 border border-teal-100 p-2 rounded-xl text-center">
-                                                            <div className="text-[9px] font-bold text-teal-600 uppercase">Karbo</div>
-                                                            <div className="text-sm font-black text-teal-800">{selectedDay.nutrition.totals.carbohydrate}</div>
-                                                            <div className="text-[8px] text-teal-500">gram</div>
+                                                        <div className="bg-teal-50/80 border border-teal-200/70 p-3 rounded-xl text-center">
+                                                            <div className="text-[10px] font-bold text-teal-600 uppercase">Karbo</div>
+                                                            <div className="text-lg font-black text-teal-900">{selectedDay.nutrition.totals.carbohydrate}</div>
+                                                            <div className="text-[9px] text-teal-500 font-medium">gram</div>
                                                         </div>
                                                     </div>
-                                                    <div className={`px-3 py-2 rounded-xl text-xs font-bold text-center mb-3 ${selectedDay.nutrition.is_balanced ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-                                                        {selectedDay.nutrition.is_balanced ? "✅ Gizi Seimbang" : `⚠️ Sayur Hanya ${selectedDay.nutrition.sayur_percentage}% (Min 30%)`}
+
+                                                    <div className={`px-4 py-2.5 rounded-xl text-xs font-bold text-center flex items-center justify-center gap-2 ${
+                                                        selectedDay.nutrition.is_balanced 
+                                                            ? "bg-emerald-100/80 text-emerald-900 border border-emerald-300/60" 
+                                                            : "bg-rose-100/80 text-rose-900 border border-rose-300/60"
+                                                    }`}>
+                                                        {selectedDay.nutrition.is_balanced ? (
+                                                            <>
+                                                                <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+                                                                <span>Komposisi Gizi Seimbang Sesuai Juknis BGN</span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <AlertTriangle className="w-4 h-4 text-rose-700" />
+                                                                <span>Porsi Sayuran Hanya {selectedDay.nutrition.sayur_percentage}% (Ambang batas wajib min. 30%)</span>
+                                                            </>
+                                                        )}
                                                     </div>
-                                                    <table className="w-full text-xs">
-                                                        <thead>
-                                                            <tr className="bg-slate-700 text-white">
-                                                                <th className="py-1.5 px-2 text-left">Bahan</th>
-                                                                <th className="py-1.5 px-2 text-right">g</th>
-                                                                <th className="py-1.5 px-2 text-right">Kal</th>
-                                                                <th className="py-1.5 px-2 text-right">Pro</th>
-                                                                <th className="py-1.5 px-2 text-right">Lem</th>
-                                                                <th className="py-1.5 px-2 text-right">Kar</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {selectedDay.nutrition.ingredients.map((ing, idx) => (
-                                                                <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                                                                    <td className="py-1 px-2 font-medium">{ing.name}</td>
-                                                                    <td className="py-1 px-2 text-right font-mono">{ing.weight_gram}</td>
-                                                                    <td className="py-1 px-2 text-right font-mono text-orange-700">{ing.calories}</td>
-                                                                    <td className="py-1 px-2 text-right font-mono text-blue-700">{ing.proteins}</td>
-                                                                    <td className="py-1 px-2 text-right font-mono text-yellow-700">{ing.fat}</td>
-                                                                    <td className="py-1 px-2 text-right font-mono text-teal-700">{ing.carbohydrate}</td>
+
+                                                    <div className="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+                                                        <table className="w-full text-xs">
+                                                            <thead>
+                                                                <tr className="bg-slate-800 text-white font-bold">
+                                                                    <th className="py-2 px-3 text-left">Bahan Baku</th>
+                                                                    <th className="py-2 px-3 text-right">Berat (g)</th>
+                                                                    <th className="py-2 px-3 text-right text-orange-300">Kalori</th>
+                                                                    <th className="py-2 px-3 text-right text-blue-300">Protein</th>
+                                                                    <th className="py-2 px-3 text-right text-amber-300">Lemak</th>
+                                                                    <th className="py-2 px-3 text-right text-teal-300">Karbo</th>
                                                                 </tr>
-                                                            ))}
-                                                            <tr className="bg-slate-700 text-white font-bold">
-                                                                <td className="py-1.5 px-2">TOTAL</td>
-                                                                <td className="py-1.5 px-2 text-right">{selectedDay.nutrition.totals.total_gram}g</td>
-                                                                <td className="py-1.5 px-2 text-right">{selectedDay.nutrition.totals.calories}</td>
-                                                                <td className="py-1.5 px-2 text-right">{selectedDay.nutrition.totals.proteins}</td>
-                                                                <td className="py-1.5 px-2 text-right">{selectedDay.nutrition.totals.fat}</td>
-                                                                <td className="py-1.5 px-2 text-right">{selectedDay.nutrition.totals.carbohydrate}</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                                            </thead>
+                                                            <tbody className="divide-y divide-slate-100">
+                                                                {selectedDay.nutrition.ingredients.map((ing, idx) => (
+                                                                    <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50/50"}>
+                                                                        <td className="py-1.5 px-3 font-semibold text-slate-800">{ing.name}</td>
+                                                                        <td className="py-1.5 px-3 text-right font-mono text-slate-600">{ing.weight_gram}</td>
+                                                                        <td className="py-1.5 px-3 text-right font-mono text-orange-700 font-semibold">{ing.calories}</td>
+                                                                        <td className="py-1.5 px-3 text-right font-mono text-blue-700 font-semibold">{ing.proteins}</td>
+                                                                        <td className="py-1.5 px-3 text-right font-mono text-amber-700 font-semibold">{ing.fat}</td>
+                                                                        <td className="py-1.5 px-3 text-right font-mono text-teal-700 font-semibold">{ing.carbohydrate}</td>
+                                                                    </tr>
+                                                                ))}
+                                                                <tr className="bg-slate-900 text-white font-bold">
+                                                                    <td className="py-2 px-3">TOTAL PER PORSI</td>
+                                                                    <td className="py-2 px-3 text-right font-mono">{selectedDay.nutrition.totals.total_gram}g</td>
+                                                                    <td className="py-2 px-3 text-right font-mono text-orange-300">{selectedDay.nutrition.totals.calories}</td>
+                                                                    <td className="py-2 px-3 text-right font-mono text-blue-300">{selectedDay.nutrition.totals.proteins}</td>
+                                                                    <td className="py-2 px-3 text-right font-mono text-amber-300">{selectedDay.nutrition.totals.fat}</td>
+                                                                    <td className="py-2 px-3 text-right font-mono text-teal-300">{selectedDay.nutrition.totals.carbohydrate}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </>
                                             ) : (
-                                                <p className="text-sm text-gray-400 italic">Belum ada data nutrisi untuk menu ini</p>
+                                                <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center text-slate-400 text-xs italic">
+                                                    Belum ada resep & database TKPI yang terasosiasi dengan menu ini.
+                                                </div>
                                             )}
                                         </div>
 
-                                        {/* Right: Delivery & Penerima Manfaat */}
-                                        <div>
-                                            <h4 className="text-sm font-bold text-gray-700 mb-3">🏫 Penyerahan Hari Ini</h4>
-                                            {selectedDay.deliveries.length > 0 ? (
-                                                <div className="space-y-1.5 mb-4">
-                                                    {selectedDay.deliveries.map((del_item, idx) => (
-                                                        <div key={idx} className="flex justify-between items-center bg-blue-50 rounded-lg px-3 py-2 text-xs">
-                                                            <span className="font-medium text-gray-800">🏫 {del_item.school_name}</span>
-                                                            <span className="font-bold text-blue-700">{del_item.portions_sent} porsi</span>
-                                                        </div>
-                                                    ))}
-                                                    <div className="flex justify-between bg-blue-700 text-white rounded-lg px-3 py-2 text-xs font-bold">
-                                                        <span>Total</span>
-                                                        <span>{selectedDay.total_portions} porsi</span>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <p className="text-xs text-gray-400 italic mb-4">Belum ada delivery hari ini</p>
-                                            )}
-
-                                            <h4 className="text-sm font-bold text-gray-700 mb-2">👥 Penerima Manfaat</h4>
-                                            <div className="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
-                                                <table className="w-full text-xs">
-                                                    <thead>
-                                                        <tr className="bg-slate-700 text-white">
-                                                            <th className="py-1.5 px-2 text-left">Sekolah</th>
-                                                            <th className="py-1.5 px-2 text-left">Jenis</th>
-                                                            <th className="py-1.5 px-2 text-right">Target/Hari</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {calendarData.beneficiaries.map((b, idx) => (
-                                                            <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                                                                <td className="py-1 px-2 font-medium">{b.school_name}</td>
-                                                                <td className="py-1 px-2 text-gray-600">{b.beneficiary_type}</td>
-                                                                <td className="py-1 px-2 text-right font-bold">{b.target_portions}</td>
-                                                            </tr>
+                                        {/* Right Side: Delivery & Beneficiaries */}
+                                        <div className="space-y-5">
+                                            <div>
+                                                <h4 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                                                    <Truck className="w-4 h-4 text-blue-600" /> Realisasi Pengiriman Hari Ini
+                                                </h4>
+                                                {selectedDay.deliveries.length > 0 ? (
+                                                    <div className="space-y-2">
+                                                        {selectedDay.deliveries.map((del_item, idx) => (
+                                                            <div key={idx} className="flex justify-between items-center bg-blue-50/60 border border-blue-100 rounded-xl px-3.5 py-2.5 text-xs">
+                                                                <span className="font-semibold text-slate-800 flex items-center gap-2">
+                                                                    <School className="w-4 h-4 text-blue-600" /> {del_item.school_name}
+                                                                </span>
+                                                                <span className="font-mono font-bold text-blue-700 bg-white px-2 py-0.5 rounded border border-blue-200">
+                                                                    {del_item.portions_sent} porsi
+                                                                </span>
+                                                            </div>
                                                         ))}
-                                                        {calendarData.beneficiaries.length === 0 && (
-                                                            <tr><td colSpan={3} className="py-3 text-center text-gray-400 italic">Belum ada data penerima manfaat</td></tr>
-                                                        )}
-                                                    </tbody>
-                                                </table>
+                                                        <div className="flex justify-between bg-blue-700 text-white rounded-xl px-4 py-2.5 text-xs font-bold shadow-sm">
+                                                            <span>Total Seluruh Sekolah</span>
+                                                            <span className="font-mono text-sm">{selectedDay.total_portions} porsi</span>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-center text-xs text-slate-400 italic">
+                                                        Belum ada pencatatan penyerahan fisik pada tanggal ini
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <div>
+                                                <h4 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                                                    <Users className="w-4 h-4 text-emerald-600" /> Master Kuota Penerima Manfaat
+                                                </h4>
+                                                <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+                                                    <table className="w-full text-xs">
+                                                        <thead>
+                                                            <tr className="bg-slate-800 text-white font-bold">
+                                                                <th className="py-2 px-3 text-left">Sekolah Sasaran</th>
+                                                                <th className="py-2 px-3 text-left">Tipe</th>
+                                                                <th className="py-2 px-3 text-right">Target / Hari</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-slate-100">
+                                                            {calendarData.beneficiaries.map((b, idx) => (
+                                                                <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50/50"}>
+                                                                    <td className="py-2 px-3 font-semibold text-slate-800">{b.school_name}</td>
+                                                                    <td className="py-2 px-3 text-slate-500">{b.beneficiary_type}</td>
+                                                                    <td className="py-2 px-3 text-right font-mono font-bold text-blue-700">{b.target_portions}</td>
+                                                                </tr>
+                                                            ))}
+                                                            {calendarData.beneficiaries.length === 0 && (
+                                                                <tr><td colSpan={3} className="py-4 text-center text-slate-400 italic">Belum ada data penerima manfaat</td></tr>
+                                                            )}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             )}
 
-                            {/* Monthly Summary Table (For Government Report) */}
-                            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg border border-white overflow-hidden">
-                                <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                                    <h2 className="font-bold text-gray-800">📊 Rekap Nutrisi Bulanan — Laporan Pemerintah</h2>
+                            {/* Monthly Summary Table (Official Government Nutrition Report) */}
+                            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] border border-white overflow-hidden">
+                                <div className="px-6 py-4.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-slate-50/50 to-transparent">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-600">
+                                            <TrendingUp className="w-4 h-4" />
+                                        </div>
+                                        <div>
+                                            <h2 className="font-bold text-slate-800 text-base">Rekapitulasi Nutrisi Bulanan — Format Laporan Dinas</h2>
+                                            <p className="text-xs text-slate-500 font-medium">Bahan pertanggungjawaban audit kepatuhan gizi program MBG</p>
+                                        </div>
+                                    </div>
                                 </div>
+
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-xs">
                                         <thead>
-                                            <tr className="bg-slate-800 text-white text-[10px] uppercase tracking-wider">
-                                                <th className="py-2.5 px-2 text-left sticky left-0 bg-slate-800 z-10">Tgl</th>
-                                                <th className="py-2.5 px-2 text-left">Hari</th>
-                                                <th className="py-2.5 px-2 text-left min-w-[120px]">Menu</th>
-                                                <th className="py-2.5 px-2 text-right">Porsi</th>
-                                                <th className="py-2.5 px-2 text-right text-orange-300">Kalori</th>
-                                                <th className="py-2.5 px-2 text-right text-blue-300">Protein</th>
-                                                <th className="py-2.5 px-2 text-right text-yellow-300">Lemak</th>
-                                                <th className="py-2.5 px-2 text-right text-teal-300">Karbo</th>
-                                                <th className="py-2.5 px-2 text-right">Berat(g)</th>
-                                                <th className="py-2.5 px-2 text-center">Sayur%</th>
-                                                <th className="py-2.5 px-2 text-center">Status</th>
+                                            <tr className="bg-slate-800 text-white text-[10px] uppercase tracking-wider font-bold">
+                                                <th className="py-3 px-3 text-left sticky left-0 bg-slate-800 z-10">Tgl</th>
+                                                <th className="py-3 px-3 text-left">Hari</th>
+                                                <th className="py-3 px-3 text-left min-w-[140px]">Menu Sajian</th>
+                                                <th className="py-3 px-3 text-right">Porsi</th>
+                                                <th className="py-3 px-3 text-right text-orange-300">Kalori</th>
+                                                <th className="py-3 px-3 text-right text-blue-300">Protein</th>
+                                                <th className="py-3 px-3 text-right text-amber-300">Lemak</th>
+                                                <th className="py-3 px-3 text-right text-teal-300">Karbo</th>
+                                                <th className="py-3 px-3 text-right">Berat (g)</th>
+                                                <th className="py-3 px-3 text-center">Sayur %</th>
+                                                <th className="py-3 px-3 text-center">Status</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody className="divide-y divide-slate-100">
                                             {calendarData.days.filter(d => d.is_weekday).map((day, i) => {
                                                 const n = day.nutrition;
                                                 return (
-                                                    <tr key={day.date} className={`border-t border-gray-100 ${!day.has_menu ? "opacity-40" : ""} ${i % 2 === 0 ? "bg-white" : "bg-gray-50/50"} hover:bg-blue-50/30 transition-colors cursor-pointer`}
+                                                    <tr 
+                                                        key={day.date} 
+                                                        className={`hover:bg-blue-50/30 transition-colors cursor-pointer ${
+                                                            !day.has_menu ? "opacity-50" : ""
+                                                        } ${i % 2 === 0 ? "bg-white" : "bg-slate-50/50"}`}
                                                         onClick={() => {
                                                             setSelectedDay(day);
                                                             setIsEditingMenu(false);
                                                             setSearchMenuText(day.menu_name || "");
                                                             setSelectedMenuId(day.menu_id || null);
-                                                        }}>
-                                                        <td className="py-1.5 px-2 font-bold text-gray-700 sticky left-0 bg-inherit z-10">{day.day}</td>
-                                                        <td className="py-1.5 px-2 text-gray-500">{day.day_name}</td>
-                                                        <td className="py-1.5 px-2 font-medium text-gray-800 truncate max-w-[150px]">{day.menu_name || "—"}</td>
-                                                        <td className="py-1.5 px-2 text-right font-mono">{day.total_portions || "—"}</td>
-                                                        <td className="py-1.5 px-2 text-right font-mono text-orange-700">{n?.totals.calories ?? "—"}</td>
-                                                        <td className="py-1.5 px-2 text-right font-mono text-blue-700">{n?.totals.proteins ?? "—"}</td>
-                                                        <td className="py-1.5 px-2 text-right font-mono text-yellow-700">{n?.totals.fat ?? "—"}</td>
-                                                        <td className="py-1.5 px-2 text-right font-mono text-teal-700">{n?.totals.carbohydrate ?? "—"}</td>
-                                                        <td className="py-1.5 px-2 text-right font-mono text-gray-600">{n?.totals.total_gram ?? "—"}</td>
-                                                        <td className="py-1.5 px-2 text-center">{n ? `${n.sayur_percentage}%` : "—"}</td>
-                                                        <td className="py-1.5 px-2 text-center">
-                                                            {!day.has_menu ? <span className="text-gray-300">—</span> :
-                                                                n?.is_balanced ? <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-[9px] font-bold">✅</span> :
-                                                                    n ? <span className="px-1.5 py-0.5 bg-red-100 text-red-700 rounded text-[9px] font-bold">⚠️</span> :
-                                                                        <span className="px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-[9px] font-bold">?</span>}
+                                                        }}
+                                                    >
+                                                        <td className="py-2 px-3 font-bold text-slate-800 sticky left-0 bg-inherit z-10">{day.day}</td>
+                                                        <td className="py-2 px-3 text-slate-500">{day.day_name}</td>
+                                                        <td className="py-2 px-3 font-semibold text-slate-800 truncate max-w-[180px]">{day.menu_name || "—"}</td>
+                                                        <td className="py-2 px-3 text-right font-mono font-bold text-slate-700">{day.total_portions || "—"}</td>
+                                                        <td className="py-2 px-3 text-right font-mono text-orange-700 font-semibold">{n?.totals.calories ?? "—"}</td>
+                                                        <td className="py-2 px-3 text-right font-mono text-blue-700 font-semibold">{n?.totals.proteins ?? "—"}</td>
+                                                        <td className="py-2 px-3 text-right font-mono text-amber-700 font-semibold">{n?.totals.fat ?? "—"}</td>
+                                                        <td className="py-2 px-3 text-right font-mono text-teal-700 font-semibold">{n?.totals.carbohydrate ?? "—"}</td>
+                                                        <td className="py-2 px-3 text-right font-mono text-slate-600">{n?.totals.total_gram ?? "—"}</td>
+                                                        <td className="py-2 px-3 text-center font-bold">
+                                                            {n ? (
+                                                                <span className={n.sayur_percentage >= 30 ? "text-emerald-700" : "text-rose-600"}>
+                                                                    {n.sayur_percentage}%
+                                                                </span>
+                                                            ) : "—"}
+                                                        </td>
+                                                        <td className="py-2 px-3 text-center">
+                                                            {!day.has_menu ? <span className="text-slate-300">—</span> :
+                                                                n?.is_balanced ? <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-bold">Lolos BGN</span> :
+                                                                    n ? <span className="px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full text-[10px] font-bold">Perlu Revisi</span> :
+                                                                        <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full text-[10px] font-bold">Belum Ada</span>}
                                                         </td>
                                                     </tr>
                                                 );
                                             })}
                                         </tbody>
                                         <tfoot>
-                                            <tr className="bg-slate-800 text-white font-bold text-xs">
-                                                <td className="py-2 px-2" colSpan={3}>RATA-RATA / TOTAL</td>
-                                                <td className="py-2 px-2 text-right">{calendarData.monthly_summary.total_portions}</td>
+                                            <tr className="bg-slate-900 text-white font-bold text-xs">
+                                                <td className="py-3 px-3 uppercase tracking-wider" colSpan={3}>RATA-RATA / TOTAL BULAN INI</td>
+                                                <td className="py-3 px-3 text-right font-mono">{calendarData.monthly_summary.total_portions.toLocaleString("id-ID")}</td>
                                                 {(() => {
                                                     const daysWithNut = calendarData.days.filter(d => d.nutrition);
                                                     const count = daysWithNut.length || 1;
@@ -621,79 +911,28 @@ export default function MbgPage() {
                                                     const avgSayur = Math.round(daysWithNut.reduce((s, d) => s + (d.nutrition?.sayur_percentage || 0), 0) / count * 10) / 10;
                                                     return (
                                                         <>
-                                                            <td className="py-2 px-2 text-right text-orange-300">{avgCal}</td>
-                                                            <td className="py-2 px-2 text-right text-blue-300">{avgPro}</td>
-                                                            <td className="py-2 px-2 text-right text-yellow-300">{avgFat}</td>
-                                                            <td className="py-2 px-2 text-right text-teal-300">{avgCarb}</td>
-                                                            <td className="py-2 px-2 text-right">{avgGram}g</td>
-                                                            <td className="py-2 px-2 text-center">{avgSayur}%</td>
+                                                            <td className="py-3 px-3 text-right font-mono text-orange-300">{avgCal}</td>
+                                                            <td className="py-3 px-3 text-right font-mono text-blue-300">{avgPro}</td>
+                                                            <td className="py-3 px-3 text-right font-mono text-amber-300">{avgFat}</td>
+                                                            <td className="py-3 px-3 text-right font-mono text-teal-300">{avgCarb}</td>
+                                                            <td className="py-3 px-3 text-right font-mono">{avgGram}g</td>
+                                                            <td className="py-3 px-3 text-center font-mono">{avgSayur}%</td>
                                                         </>
                                                     );
                                                 })()}
-                                                <td className="py-2 px-2 text-center">
-                                                    {calendarData.days.filter(d => d.nutrition?.is_balanced).length}/{calendarData.days.filter(d => d.nutrition).length}
+                                                <td className="py-3 px-3 text-center text-emerald-400 font-mono">
+                                                    {calendarData.days.filter(d => d.nutrition?.is_balanced).length}/{calendarData.days.filter(d => d.nutrition).length} Lolos
                                                 </td>
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
                             </div>
-
-                            {/* Penerima Manfaat Full Table */}
-                            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg border border-white overflow-hidden">
-                                <div className="px-5 py-4 border-b border-gray-100">
-                                    <h2 className="font-bold text-gray-800">👥 Data Penerima Manfaat — {MONTHS_FULL[bulan]} {tahun}</h2>
-                                </div>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-sm">
-                                        <thead>
-                                            <tr className="bg-slate-800 text-white text-xs uppercase tracking-wider">
-                                                <th className="py-2.5 px-3 text-left">No</th>
-                                                <th className="py-2.5 px-3 text-left">Sekolah</th>
-                                                <th className="py-2.5 px-3 text-left">Tipe Alokasi</th>
-                                                <th className="py-2.5 px-3 text-left">Jenis Penerima</th>
-                                                <th className="py-2.5 px-3 text-right">Porsi Target/Hari</th>
-                                                <th className="py-2.5 px-3 text-right">Total Terkirim</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {calendarData.beneficiaries.map((b, idx) => {
-                                                // Calculate total delivered for this school
-                                                const totalDelivered = calendarData.days.reduce((sum, day) => {
-                                                    const schoolDel = day.deliveries.find(d => d.school_name === b.school_name);
-                                                    return sum + (schoolDel?.portions_sent || 0);
-                                                }, 0);
-                                                return (
-                                                    <tr key={idx} className={`border-t border-gray-100 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"}`}>
-                                                        <td className="py-2 px-3 text-gray-500">{idx + 1}</td>
-                                                        <td className="py-2 px-3 font-semibold text-gray-800">{b.school_name}</td>
-                                                        <td className="py-2 px-3 text-gray-600">{b.school_level === "paud_tk" ? "Rp 8.000 (PAUD/TK)" : "Rp 10.000 (SD/SMP/SMA)"}</td>
-                                                        <td className="py-2 px-3 text-gray-600">{b.beneficiary_type}</td>
-                                                        <td className="py-2 px-3 text-right font-mono font-bold">{b.target_portions}</td>
-                                                        <td className="py-2 px-3 text-right font-mono font-bold text-blue-700">{totalDelivered.toLocaleString("id-ID")}</td>
-                                                    </tr>
-                                                );
-                                            })}
-                                            {calendarData.beneficiaries.length === 0 && (
-                                                <tr><td colSpan={6} className="py-6 text-center text-gray-400 italic">Belum ada data penerima manfaat. Konfigurasi di menu Settings → Penerima Manfaat</td></tr>
-                                            )}
-                                        </tbody>
-                                        {calendarData.beneficiaries.length > 0 && (
-                                            <tfoot>
-                                                <tr className="bg-slate-800 text-white font-bold">
-                                                    <td className="py-2 px-3" colSpan={4}>TOTAL</td>
-                                                    <td className="py-2 px-3 text-right">{calendarData.beneficiaries.reduce((s, b) => s + b.target_portions, 0)}</td>
-                                                    <td className="py-2 px-3 text-right">{calendarData.monthly_summary.total_portions.toLocaleString("id-ID")}</td>
-                                                </tr>
-                                            </tfoot>
-                                        )}
-                                    </table>
-                                </div>
-                            </div>
                         </>
                     )}
-                </>
+                </div>
             )}
         </div>
     );
 }
+

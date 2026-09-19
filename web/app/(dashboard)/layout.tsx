@@ -21,47 +21,63 @@ import {
   ChevronRight,
   Menu,
   FileClock,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Search,
+  Bell,
+  Calendar,
+  Sparkles,
+  ShieldCheck,
+  ChevronDown,
+  ExternalLink
 } from "lucide-react";
 
 type NavItem = 
-  | { type: "divider", label: string, allowedRoles?: string[] }
-  | { href: string; icon: React.ReactNode; label: string; allowedRoles?: string[]; children?: { href: string; label: string; icon?: React.ReactNode }[] };
+  | { type: "divider"; label: string; accentColor: string; allowedRoles?: string[] }
+  | { 
+      href: string; 
+      icon: React.ReactNode; 
+      label: string; 
+      accentColor?: string;
+      allowedRoles?: string[]; 
+      children?: { href: string; label: string; icon?: React.ReactNode }[];
+      badge?: string;
+    };
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", icon: <Home className="w-5 h-5" />, label: "Dashboard", allowedRoles: ["owner", "admin", "akuntan", "gizi"] },
 
-  { type: "divider", label: "OPERASIONAL", allowedRoles: ["owner", "admin", "akuntan", "gizi"] },
-  { href: "/pembukuan", icon: <BookOpen className="w-5 h-5" />, label: "Pembukuan", allowedRoles: ["owner", "admin", "akuntan"] },
-  { href: "/mbg", icon: <Package className="w-5 h-5" />, label: "MBG Penyerahan", allowedRoles: ["owner", "admin", "akuntan", "gizi"] },
+  { type: "divider", label: "OPERASIONAL", accentColor: "blue", allowedRoles: ["owner", "admin", "akuntan", "gizi"] },
+  { href: "/pembukuan", icon: <BookOpen className="w-5 h-5" />, label: "Pembukuan", accentColor: "blue", allowedRoles: ["owner", "admin", "akuntan"] },
+  { href: "/mbg", icon: <Package className="w-5 h-5" />, label: "MBG Penyerahan", accentColor: "blue", allowedRoles: ["owner", "admin", "akuntan", "gizi"] },
   { 
     href: "/stok", 
     icon: <Package className="w-5 h-5" />, 
-    label: "Stok Barang", 
+    label: "Stok Gudang", 
+    accentColor: "blue",
     allowedRoles: ["owner", "admin", "akuntan"],
     children: [
       { href: "/stok", label: "Stok Utama", icon: <Package className="w-4 h-4" /> }, 
-      { href: "/stok/riwayat", label: "Riwayat Perubahan", icon: <FileClock className="w-4 h-4" /> }
+      { href: "/stok/riwayat", label: "Riwayat Log", icon: <FileClock className="w-4 h-4" /> }
     ] 
   },
-  { href: "/compliance", icon: <ClipboardCheck className="w-5 h-5" />, label: "Kepatuhan & Dokumen", allowedRoles: ["owner", "admin", "gizi"] },
+  { href: "/compliance", icon: <ClipboardCheck className="w-5 h-5" />, label: "Kepatuhan & Dokumen", accentColor: "blue", allowedRoles: ["owner", "admin", "gizi"] },
   
-  { type: "divider", label: "KEUANGAN", allowedRoles: ["owner", "admin", "akuntan"] },
-  { href: "/keuangan", icon: <CircleDollarSign className="w-5 h-5" />, label: "Piutang & Hutang", allowedRoles: ["owner", "admin", "akuntan"] },
-  { href: "/anggaran", icon: <PieChart className="w-5 h-5" />, label: "Anggaran Dasar", allowedRoles: ["owner", "admin", "akuntan"] },
+  { type: "divider", label: "KEUANGAN", accentColor: "emerald", allowedRoles: ["owner", "admin", "akuntan"] },
+  { href: "/keuangan", icon: <CircleDollarSign className="w-5 h-5" />, label: "Piutang & Hutang", accentColor: "emerald", allowedRoles: ["owner", "admin", "akuntan"] },
+  { href: "/anggaran", icon: <PieChart className="w-5 h-5" />, label: "Anggaran Juknis", accentColor: "emerald", allowedRoles: ["owner", "admin", "akuntan"] },
 
-  { type: "divider", label: "DAPUR", allowedRoles: ["owner", "admin", "gizi"] },
-  { href: "/dapur", icon: <UtensilsCrossed className="w-5 h-5" />, label: "Dapur & Resep (BOM)", allowedRoles: ["owner", "admin", "gizi"] },
-  { href: "/penyetelan-dapur", icon: <SlidersHorizontal className="w-5 h-5" />, label: "Penyetelan Dapur", allowedRoles: ["owner", "admin", "gizi"] },
+  { type: "divider", label: "DAPUR & GIZI", accentColor: "amber", allowedRoles: ["owner", "admin", "gizi"] },
+  { href: "/dapur", icon: <UtensilsCrossed className="w-5 h-5" />, label: "Dapur & Resep (BOM)", accentColor: "amber", allowedRoles: ["owner", "admin", "gizi"] },
+  { href: "/penyetelan-dapur", icon: <SlidersHorizontal className="w-5 h-5" />, label: "Penyetelan Dapur", accentColor: "amber", allowedRoles: ["owner", "admin", "gizi"] },
   
-  { type: "divider", label: "SDM", allowedRoles: ["owner", "admin", "akuntan"] },
-  { href: "/karyawan", icon: <Users className="w-5 h-5" />, label: "Karyawan & Staff", allowedRoles: ["owner", "admin", "akuntan"] },
+  { type: "divider", label: "SDM & KARYAWAN", accentColor: "violet", allowedRoles: ["owner", "admin", "akuntan"] },
+  { href: "/karyawan", icon: <Users className="w-5 h-5" />, label: "Karyawan & Tim", accentColor: "violet", allowedRoles: ["owner", "admin", "akuntan"] },
   
-  { type: "divider", label: "ANALITIK", allowedRoles: ["owner", "admin", "akuntan"] },
-  { href: "/insights", icon: <LineChart className="w-5 h-5" />, label: "Insights & Harga", allowedRoles: ["owner", "admin", "akuntan"] },
+  { type: "divider", label: "ANALITIK & PASAR", accentColor: "cyan", allowedRoles: ["owner", "admin", "akuntan"] },
+  { href: "/insights", icon: <LineChart className="w-5 h-5" />, label: "Insights & Tren Harga", accentColor: "cyan", allowedRoles: ["owner", "admin", "akuntan"] },
   
-  { type: "divider", label: "LAINNYA", allowedRoles: ["owner", "admin"] },
-  { href: "/settings", icon: <Settings className="w-5 h-5" />, label: "Pengaturan Sistem", allowedRoles: ["owner", "admin"] },
+  { type: "divider", label: "SISTEM", accentColor: "slate", allowedRoles: ["owner", "admin"] },
+  { href: "/settings", icon: <Settings className="w-5 h-5" />, label: "Pengaturan Sistem", accentColor: "slate", allowedRoles: ["owner", "admin"] },
 ];
 
 const Sidebar = ({ 
@@ -70,71 +86,108 @@ const Sidebar = ({
   setCollapsed,
   pathname,
   userRole,
+  handleLogout,
 }: { 
   mobile?: boolean;
   collapsed: boolean;
   setCollapsed: (v: boolean | ((prev: boolean) => boolean)) => void;
   pathname: string;
   userRole: string;
+  handleLogout: () => void;
 }) => {
   const isActive = (href: string) => {
     if (href === "/dashboard") return pathname === "/dashboard";
     return pathname.startsWith(href);
   };
 
+  const getRoleBadge = (role: string) => {
+    switch (role.toLowerCase()) {
+      case "owner":
+      case "admin":
+        return { label: "Admin SPPG", color: "bg-amber-500/15 text-amber-300 border-amber-500/30" };
+      case "akuntan":
+        return { label: "Akuntan", color: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" };
+      case "gizi":
+        return { label: "Ahli Gizi", color: "bg-cyan-500/15 text-cyan-300 border-cyan-500/30" };
+      default:
+        return { label: role, color: "bg-blue-500/15 text-blue-300 border-blue-500/30" };
+    }
+  };
+
+  const roleInfo = getRoleBadge(userRole);
+
   return (
-    <div
+    <aside
       className={`
-        ${mobile ? "w-72" : collapsed ? "w-[88px]" : "w-72"}
-        bg-white border-r border-gray-100 flex flex-col h-[100dvh] shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)]
+        ${mobile ? "w-72" : collapsed ? "w-[90px]" : "w-72"}
+        bg-[#0B1120] text-slate-300 border-r border-slate-800/80 flex flex-col h-[100dvh]
         ${mobile ? "" : "transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"}
-        relative
+        relative shadow-2xl z-30 select-none
       `}
     >
-      {/* Background Decor */}
-      <div className="absolute top-0 inset-x-0 h-64 bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none" />
+      {/* Ambient background glows inside sidebar */}
+      <div className="absolute top-0 left-0 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-20 right-0 w-48 h-48 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Logo Area */}
-      <div className="h-20 flex items-center justify-between px-6 relative z-10 shrink-0 mt-2">
+      {/* Brand Header */}
+      <div className="h-20 flex items-center justify-between px-5 relative z-10 shrink-0 border-b border-slate-800/60">
         {(!collapsed || mobile) ? (
-          <div className="flex items-center gap-3 w-full animate-in">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-md shadow-blue-600/20 flex items-center justify-center text-white ring-1 ring-white/20">
+          <div className="flex items-center gap-3 w-full animate-fade-in">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-violet-600 shadow-lg shadow-indigo-600/30 flex items-center justify-center text-white ring-1 ring-white/20 shrink-0">
               <UtensilsCrossed className="w-5 h-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-base font-bold text-gray-900 tracking-tight truncate leading-tight">MBG Catering</h1>
-              <p className="text-[11px] font-semibold text-blue-600 tracking-wider uppercase mt-0.5">{userRole || "Administrator"}</p>
+              <div className="flex items-center gap-1.5">
+                <h1 className="text-base font-bold text-white tracking-tight truncate">MBG Catering</h1>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" title="Sistem Aktif" />
+              </div>
+              <span className={`inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md border mt-0.5 ${roleInfo.color}`}>
+                {roleInfo.label}
+              </span>
             </div>
           </div>
         ) : (
-          <div className="w-10 h-10 mx-auto rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-md flex items-center justify-center text-white cursor-pointer hover:shadow-lg transition-shadow animate-in">
+          <div className="w-10 h-10 mx-auto rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-violet-600 shadow-lg shadow-indigo-600/30 flex items-center justify-center text-white cursor-pointer hover:scale-105 transition-transform animate-fade-in">
             <UtensilsCrossed className="w-5 h-5" />
           </div>
         )}
         
-        {/* Collapse Button */}
+        {/* Collapse toggle button */}
         {!mobile && (
           <button
             onClick={() => setCollapsed(c => !c)}
-            className="absolute -right-3.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-200 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all z-20"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className="absolute -right-3.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-slate-900 border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-indigo-500/20 focus:outline-none transition-all z-40"
           >
             {collapsed ? <ChevronRight className="w-4 h-4 ml-0.5" /> : <ChevronLeft className="w-4 h-4 mr-0.5" />}
           </button>
         )}
       </div>
 
-      {/* Navigation Scroll Area */}
-      <nav className="flex-1 py-4 px-4 overflow-y-auto overflow-x-hidden no-scrollbar relative z-10 space-y-1">
+      {/* Navigation Links Scrollable Area */}
+      <nav className="flex-1 py-4 px-3.5 overflow-y-auto overflow-x-hidden no-scrollbar relative z-10 space-y-1">
         {NAV_ITEMS.filter(item => !item.allowedRoles || item.allowedRoles.includes(userRole)).map((item, index) => {
           if ("type" in item && item.type === "divider") {
-            if (collapsed && !mobile) return <div key={`div-${index}`} className="my-5 border-b border-gray-100 w-8 mx-auto" />;
+            if (collapsed && !mobile) {
+              return <div key={`div-${index}`} className="my-3 border-b border-slate-800/80 w-8 mx-auto" />;
+            }
             return (
-              <div key={`div-${index}`} className="px-3 pt-5 pb-2 text-[11px] font-bold text-gray-400 tracking-widest uppercase flex items-center gap-2 animate-in shrink-0">
-                <span>{item.label}</span>
-                <div className="h-px bg-gray-100 flex-1 ml-2"></div>
+              <div key={`div-${index}`} className="px-3 pt-5 pb-1.5 text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 shrink-0">
+                <span className={`
+                  ${item.accentColor === "blue" ? "text-blue-400" : ""}
+                  ${item.accentColor === "emerald" ? "text-emerald-400" : ""}
+                  ${item.accentColor === "amber" ? "text-amber-400" : ""}
+                  ${item.accentColor === "violet" ? "text-violet-400" : ""}
+                  ${item.accentColor === "cyan" ? "text-cyan-400" : ""}
+                  ${item.accentColor === "slate" ? "text-slate-400" : ""}
+                `}>
+                  {item.label}
+                </span>
+                <div className="h-px bg-slate-800/80 flex-1 ml-1" />
               </div>
             );
           }
+
           if ("href" in item) {
             const active = isActive(item.href);
             const hasChildren = item.children && (!collapsed || mobile);
@@ -146,50 +199,57 @@ const Sidebar = ({
                   prefetch={true}
                   title={collapsed && !mobile ? item.label : undefined}
                   className={`
-                    relative flex items-center gap-3.5 py-2.5 rounded-xl text-[14px] font-medium transition-all duration-200 group w-full shrink-0
-                    ${collapsed && !mobile ? "justify-center px-0 w-12 mx-auto" : "px-3.5"}
+                    relative flex items-center gap-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group w-full shrink-0
+                    ${collapsed && !mobile ? "justify-center px-0 w-11 mx-auto" : "px-3.5"}
                     ${active
-                      ? "bg-blue-50/80 text-blue-700 shadow-sm shadow-blue-100/50"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 active:bg-gray-100"}
+                      ? "bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-transparent border border-blue-500/30 text-white font-semibold shadow-sm shadow-blue-500/10"
+                      : "text-slate-400 hover:text-white hover:bg-white/[0.05]"}
                   `}
                 >
-                  {/* Active Indicator Bar */}
+                  {/* Glowing vertical pill indicator for active link */}
                   {active && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-600 rounded-r-full" />
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-gradient-to-b from-blue-400 to-indigo-400 rounded-r-full shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
                   )}
                   
-                  <div className={`flex-shrink-0 transition-colors ${active ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600"}`}>
+                  <div className={`flex-shrink-0 transition-transform duration-200 group-hover:scale-110 ${active ? "text-blue-400" : "text-slate-400 group-hover:text-slate-200"}`}>
                     {item.icon}
                   </div>
                   
                   {(!collapsed || mobile) && (
-                    <span className="truncate">{item.label}</span>
+                    <span className="truncate flex-1">{item.label}</span>
+                  )}
+
+                  {/* Optional status / new badge */}
+                  {(!collapsed || mobile) && item.badge && (
+                    <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      {item.badge}
+                    </span>
                   )}
                 </Link>
 
-                {/* Submenu Items */}
+                {/* Submenu for nested items (e.g. Stok Utama & Riwayat) */}
                 {hasChildren && active && (
-                  <div className="ml-11 mt-1 space-y-1 relative before:absolute before:left-[-15px] before:top-2 before:bottom-2 before:w-px before:bg-blue-200/60 animate-in">
+                  <div className="ml-9 mt-1 space-y-1 relative pl-3 border-l border-slate-800 animate-slide-down">
                     {item.children!.map(child => {
-                      const childActive = pathname === child.href || pathname.startsWith(child.href + "/");
+                      const childActive = pathname === child.href;
                       return (
-                      <Link 
-                        key={child.href} 
-                        href={child.href}
-                        prefetch={true}
-                        className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all relative
-                          ${childActive
-                            ? "text-blue-700 bg-white shadow-sm ring-1 ring-blue-100 font-semibold"
-                            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 font-medium"}
-                        `}>
-                        {child.icon ? (
-                          <div className={childActive ? "text-blue-600" : "text-gray-400"}>{child.icon}</div>
-                        ) : (
-                          <div className={`w-1.5 h-1.5 rounded-full ${childActive ? "bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" : "bg-gray-300"}`} />
-                        )}
-                        <span className="truncate">{child.label}</span>
-                      </Link>
-                    )})}
+                        <Link 
+                          key={child.href} 
+                          href={child.href}
+                          prefetch={true}
+                          className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs transition-all relative
+                            ${childActive
+                              ? "text-blue-300 bg-blue-500/15 font-semibold border border-blue-500/20"
+                              : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.03] font-medium"}
+                          `}
+                        >
+                          <div className={childActive ? "text-blue-400" : "text-slate-500"}>
+                            {child.icon}
+                          </div>
+                          <span className="truncate">{child.label}</span>
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -198,7 +258,31 @@ const Sidebar = ({
           return null;
         })}
       </nav>
-    </div>
+
+      {/* User Profile & Logout Area at Bottom */}
+      <div className="p-3 border-t border-slate-800/80 relative z-10 shrink-0 bg-slate-950/40">
+        <button
+          onClick={handleLogout}
+          title={collapsed ? "Logout" : undefined}
+          className={`
+            w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-400 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all group
+            ${collapsed && !mobile ? "justify-center px-0 w-11 mx-auto" : ""}
+          `}
+        >
+          <LogOut className="w-5 h-5 group-hover:translate-x-0.5 text-slate-400 group-hover:text-red-400 transition-all shrink-0" />
+          {(!collapsed || mobile) && (
+            <div className="flex-1 text-left min-w-0">
+              <span className="block text-xs font-semibold group-hover:text-red-300 transition-colors truncate">
+                Keluar Sesi
+              </span>
+              <span className="block text-[10px] text-slate-500 truncate">
+                Simpan perubahan & logout
+              </span>
+            </div>
+          )}
+        </button>
+      </div>
+    </aside>
   );
 };
 
@@ -213,6 +297,7 @@ export default function DashboardLayout({
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userRole, setUserRole] = useState("owner");
+  const [tenantName, setTenantName] = useState("SPPG Dapur");
 
   useEffect(() => {
     const initAuth = async () => {
@@ -221,7 +306,7 @@ export default function DashboardLayout({
         return;
       }
 
-      // Fast path: load cached role immediately so layout renders instantly
+      // Fast path: load cached role immediately
       const cachedRole = localStorage.getItem("user_role");
       if (cachedRole) {
         setUserRole(cachedRole);
@@ -230,12 +315,14 @@ export default function DashboardLayout({
         setIsReady(true);
       }
 
-      // Verify in background and sync role
+      // Background verification
       try {
         const { apiGet } = await import("@/lib/api");
         const res = await apiGet("/auth/me");
         const freshRole = res?.data?.user?.role || "owner";
+        const freshTenant = res?.data?.tenant?.name || res?.data?.user?.tenant_name || "SPPG Dapur Utama";
         setUserRole(freshRole);
+        setTenantName(freshTenant);
         localStorage.setItem("user_role", freshRole);
       } catch (e: any) {
         if (e?.response?.status === 401) {
@@ -248,19 +335,21 @@ export default function DashboardLayout({
     initAuth();
   }, [router]);
 
-  // Close mobile sidebar on route change
-  useEffect(() => { setMobileOpen(false); }, [pathname]);
+  // Auto close mobile drawer on route change
+  useEffect(() => { 
+    setMobileOpen(false); 
+  }, [pathname]);
 
   if (!isReady) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-100">
-        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      <div className="flex h-screen items-center justify-center bg-slate-900">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-3 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+          <p className="text-xs text-slate-400 font-medium">Memuat MBG Catering...</p>
+        </div>
       </div>
     );
   }
-
-  // Removed Logout / User Area from sidebar to topbar or keep it separated if needed
-  // Since we extracted it, we will put the logout handler directly.
 
   const handleLogout = () => {
     clearToken();
@@ -272,98 +361,142 @@ export default function DashboardLayout({
     return pathname.startsWith(href);
   };
 
-
-  // Current page title from nav
+  // Find active label for breadcrumbs
   const currentPageItem = NAV_ITEMS.find(n => "href" in n && isActive(n.href));
-  const currentPage = currentPageItem && "label" in currentPageItem ? currentPageItem.label : "Dashboard";
+  const currentPageTitle = currentPageItem && "label" in currentPageItem ? currentPageItem.label : "Dashboard";
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Desktop Sidebar */}
+    <div className="flex h-screen bg-slate-100 overflow-hidden font-sans">
+      
+      {/* Desktop Persistent Sidebar */}
       <div className="hidden md:flex flex-col h-[100dvh]">
-        <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} pathname={pathname} userRole={userRole} />
-        {/* Logout / User Area */}
-        <div className="p-4 border-t border-gray-100 relative z-10 shrink-0 bg-gray-50/50 w-full">
-          <button
-            onClick={handleLogout}
-            title={collapsed ? "Logout" : undefined}
-            className={`
-              w-full flex items-center justify-center gap-3 px-3 py-2.5 rounded-xl font-medium text-red-600 hover:bg-red-50 focus:ring-2 focus:ring-red-100 active:bg-red-100 outline-none transition-all group
-              ${collapsed ? "px-0 w-12 mx-auto justify-center" : ""}
-            `}
-          >
-            <LogOut className="w-5 h-5 text-red-500 group-hover:text-red-700 transition-colors shrink-0" />
-            {!collapsed && <span className="text-sm">Logout / Keluar</span>}
-          </button>
-        </div>
+        <Sidebar 
+          collapsed={collapsed} 
+          setCollapsed={setCollapsed} 
+          pathname={pathname} 
+          userRole={userRole} 
+          handleLogout={handleLogout}
+        />
       </div>
 
-      {/* Mobile Overlay */}
+      {/* Mobile Drawer Overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 md:hidden">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <div className="absolute left-0 top-0 h-full z-50 flex flex-col w-72 bg-white">
-            <Sidebar mobile={true} collapsed={false} setCollapsed={setCollapsed} pathname={pathname} userRole={userRole} />
-            <div className="p-4 border-t border-gray-100 relative z-10 shrink-0 bg-gray-50/50">
-              <button onClick={handleLogout} className="w-full flex items-center justify-center gap-3 px-3 py-2.5 rounded-xl font-medium text-red-600 hover:bg-red-50 focus:ring-2 focus:ring-red-100 active:bg-red-100 outline-none transition-all group">
-                <LogOut className="w-5 h-5 text-red-500 group-hover:text-red-700 transition-colors shrink-0" />
-                <span className="text-sm">Logout / Keluar</span>
-              </button>
-            </div>
+        <div className="fixed inset-0 z-50 md:hidden animate-fade-in">
+          <div 
+            className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity" 
+            onClick={() => setMobileOpen(false)} 
+          />
+          <div className="absolute left-0 top-0 h-full z-50 flex flex-col w-72 bg-[#0B1120] shadow-2xl animate-slide-right">
+            <Sidebar 
+              mobile={true} 
+              collapsed={false} 
+              setCollapsed={setCollapsed} 
+              pathname={pathname} 
+              userRole={userRole} 
+              handleLogout={handleLogout}
+            />
           </div>
         </div>
       )}
 
-      {/* Main */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Topbar */}
-        <div className="bg-white/90 backdrop-blur-xl border-b border-gray-200/60 px-5 sm:px-8 h-20 flex items-center justify-between shrink-0 sticky top-0 z-20 shadow-sm shadow-black/5">
-          <div className="flex items-center gap-4">
+      {/* Main Container */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50/70">
+        
+        {/* Modern Glass Topbar */}
+        <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/80 px-4 sm:px-8 h-18 flex items-center justify-between shrink-0 sticky top-0 z-20 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.03)]">
+          
+          {/* Left: Mobile trigger & Page Identity */}
+          <div className="flex items-center gap-3.5">
             <button
-              className="md:hidden p-2 -ml-2 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-600 active:scale-95 transition-all"
+              className="md:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 active:scale-95 transition-all"
               onClick={() => setMobileOpen(true)}
+              aria-label="Buka menu navigasi"
             >
               <Menu className="w-5 h-5" />
             </button>
+
             <div className="flex flex-col">
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 bg-clip-text font-sans">
-                {currentPage}
-              </h2>
-              <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5 hidden sm:flex font-medium">
-                <Home className="w-3.5 h-3.5" />
-                <span>/</span>
-                <span className="text-gray-800">{currentPage}</span>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900">
+                  {currentPageTitle}
+                </h2>
+                <span className="hidden lg:inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-700">
+                  <Sparkles className="w-3 h-3 text-amber-500" />
+                  MBG Enterprise
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-slate-500 hidden sm:flex">
+                <Home className="w-3.5 h-3.5 text-slate-400" />
+                <span className="text-slate-300">/</span>
+                <span className="text-slate-700 font-medium">{currentPageTitle}</span>
               </div>
             </div>
           </div>
-          
-          <div className="flex items-center gap-4 sm:gap-6">
-            <div className="hidden sm:flex flex-col items-end">
-              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1 shadow-transparent">
-                HARI INI
-              </span>
-              <span className="text-sm font-semibold text-gray-800 bg-gray-100/80 px-3 py-1.5 rounded-lg border border-gray-200/50" suppressHydrationWarning>
-                {new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short", year: "numeric" })}
-              </span>
-            </div>
-            
-            <div className="w-px h-8 bg-gray-200 hidden sm:block"></div>
-            
-            {/* User Avatar Placeholder */}
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-100 to-indigo-50 border-2 border-white shadow-sm flex items-center justify-center cursor-pointer hover:shadow-md transition-shadow">
-               <span className="font-bold tracking-tighter text-blue-700">A</span>
-               <div className="absolute right-6 top-5 sm:right-10 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+
+          {/* Center: Interactive Quick Search trigger */}
+          <div className="hidden xl:flex items-center">
+            <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-slate-100/90 hover:bg-slate-100 border border-slate-200/90 text-slate-500 text-xs cursor-pointer transition-colors w-72 group shadow-inner">
+              <Search className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-colors" />
+              <span className="flex-1 text-slate-400 group-hover:text-slate-600">Cari nota, resep, atau stok...</span>
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-white border border-slate-200 rounded text-slate-500 shadow-xs">
+                ⌘K
+              </kbd>
             </div>
           </div>
-        </div>
+          
+          {/* Right: Date, System status badge, & User Avatar */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            
+            {/* Live date badge */}
+            <div className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-slate-100 to-indigo-50/50 px-3 py-1.5 rounded-xl border border-slate-200/60 shadow-xs">
+              <Calendar className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="text-xs font-semibold text-slate-700" suppressHydrationWarning>
+                {new Date().toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+              </span>
+            </div>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-x-hidden overflow-y-auto bg-[#fafafa]">
-          <div className="p-4 sm:px-6 sm:pt-2 sm:pb-6 lg:px-8 lg:pt-4 lg:pb-8 max-w-[1600px] mx-auto w-full animate-in">
+            {/* Compliance indicator badge */}
+            <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold shadow-xs">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Juknis BGN Terverifikasi</span>
+            </div>
+
+            <div className="w-px h-6 bg-slate-200 hidden sm:block" />
+
+            {/* User Profile Pill */}
+            <div className="flex items-center gap-2.5 pl-1">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 p-[1.5px] shadow-sm cursor-pointer hover:shadow-md transition-shadow">
+                <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
+                  <span className="text-xs font-bold bg-gradient-to-tr from-blue-600 to-indigo-600 bg-clip-text text-transparent uppercase">
+                    {userRole ? userRole.charAt(0) : "A"}
+                  </span>
+                </div>
+              </div>
+              <div className="hidden md:flex flex-col text-left">
+                <span className="text-xs font-bold text-slate-900 leading-tight truncate max-w-[120px]">
+                  {tenantName}
+                </span>
+                <span className="text-[10px] text-slate-500 font-medium capitalize">
+                  {userRole}
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </header>
+
+        {/* Content Area with rich ambient canvas */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto relative bg-[#F8FAFC]">
+          {/* Subtle multi-color ambient accents in background */}
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-400/5 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-10 left-10 w-96 h-96 bg-amber-400/5 rounded-full blur-[120px] pointer-events-none" />
+
+          <div className="p-4 sm:px-6 sm:pt-4 sm:pb-8 lg:px-8 lg:pt-6 lg:pb-10 max-w-[1600px] mx-auto w-full relative z-10 animate-fade-in">
             {children}
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );
 }
+

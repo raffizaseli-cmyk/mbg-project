@@ -4,12 +4,28 @@ import { apiPost } from "@/lib/api";
 import { setToken } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { UtensilsCrossed, ArrowRight, Loader2, Mail, Lock } from "lucide-react";
+import Link from "next/link";
+import { 
+  UtensilsCrossed, 
+  ArrowRight, 
+  Loader2, 
+  Mail, 
+  Lock, 
+  Eye, 
+  EyeOff, 
+  Sparkles, 
+  ShieldCheck, 
+  ReceiptText, 
+  Apple, 
+  CheckCircle2, 
+  AlertCircle 
+} from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -24,132 +40,300 @@ export default function LoginPage() {
         setToken(result.data.access_token);
         router.push("/dashboard");
       } else {
-        setError(result.error || "Login gagal");
+        setError(result.error || "Login gagal. Silakan periksa kembali email dan kata sandi Anda.");
       }
     } catch (err: any) {
       const msg =
         err?.response?.data?.error ||
         err?.response?.data?.detail ||
         err?.message ||
-        "Terjadi error, coba lagi";
+        "Terjadi kesalahan koneksi server, silakan coba beberapa saat lagi.";
       setError(msg);
     } finally {
       setLoading(false);
     }
   }
 
+  // Quick helper for development / demo test
+  function fillDemoAccount(roleEmail: string) {
+    setEmail(roleEmail);
+    setPassword("password123");
+  }
+
   return (
-    <div className="w-full max-w-[1000px] bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] border border-white flex overflow-hidden animate-in">
-      {/* Branding Section - Hidden on Mobile */}
-      <div className="hidden lg:flex flex-col justify-between w-1/2 p-12 bg-gradient-to-br from-blue-600 to-indigo-700 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 mix-blend-overlay" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")"}}></div>
-        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
-        
-        <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
-            <UtensilsCrossed className="w-6 h-6 text-white" />
+    <div className="w-full max-w-[1060px] bg-slate-900/60 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-slate-700/50 flex flex-col lg:flex-row overflow-hidden animate-fade-in transition-all">
+      
+      {/* ─── Branding & Feature Showcase Section (Left Panel) ─────────── */}
+      <div className="hidden lg:flex flex-col justify-between w-[52%] p-12 bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white relative overflow-hidden border-r border-slate-800/60">
+        {/* Ambient Glows */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-10 -left-20 w-80 h-80 bg-violet-600/20 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/3 w-60 h-60 bg-amber-500/10 rounded-full blur-[90px] pointer-events-none" />
+
+        {/* Top Header & Brand Tag */}
+        <div className="relative z-10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 bg-gradient-to-br from-blue-500 via-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30 ring-1 ring-white/20">
+                <UtensilsCrossed className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
+                  MBG Catering
+                </span>
+                <span className="block text-[10px] uppercase font-semibold tracking-wider text-amber-400">
+                  Enterprise Suite
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Sistem Aktif & Terverifikasi</span>
+            </div>
           </div>
-          <span className="text-xl font-bold tracking-tight">MBG Catering</span>
         </div>
 
-        <div className="relative z-10 mt-auto">
-          <h2 className="text-4xl font-bold leading-tight mb-4 tracking-tight">
-            Manajemen<br />Catering Efisien
-          </h2>
-          <p className="text-blue-100/80 text-lg max-w-sm leading-relaxed">
-            Sistem monitoring stok, pembukuan cerdas, dan analisis AI untuk operasional bisnis MBG Anda.
+        {/* Center Value Proposition */}
+        <div className="relative z-10 my-auto py-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-xs font-medium mb-5 backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <span>Platform Akuntabilitas Makan Bergizi Gratis</span>
+          </div>
+
+          <h1 className="text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight text-white mb-4">
+            Operasional Dapur{" "}
+            <span className="bg-gradient-to-r from-amber-300 via-orange-300 to-amber-400 bg-clip-text text-transparent">
+              Cepat, Cerdas,
+            </span>{" "}
+            dan Transparan.
+          </h1>
+
+          <p className="text-slate-300/80 text-sm leading-relaxed max-w-md mb-8">
+            Kendalikan stok real-time, ekstrak nota belanja pasar otomatis via AI Vision, dan pantau standar gizi sekolah dalam satu dasbor terpadu.
           </p>
+
+          {/* 3 Interactive Feature Glass Cards */}
+          <div className="grid grid-cols-1 gap-3 max-w-md">
+            <div className="p-3.5 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] backdrop-blur-md transition-all flex items-start gap-3.5 group">
+              <div className="p-2 rounded-xl bg-blue-500/15 text-blue-400 border border-blue-500/20 group-hover:scale-105 transition-transform shrink-0">
+                <ReceiptText className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">
+                  AI OCR Nota & Rekonsiliasi Pasar
+                </h4>
+                <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
+                  Ekstraksi nota tulis tangan instan dengan penyesuaian matematika harga satuan otomatis.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] backdrop-blur-md transition-all flex items-start gap-3.5 group">
+              <div className="p-2 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/20 group-hover:scale-105 transition-transform shrink-0">
+                <Apple className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">
+                  Perhitungan Resep & Gizi (BOM)
+                </h4>
+                <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
+                  Kalkulasi porsi presisi, estimasi HPP per piring, dan kepatuhan standar nutrisi BGN.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] backdrop-blur-md transition-all flex items-start gap-3.5 group">
+              <div className="p-2 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 group-hover:scale-105 transition-transform shrink-0">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">
+                  BAP Digital & Kepatuhan Distribusi
+                </h4>
+                <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
+                  Bukti serah terima makanan ke sekolah tersimpan rapi siap untuk laporan audit resmi.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Guarantee */}
+        <div className="relative z-10 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            Standardized for Badan Gizi Nasional (BGN)
+          </span>
+          <span className="text-[11px] text-slate-500">v2.4 Production</span>
         </div>
       </div>
 
-      {/* Login Form Section */}
-      <div className="w-full lg:w-1/2 p-8 sm:p-12">
-        <div className="max-w-sm mx-auto">
+      {/* ─── Form Section (Right Panel) ─────────────────────────────── */}
+      <div className="w-full lg:w-[48%] p-8 sm:p-12 flex flex-col justify-between bg-white/[0.97] backdrop-blur-3xl">
+        <div className="max-w-md w-full mx-auto">
+          
+          {/* Mobile Branding */}
           <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
-                <UtensilsCrossed className="w-6 h-6 text-white" />
-             </div>
-             <span className="text-xl font-bold tracking-tight text-gray-900">MBG Catering</span>
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
+              <UtensilsCrossed className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <span className="text-lg font-bold tracking-tight text-slate-900">MBG Catering</span>
+              <span className="block text-[9px] uppercase tracking-wider text-amber-600 font-semibold">Enterprise Suite</span>
+            </div>
           </div>
 
-          <div className="mb-10 text-center lg:text-left">
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Selamat Datang 👋</h1>
-            <p className="text-gray-500 mt-2 text-sm">Masuk ke akun Anda untuk melanjutkan</p>
+          {/* Form Header */}
+          <div className="mb-8 text-center lg:text-left">
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center justify-center lg:justify-start gap-2">
+              Selamat Datang 👋
+            </h2>
+            <p className="text-slate-500 mt-1.5 text-sm">
+              Masuk ke akun Anda untuk mengelola operasional catering hari ini.
+            </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          {/* Form */}
+          <form onSubmit={handleLogin} className="space-y-4">
             {error && (
-              <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl flex items-start gap-3 animate-in">
-                <span className="mt-0.5 text-base">⚠️</span>
-                <p className="flex-1 font-medium">{error}</p>
+              <div className="p-4 bg-red-50/90 border border-red-200/80 text-red-700 text-sm rounded-2xl flex items-start gap-3 animate-slide-down">
+                <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                <p className="flex-1 font-medium leading-relaxed">{error}</p>
               </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-3.5">
+              {/* Email Input */}
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700">Email Utama</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Email Akun
+                </label>
                 <div className="relative group">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all outline-none"
-                    placeholder="nama@email.com"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50/80 border border-slate-200/90 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/15 transition-all outline-none"
+                    placeholder="nama@sppg.id"
                     required
                   />
                 </div>
               </div>
 
+              {/* Password Input */}
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700">Password</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Kata Sandi
+                  </label>
+                  <a href="#" className="text-xs text-indigo-600 font-semibold hover:text-indigo-700 transition-colors">
+                    Lupa sandi?
+                  </a>
+                </div>
                 <div className="relative group">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all outline-none"
+                    className="w-full pl-10 pr-11 py-3 bg-slate-50/80 border border-slate-200/90 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/15 transition-all outline-none"
                     placeholder="••••••••"
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-sm py-1">
-              <label className="flex items-center gap-2 cursor-pointer group">
-                 <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 transition-colors cursor-pointer" />
-                 <span className="text-gray-600 group-hover:text-gray-900 transition-colors font-medium">Ingat saya</span>
+            {/* Remember Me */}
+            <div className="flex items-center justify-between pt-1">
+              <label className="flex items-center gap-2.5 cursor-pointer group select-none">
+                <input 
+                  type="checkbox" 
+                  className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer accent-indigo-600" 
+                />
+                <span className="text-xs text-slate-600 group-hover:text-slate-900 transition-colors font-medium">
+                  Ingat sesi saya di perangkat ini
+                </span>
               </label>
-              <a href="#" className="text-blue-600 font-semibold hover:text-blue-700 transition-colors">Lupa Password?</a>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-blue-600/20 mt-2 group"
+              className="w-full mt-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:via-indigo-500 hover:to-violet-500 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none group"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Memproses...</span>
+                  <span>Memverifikasi Akses...</span>
                 </>
               ) : (
                 <>
                   <span>Masuk ke Dashboard</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                 </>
               )}
             </button>
           </form>
 
-          <p className="text-center mt-8 text-sm text-gray-500">
-            Belum punya akun?{" "}
-            <a href="/register" className="text-blue-600 font-semibold hover:text-blue-700 transition-colors hover:underline">
-              Daftar Sekarang
-            </a>
+          {/* Quick Demo Credentials for Fast Testing */}
+          <div className="mt-6 pt-5 border-t border-slate-100">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Uji Coba Akun Demo
+              </span>
+              <span className="text-[10px] text-indigo-600 font-medium">Klik untuk isi otomatis</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => fillDemoAccount("admin@sppg.id")}
+                className="px-2.5 py-1 text-xs rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium transition-colors border border-indigo-200/60"
+              >
+                Admin SPPG
+              </button>
+              <button
+                type="button"
+                onClick={() => fillDemoAccount("akuntan@sppg.id")}
+                className="px-2.5 py-1 text-xs rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium transition-colors border border-emerald-200/60"
+              >
+                Akuntan
+              </button>
+              <button
+                type="button"
+                onClick={() => fillDemoAccount("gizi@sppg.id")}
+                className="px-2.5 py-1 text-xs rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-medium transition-colors border border-amber-200/60"
+              >
+                Ahli Gizi
+              </button>
+            </div>
+          </div>
+
+          {/* Register Link */}
+          <p className="text-center mt-6 text-xs text-slate-500">
+            Belum mendaftarkan SPPG / Dapur MBG Anda?{" "}
+            <Link 
+              href="/register" 
+              className="text-indigo-600 font-bold hover:text-indigo-700 transition-colors hover:underline"
+            >
+              Daftar Tenant Baru
+            </Link>
           </p>
+        </div>
+
+        {/* Security Assurance footer */}
+        <div className="text-center mt-6 text-[11px] text-slate-400">
+          Dilindungi enkripsi TLS & JWT Session Token • Hak Cipta MBG Catering
         </div>
       </div>
     </div>
