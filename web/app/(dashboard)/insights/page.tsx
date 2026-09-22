@@ -676,7 +676,7 @@ function JadwalTab() {
                                                 <div className="font-semibold text-sm text-gray-800 mb-2 truncate" title={s.school_name}>{s.school_name}</div>
                                                 <div className="grid grid-cols-2 gap-3">
                                                     <div>
-                                                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Target Tiba</label>
+                                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Target Tiba</label>
                                                         <input type="time" value={s.target_arrival}
                                                             onChange={e => {
                                                                 const nw = [...(masterForm.schools || [])];
@@ -686,7 +686,7 @@ function JadwalTab() {
                                                             className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm" />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Perjalanan (Min)</label>
+                                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Perjalanan (Min)</label>
                                                         <input type="number" min={5} value={s.travel_minutes}
                                                             onChange={e => {
                                                                 const nw = [...(masterForm.schools || [])];

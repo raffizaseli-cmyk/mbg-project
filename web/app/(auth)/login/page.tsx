@@ -80,7 +80,7 @@ export default function LoginPage() {
                 <span className="text-lg font-bold tracking-tight text-white">
                   MBG Catering
                 </span>
-                <span className="block text-[10px] uppercase font-semibold tracking-wider text-amber-400">
+                <span className="block text-xs uppercase font-semibold tracking-wider text-amber-400">
                   Enterprise Suite
                 </span>
               </div>
@@ -122,7 +122,7 @@ export default function LoginPage() {
                 <h4 className="text-xs font-semibold text-white">
                   OCR Nota & Rekonsiliasi Pasar
                 </h4>
-                <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
+                <p className="text-xs text-slate-400 leading-snug mt-0.5">
                   Ekstraksi nota belanja pasar otomatis dengan kalkulasi harga satuan presisi.
                 </p>
               </div>
@@ -136,7 +136,7 @@ export default function LoginPage() {
                 <h4 className="text-xs font-semibold text-white">
                   Perhitungan Resep & Gizi (BOM)
                 </h4>
-                <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
+                <p className="text-xs text-slate-400 leading-snug mt-0.5">
                   Kalkulasi porsi presisi, estimasi HPP per piring, dan kepatuhan standar nutrisi BGN.
                 </p>
               </div>
@@ -150,7 +150,7 @@ export default function LoginPage() {
                 <h4 className="text-xs font-semibold text-white">
                   BAP Digital & Distribusi
                 </h4>
-                <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
+                <p className="text-xs text-slate-400 leading-snug mt-0.5">
                   Bukti serah terima makanan ke sekolah tersimpan rapi untuk laporan audit.
                 </p>
               </div>
@@ -164,7 +164,7 @@ export default function LoginPage() {
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             Standar Badan Gizi Nasional (BGN)
           </span>
-          <span className="text-[11px] text-slate-500">v2.4 Production</span>
+          <span className="text-xs text-slate-500">v2.4 Production</span>
         </div>
       </div>
 
@@ -179,7 +179,7 @@ export default function LoginPage() {
             </div>
             <div>
               <span className="text-lg font-bold tracking-tight text-slate-900">MBG Catering</span>
-              <span className="block text-[9px] uppercase tracking-wider text-blue-600 font-semibold">Enterprise Suite</span>
+              <span className="block text-xs uppercase tracking-wider text-blue-600 font-semibold">Enterprise Suite</span>
             </div>
           </div>
 
@@ -288,10 +288,10 @@ export default function LoginPage() {
           {/* Quick Demo Credentials */}
           <div className="mt-5 pt-4 border-t border-slate-100">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Uji Coba Cepat
               </span>
-              <span className="text-[10px] text-blue-600 font-medium">Klik untuk isi akun demo</span>
+              <span className="text-xs text-blue-600 font-medium">Klik untuk isi akun demo</span>
             </div>
             <div className="flex flex-wrap gap-2">
               <button
@@ -331,7 +331,7 @@ export default function LoginPage() {
         </div>
 
         {/* Security Assurance footer */}
-        <div className="text-center mt-5 text-[11px] text-slate-400">
+        <div className="text-center mt-5 text-xs text-slate-400">
           Dilindungi enkripsi sesi TLS & JWT • MBG Catering
         </div>
       </div>

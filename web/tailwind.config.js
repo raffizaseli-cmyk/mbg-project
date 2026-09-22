@@ -90,7 +90,8 @@ module.exports = {
       /* Font Configuration */
       fontFamily: {
         sans: [
-          'var(--font-inter)',
+          'var(--font-plus-jakarta)',
+          '"Plus Jakarta Sans"',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',

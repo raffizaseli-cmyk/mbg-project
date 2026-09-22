@@ -163,7 +163,7 @@ function PiutangTab() {
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                <tr className="bg-slate-50/80 border-b border-slate-200/80 text-xs font-bold text-slate-500 uppercase tracking-wider">
                                     <th className="text-left px-6 py-3.5">Tanggal Penyerahan</th>
                                     <th className="text-left px-5 py-3.5">Debitur / Entitas Program</th>
                                     <th className="text-right px-6 py-3.5">Estimasi Hak Tagih Bahan</th>
@@ -393,7 +393,7 @@ function HutangTab() {
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                <tr className="bg-slate-50/80 border-b border-slate-200/80 text-xs font-bold text-slate-500 uppercase tracking-wider">
                                     <th className="text-left px-5 py-3.5">Tanggal Nota</th>
                                     <th className="text-left px-5 py-3.5">Supplier Mitra</th>
                                     <th className="text-right px-5 py-3.5">Total Tagihan</th>

@@ -855,7 +855,7 @@ export default function PenyetelanDapurPage() {
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
             Pusat Penyetelan Dapur & Nutrisi
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium max-w-3xl">
+          <p className="text-sm sm:text-base text-slate-600 mt-1 font-medium max-w-3xl">
             Kelola graf rantai satuan bobot, database komposisi pangan TKPI Kemenkes, dan pemetaan alias bahan baku OCR.
           </p>
         </div>
@@ -915,7 +915,7 @@ export default function PenyetelanDapurPage() {
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
                         <h2 className="text-lg font-bold text-gray-900">Rantai Konversi Satuan Bertingkat</h2>
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                        <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">
                           Hybrid Graph + Fast Cache O(1)
                         </span>
                       </div>
@@ -970,7 +970,7 @@ export default function PenyetelanDapurPage() {
                             >
                               <span className="truncate">{item.common_name}</span>
                               {item.category && (
-                                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-wide shrink-0">
+                                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-wide shrink-0">
                                   {item.category}
                                 </span>
                               )}
@@ -1103,7 +1103,7 @@ export default function PenyetelanDapurPage() {
                       {/* Left: From Unit */}
                       <div className="grid grid-cols-[80px_1fr] gap-2">
                         <div>
-                          <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1">Jumlah</label>
+                          <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Jumlah</label>
                           <input
                             type="number"
                             min="0.0001"
@@ -1116,7 +1116,7 @@ export default function PenyetelanDapurPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1">Satuan Asal</label>
+                          <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Satuan Asal</label>
                           <input
                             type="text"
                             value={chainForm.from_unit}
@@ -1137,7 +1137,7 @@ export default function PenyetelanDapurPage() {
                       {/* Right: To Unit */}
                       <div className="grid grid-cols-[80px_1fr] gap-2">
                         <div>
-                          <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1">Jumlah</label>
+                          <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Jumlah</label>
                           <input
                             type="number"
                             min="0.0001"
@@ -1150,7 +1150,7 @@ export default function PenyetelanDapurPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1">Satuan Tujuan</label>
+                          <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Satuan Tujuan</label>
                           <input
                             type="text"
                             value={chainForm.to_unit}
@@ -1165,7 +1165,7 @@ export default function PenyetelanDapurPage() {
 
                     {/* Quick suggestion chips for To Unit */}
                     <div className="mt-3.5 flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[11px] font-semibold text-gray-400 mr-1">Saran Satuan Tujuan:</span>
+                      <span className="text-xs font-semibold text-gray-400 mr-1">Saran Satuan Tujuan:</span>
                       {["gram", "pcs", "kg", "liter", "dus", "pack", "ikat", "papan"].map((s) => (
                         <button
                           key={s}
@@ -1251,7 +1251,7 @@ export default function PenyetelanDapurPage() {
                             </span>
                           </div>
 
-                          <p className="mt-2.5 text-[11px] text-gray-500 font-medium border-t border-gray-100 pt-2">
+                          <p className="mt-2.5 text-xs text-gray-500 font-medium border-t border-gray-100 pt-2">
                             Rasio: 1 {chain.from_unit} = <strong>{mult} {chain.to_unit}</strong>
                           </p>
                         </div>
@@ -1665,7 +1665,7 @@ export default function PenyetelanDapurPage() {
                         <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
                           <span>Daftar Produk Baku & Alias Terdaftar ({groupedAliases.length})</span>
                         </h3>
-                        <span className="text-[11px] text-gray-400">Hubungkan setiap produk ke Database Nutrisi TKPI</span>
+                        <span className="text-xs text-gray-400">Hubungkan setiap produk ke Database Nutrisi TKPI</span>
                       </div>
 
                       {groupedAliases.map((group) => {
@@ -1710,12 +1710,12 @@ export default function PenyetelanDapurPage() {
                                         🥗 {nutRef.name || group.productName}
                                       </span>
                                       {nutRef.kategori && (
-                                        <span className="text-[9px] font-bold uppercase bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">
+                                        <span className="text-xs font-bold uppercase bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">
                                           {nutRef.kategori}
                                         </span>
                                       )}
                                     </div>
-                                    <div className="hidden lg:flex items-center gap-1 text-[11px] font-bold">
+                                    <div className="hidden lg:flex items-center gap-1 text-xs font-bold">
                                       <span className="px-2 py-1 bg-orange-50 text-orange-700 rounded-lg border border-orange-100">{Math.round(nutRef.calories)} kkal</span>
                                       <span className="px-2 py-1 bg-red-50 text-red-700 rounded-lg border border-red-100">P: {Number(nutRef.proteins).toFixed(1)}g</span>
                                       <span className="px-2 py-1 bg-yellow-50 text-yellow-700 rounded-lg border border-yellow-100">L: {Number(nutRef.fat).toFixed(1)}g</span>
@@ -1758,26 +1758,26 @@ export default function PenyetelanDapurPage() {
                                 {/* Nutrition Details Card if linked */}
                                 {hasNut && (
                                   <div className="bg-white rounded-xl border border-gray-200 p-3.5">
-                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">📊 Content Nutrisi per 100g (Standard TKPI)</p>
+                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">📊 Content Nutrisi per 100g (Standard TKPI)</p>
                                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                                       <div className="px-3 py-2 bg-orange-50 rounded-lg border border-orange-100">
-                                        <p className="text-[10px] text-orange-500 font-semibold uppercase">Kalori</p>
+                                        <p className="text-xs text-orange-500 font-semibold uppercase">Kalori</p>
                                         <p className="text-sm font-bold text-orange-700">{Math.round(nutRef.calories)} kkal</p>
                                       </div>
                                       <div className="px-3 py-2 bg-red-50 rounded-lg border border-red-100">
-                                        <p className="text-[10px] text-red-500 font-semibold uppercase">Protein</p>
+                                        <p className="text-xs text-red-500 font-semibold uppercase">Protein</p>
                                         <p className="text-sm font-bold text-red-700">{Number(nutRef.proteins).toFixed(1)} g</p>
                                       </div>
                                       <div className="px-3 py-2 bg-yellow-50 rounded-lg border border-yellow-100">
-                                        <p className="text-[10px] text-yellow-600 font-semibold uppercase">Lemak</p>
+                                        <p className="text-xs text-yellow-600 font-semibold uppercase">Lemak</p>
                                         <p className="text-sm font-bold text-yellow-700">{Number(nutRef.fat).toFixed(1)} g</p>
                                       </div>
                                       <div className="px-3 py-2 bg-blue-50 rounded-lg border border-blue-100">
-                                        <p className="text-[10px] text-blue-500 font-semibold uppercase">Karbohidrat</p>
+                                        <p className="text-xs text-blue-500 font-semibold uppercase">Karbohidrat</p>
                                         <p className="text-sm font-bold text-blue-700">{Number(nutRef.carbohydrate).toFixed(1)} g</p>
                                       </div>
                                       <div className="px-3 py-2 bg-green-50 rounded-lg border border-green-100">
-                                        <p className="text-[10px] text-green-500 font-semibold uppercase">Serat</p>
+                                        <p className="text-xs text-green-500 font-semibold uppercase">Serat</p>
                                         <p className="text-sm font-bold text-green-700">{Number(nutRef.fiber).toFixed(1)} g</p>
                                       </div>
                                     </div>
@@ -1805,7 +1805,7 @@ export default function PenyetelanDapurPage() {
                                             </span>
                                           </td>
                                           <td className="px-4 py-3">
-                                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100">
+                                            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100">
                                               {a.source || "web_mapping"}
                                             </span>
                                           </td>
@@ -1878,7 +1878,7 @@ export default function PenyetelanDapurPage() {
                                     <div className="flex items-center gap-2.5 flex-wrap">
                                       <h4 className="text-sm font-bold text-gray-900 truncate">{m.nama_tkpi}</h4>
                                       {m.kategori_induk && (
-                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wide shrink-0">
+                                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wide shrink-0">
                                           {m.kategori_induk}
                                         </span>
                                       )}
@@ -2517,13 +2517,13 @@ export default function PenyetelanDapurPage() {
                     >
                       <div>
                         <p className="text-sm font-bold text-gray-900 group-hover:text-blue-700">{n.name}</p>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600 uppercase mt-0.5 inline-block">
+                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-600 uppercase mt-0.5 inline-block">
                           {n.kategori || "Lainnya"}
                         </span>
                       </div>
                       <div className="text-right text-xs text-gray-500 shrink-0">
                         <p className="font-bold text-orange-600">{Math.round(n.calories)} kkal</p>
-                        <p className="text-[10px]">P: {Number(n.proteins).toFixed(1)}g | L: {Number(n.fat).toFixed(1)}g | K: {Number(n.carbohydrate).toFixed(1)}g</p>
+                        <p className="text-xs">P: {Number(n.proteins).toFixed(1)}g | L: {Number(n.fat).toFixed(1)}g | K: {Number(n.carbohydrate).toFixed(1)}g</p>
                       </div>
                     </button>
                   ))

@@ -48,7 +48,7 @@ export function StatusBadge({ status, className = "", pulse = false }: StatusBad
 
     return (
         <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold tracking-wide uppercase ring-1 ring-inset shadow-xs ${mapped.className} ${className}`}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold tracking-wide uppercase ring-1 ring-inset shadow-xs ${mapped.className} ${className}`}
         >
             {shouldPulse && (
                 <span className="relative flex w-1.5 h-1.5">
@@ -56,7 +56,7 @@ export function StatusBadge({ status, className = "", pulse = false }: StatusBad
                     <span className={`relative inline-flex rounded-full w-1.5 h-1.5 ${mapped.className.split(" ")[0].replace('50', '500')}`}></span>
                 </span>
             )}
-            {mapped.icon && !shouldPulse && <span className="text-[10px]">{mapped.icon}</span>}
+            {mapped.icon && !shouldPulse && <span className="text-xs">{mapped.icon}</span>}
             {mapped.label}
         </span>
     );

@@ -125,17 +125,17 @@ export default function CompliancePage() {
             {/* Header */}
             <div className="pt-1">
                 <div className="flex items-center gap-2 mb-1.5">
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-[11px] font-bold flex items-center gap-1.5">
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-xs font-bold flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
                         Standar Mutu & Higienitas MBG
                     </span>
                     <span className="text-xs text-slate-400">•</span>
                     <span className="text-xs font-semibold text-slate-500">Audit Kelaikan BGN</span>
                 </div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
                     Operasional, Sanitasi & Compliance
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+                <p className="text-sm sm:text-base text-slate-600 mt-1 font-medium">
                     Pantau standar higienitas dapur, uji suhu penyimpanan bahan, bank sampel makanan, dan kepatuhan SLHS harian.
                 </p>
             </div>
@@ -181,7 +181,7 @@ export default function CompliancePage() {
                                 </div>
                                 <div className="text-left">
                                     <div>{t.label}</div>
-                                    <div className={`text-[10px] font-normal hidden sm:block ${active ? "text-white/80" : "text-slate-400"}`}>
+                                    <div className={`text-xs font-normal hidden sm:block ${active ? "text-white/80" : "text-slate-400"}`}>
                                         {t.desc}
                                     </div>
                                 </div>

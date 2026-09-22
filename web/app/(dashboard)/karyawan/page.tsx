@@ -873,7 +873,7 @@ function AbsensiTab() {
                   return (
                     <th key={d} className="py-2.5 px-2 border-r border-slate-200 text-center w-24">
                       <div className="font-bold text-slate-800">{weekday}</div>
-                      <div className="text-[11px] font-normal text-slate-500">{dayMonth}</div>
+                      <div className="text-xs font-normal text-slate-500">{dayMonth}</div>
                     </th>
                   );
                 })}
@@ -1387,7 +1387,7 @@ function PenggajianTab() {
                     setSelectedEmployees(activeEmployees.map((e) => e.id));
                   }
                 }}
-                className="text-[11px] font-bold text-blue-600 hover:underline cursor-pointer"
+                className="text-xs font-bold text-blue-600 hover:underline cursor-pointer"
               >
                 {selectedEmployees.length === activeEmployees.length ? "Batal Semua" : "Pilih Semua"}
               </button>

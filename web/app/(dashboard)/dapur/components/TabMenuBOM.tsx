@@ -390,7 +390,7 @@ export function TabMenuBOM() {
                                   <div className="flex-1 pr-3">
                                     <div className={`font-semibold ${isDaily ? 'text-orange-900' : 'text-green-900'}`}>
                                       {getIngName(r.ingredient_id!)}
-                                      {isDaily && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider bg-orange-200/50 text-orange-700 px-1.5 py-0.5 rounded-md">FIXED BIAYA HARIAN</span>}
+                                      {isDaily && <span className="ml-2 text-xs font-bold uppercase tracking-wider bg-orange-200/50 text-orange-700 px-1.5 py-0.5 rounded-md">FIXED BIAYA HARIAN</span>}
                                     </div>
                                     <div className={`text-xs font-medium mt-0.5 ${isDaily ? 'text-orange-600' : 'text-green-600'}`}>{qtyLabel}</div>
                                   </div>
@@ -437,7 +437,7 @@ export function TabMenuBOM() {
                                       <td className="py-3 px-4 text-center">
                                         {ing.sufficient
                                         ? <span className="inline-flex py-1 px-3 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-full border border-emerald-100">Aman</span>
-                                        : <span className="inline-flex py-1 px-2 bg-red-50 text-red-600 font-bold text-[11px] rounded border border-red-100 uppercase tracking-widest whitespace-nowrap">Kurang {ing.shortage_display ?? ing.shortage}</span>}
+                                        : <span className="inline-flex py-1 px-2 bg-red-50 text-red-600 font-bold text-xs rounded border border-red-100 uppercase tracking-widest whitespace-nowrap">Kurang {ing.shortage_display ?? ing.shortage}</span>}
                                       </td>
                                     </tr>
                                   ))}
@@ -455,7 +455,7 @@ export function TabMenuBOM() {
                           <h4 className="font-bold text-gray-900 text-sm flex items-center gap-2">🩺 Tabel Nutrisi Per Bahan (1 Porsi)</h4>
                           <div className="flex items-center gap-2">
                             {nutritionDetails[menu.id].totals.total_gram === 0 && <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-500 rounded font-medium">BOM Kosong / Belum ada link nutrisi</span>}
-                            <button onClick={() => handleResyncFiber(menu.id)} disabled={syncingFiber} className="text-[10px] px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold hover:bg-green-200 transition-colors shadow-sm border border-green-200 uppercase tracking-widest flex items-center gap-1 disabled:opacity-50">
+                            <button onClick={() => handleResyncFiber(menu.id)} disabled={syncingFiber} className="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold hover:bg-green-200 transition-colors shadow-sm border border-green-200 uppercase tracking-widest flex items-center gap-1 disabled:opacity-50">
                               {syncingFiber ? "🔄 Memproses AI..." : "🔄 AI Sync Serat"}
                             </button>
                           </div>
@@ -465,29 +465,29 @@ export function TabMenuBOM() {
                         {nutritionDetails[menu.id].totals.total_gram > 0 && (
                           <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-5">
                             <div className="bg-orange-50 border border-orange-100 p-3 rounded-2xl flex flex-col items-center text-center">
-                              <span className="text-[10px] font-bold text-orange-600 uppercase tracking-widest mb-0.5">Kalori</span>
+                              <span className="text-xs font-bold text-orange-600 uppercase tracking-widest mb-0.5">Kalori</span>
                               <span className="text-xl font-bold text-orange-900">{nutritionDetails[menu.id].totals.calories.toLocaleString("id-ID")} <span className="text-xs font-semibold">kkal</span></span>
                             </div>
                             <div className="bg-blue-50 border border-blue-100 p-3 rounded-2xl flex flex-col items-center text-center">
-                              <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-0.5">Protein</span>
+                              <span className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-0.5">Protein</span>
                               <span className="text-xl font-bold text-blue-900">{nutritionDetails[menu.id].totals.proteins.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
                             </div>
                             <div className="bg-yellow-50 border border-yellow-100 p-3 rounded-2xl flex flex-col items-center text-center">
-                              <span className="text-[10px] font-bold text-yellow-600 uppercase tracking-widest mb-0.5">Lemak</span>
+                              <span className="text-xs font-bold text-yellow-600 uppercase tracking-widest mb-0.5">Lemak</span>
                               <span className="text-xl font-bold text-yellow-900">{nutritionDetails[menu.id].totals.fat.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
                             </div>
                             <div className="bg-teal-50 border border-teal-100 p-3 rounded-2xl flex flex-col items-center text-center">
-                              <span className="text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-0.5">Karbohidrat</span>
+                              <span className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-0.5">Karbohidrat</span>
                               <span className="text-xl font-bold text-teal-900">{nutritionDetails[menu.id].totals.carbohydrate.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
                             </div>
                             <div className="bg-green-50 border border-green-100 p-3 rounded-2xl flex flex-col items-center text-center relative">
                               {nutritionDetails[menu.id].totals.fiber > 0 && <span className="absolute -top-1 -right-1 text-xs">🥬</span>}
-                              <span className="text-[10px] font-bold text-green-600 uppercase tracking-widest mb-0.5">Serat</span>
+                              <span className="text-xs font-bold text-green-600 uppercase tracking-widest mb-0.5">Serat</span>
                               <span className="text-xl font-bold text-green-900">{nutritionDetails[menu.id].totals.fiber.toLocaleString("id-ID")} <span className="text-xs font-semibold">g</span></span>
                             </div>
                             <div className={`p-3 rounded-2xl flex flex-col items-center text-center border ${nutritionDetails[menu.id].is_balanced ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200 relative overflow-hidden'}`}>
-                              {!nutritionDetails[menu.id].is_balanced && <div className="absolute inset-0 bg-red-100/50 flex flex-col items-center justify-center animate-pulse border-2 border-red-400 z-10 p-1"><span className="text-2xl">⚠️</span><span className="text-[9px] font-bold text-red-700 leading-tight text-center">SAYUR &lt;30%</span></div>}
-                              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Sayur</span>
+                              {!nutritionDetails[menu.id].is_balanced && <div className="absolute inset-0 bg-red-100/50 flex flex-col items-center justify-center animate-pulse border-2 border-red-400 z-10 p-1"><span className="text-2xl">⚠️</span><span className="text-xs font-bold text-red-700 leading-tight text-center">SAYUR &lt;30%</span></div>}
+                              <span className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-0.5">Sayur</span>
                               <span className={`text-xl font-bold ${nutritionDetails[menu.id].is_balanced ? 'text-green-700' : 'text-red-700'}`}>{nutritionDetails[menu.id].sayur_percentage}%</span>
                             </div>
                           </div>
@@ -515,7 +515,7 @@ export function TabMenuBOM() {
                                   <tr key={ing.product_id + i} className={`border-t border-slate-100 ${!ing.has_nutrition ? 'bg-amber-50/50' : i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'} hover:bg-blue-50/30 transition-colors`}>
                                     <td className="py-2 px-3 font-semibold text-gray-800">
                                       {ing.product_name}
-                                      {!ing.has_nutrition && <span className="ml-1.5 text-[10px] px-1.5 py-0.5 bg-amber-200 text-amber-800 rounded font-bold">NO DATA</span>}
+                                      {!ing.has_nutrition && <span className="ml-1.5 text-xs px-1.5 py-0.5 bg-amber-200 text-amber-800 rounded font-bold">NO DATA</span>}
                                     </td>
                                     <td className="py-2 px-3 text-right font-mono text-gray-700">{ing.weight_gram.toLocaleString("id-ID")}</td>
                                     <td className="py-2 px-3 text-right font-mono text-orange-700">{ing.calories.toLocaleString("id-ID")}</td>
@@ -524,7 +524,7 @@ export function TabMenuBOM() {
                                     <td className="py-2 px-3 text-right font-mono text-teal-700">{ing.carbohydrate.toLocaleString("id-ID")}</td>
                                     <td className="py-2 px-3 text-right font-mono text-green-700">{ing.fiber.toLocaleString("id-ID")}</td>
                                     <td className="py-2 px-3 text-center">
-                                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${ing.kategori?.includes('sayur') ? 'bg-green-100 text-green-700' : ing.kategori?.includes('lauk') ? 'bg-sky-100 text-sky-700' : ing.kategori?.includes('buah') ? 'bg-pink-100 text-pink-700' : 'bg-gray-100 text-gray-600'}`}>
+                                      <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${ing.kategori?.includes('sayur') ? 'bg-green-100 text-green-700' : ing.kategori?.includes('lauk') ? 'bg-sky-100 text-sky-700' : ing.kategori?.includes('buah') ? 'bg-pink-100 text-pink-700' : 'bg-gray-100 text-gray-600'}`}>
                                         {ing.kategori || '-'}
                                       </span>
                                     </td>
@@ -703,7 +703,7 @@ export function TabMenuBOM() {
                         <span className="font-semibold text-gray-500">gram</span>
                       </div>
                       {row.qty_needed > 0 && (
-                        <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+                        <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
                           ≈ {((row.qty_needed || 0) * (row.unit_weight_gram || (row.ingredient_id ? getIngFactor(row.ingredient_id) : 1))).toLocaleString('id-ID')} gram / {row.usage_type === 'per_hari' ? 'hari' : 'porsi'}
                         </span>
                       )}

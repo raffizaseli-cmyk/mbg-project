@@ -232,7 +232,7 @@ export default function DashboardPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-1">
                 <div>
                     <div className="flex items-center gap-2.5 mb-1.5">
-                        <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-700 text-[11px] font-bold flex items-center gap-1.5">
+                        <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-700 text-xs font-bold flex items-center gap-1.5">
                             <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
                             Live Telemetri MBG
                         </span>
@@ -240,14 +240,14 @@ export default function DashboardPage() {
                         <span className="text-xs font-medium text-slate-500">{todayLabel()}</span>
                     </div>
 
-                    <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
                         {getGreeting()},{" "}
                         <span className="text-blue-600">
                             {tenantName}
                         </span>{" "}
                         👋
                     </h1>
-                    <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+                    <p className="text-sm sm:text-base text-slate-600 mt-1 font-medium">
                         Pantau penyerahan makanan bergizi, ketersediaan bahan, dan realisasi anggaran dapur hari ini.
                     </p>
                 </div>
@@ -317,7 +317,7 @@ export default function DashboardPage() {
                         <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
                             🍱
                         </div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-blue-100">
+                        <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-blue-100">
                             Distribusi
                         </span>
                     </div>
@@ -343,7 +343,7 @@ export default function DashboardPage() {
                         <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
                             🍽️
                         </div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-amber-100">
+                        <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-amber-100">
                             Resep & Gizi
                         </span>
                     </div>
@@ -369,7 +369,7 @@ export default function DashboardPage() {
                         <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
                             🛒
                         </div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-emerald-100">
+                        <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-emerald-100">
                             AI OCR Nota
                         </span>
                     </div>
@@ -395,7 +395,7 @@ export default function DashboardPage() {
                         <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
                             📦
                         </div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-slate-200">
+                        <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-slate-200">
                             Gudang Dapur
                         </span>
                     </div>
@@ -474,7 +474,7 @@ export default function DashboardPage() {
                             <p className="text-xs text-slate-500 mt-0.5">Proporsi belanja berdasarkan pagu Juknis BGN</p>
                         </div>
                         <div className="text-right">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Pagu Bulan Ini</span>
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Pagu Bulan Ini</span>
                             <p className="text-sm font-extrabold text-blue-600">{formatRp(budget?.pagu_amount || 0)}</p>
                         </div>
                     </div>
@@ -533,7 +533,7 @@ export default function DashboardPage() {
                                 {daily.mbg.menu_name && (
                                     <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/60 flex items-center justify-between">
                                         <div>
-                                            <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider block">Menu Masakan</span>
+                                            <span className="text-xs font-bold text-amber-700 uppercase tracking-wider block">Menu Masakan</span>
                                             <span className="text-sm font-bold text-slate-900">{daily.mbg.menu_name}</span>
                                         </div>
                                         <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800">
@@ -543,13 +543,13 @@ export default function DashboardPage() {
                                 )}
                                 <div className="grid grid-cols-2 gap-3 pt-1">
                                     <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/60">
-                                        <span className="text-[11px] font-semibold text-slate-500 block">Total Porsi</span>
+                                        <span className="text-xs font-semibold text-slate-500 block">Total Porsi</span>
                                         <span className="text-lg font-extrabold text-blue-600">
                                             {daily.mbg.total_portions.toLocaleString("id-ID")} porsi
                                         </span>
                                     </div>
                                     <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/60">
-                                        <span className="text-[11px] font-semibold text-slate-500 block">Gross Revenue</span>
+                                        <span className="text-xs font-semibold text-slate-500 block">Gross Revenue</span>
                                         <span className="text-lg font-extrabold text-emerald-600">
                                             {formatRp(daily.mbg.revenue_gross)}
                                         </span>
@@ -601,11 +601,11 @@ export default function DashboardPage() {
                                             <h4 className="text-xs font-bold text-slate-900 truncate group-hover:text-blue-600 transition-colors">
                                                 {alert.product_name}
                                             </h4>
-                                            <p className="text-[11px] text-slate-500 mt-0.5">
+                                            <p className="text-xs text-slate-500 mt-0.5">
                                                 Tersedia {alert.stock_qty} {alert.unit} (Batas min: {alert.stock_min} {alert.unit})
                                             </p>
                                         </div>
-                                        <span className="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 shrink-0">
+                                        <span className="text-xs font-bold px-2.5 py-1 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 shrink-0">
                                             Kurang {alert.deficit} {alert.unit}
                                         </span>
                                     </div>
@@ -662,7 +662,7 @@ export default function DashboardPage() {
                     <div className="overflow-x-auto -mx-6 px-6 no-scrollbar">
                         <table className="w-full text-left text-sm">
                             <thead>
-                                <tr className="border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+                                <tr className="border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-xs">
                                     <th className="py-3 px-3">Tanggal</th>
                                     <th className="py-3 px-3">Toko / Supplier</th>
                                     <th className="py-3 px-3 text-right">Total Tagihan</th>

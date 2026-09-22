@@ -111,7 +111,7 @@ export default function RegisterPage() {
                 <span className="text-lg font-bold tracking-tight text-white">
                   MBG Catering
                 </span>
-                <span className="block text-[10px] uppercase font-semibold tracking-wider text-amber-400">
+                <span className="block text-xs uppercase font-semibold tracking-wider text-amber-400">
                   Unit Pelayanan Dapur SPPG
                 </span>
               </div>
@@ -152,7 +152,7 @@ export default function RegisterPage() {
                 <h4 className="text-xs font-semibold text-white">
                   Aktivasi Instan & Siap Pakai
                 </h4>
-                <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
+                <p className="text-xs text-slate-400 leading-snug mt-0.5">
                   Tenant langsung aktif dengan database master bahan baku dan template menu gizi MBG.
                 </p>
               </div>
@@ -166,7 +166,7 @@ export default function RegisterPage() {
                 <h4 className="text-xs font-semibold text-white">
                   Format Laporan Standar BGN
                 </h4>
-                <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
+                <p className="text-xs text-slate-400 leading-snug mt-0.5">
                   Buku kas pembukuan, rekonsiliasi belanja pasar, dan bukti distribusi siap diaudit.
                 </p>
               </div>
@@ -180,7 +180,7 @@ export default function RegisterPage() {
                 <h4 className="text-xs font-semibold text-white">
                   Privasi & Keamanan Terjamin
                 </h4>
-                <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
+                <p className="text-xs text-slate-400 leading-snug mt-0.5">
                   Data transaksi terpisah secara multi-tenant dengan proteksi token dan audit trail.
                 </p>
               </div>
@@ -194,7 +194,7 @@ export default function RegisterPage() {
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             Standar Badan Gizi Nasional (BGN)
           </span>
-          <span className="text-[11px] text-slate-500">v2.4 Production</span>
+          <span className="text-xs text-slate-500">v2.4 Production</span>
         </div>
       </div>
 
@@ -209,7 +209,7 @@ export default function RegisterPage() {
             </div>
             <div>
               <span className="text-lg font-bold tracking-tight text-slate-900">MBG Catering</span>
-              <span className="block text-[9px] uppercase tracking-wider text-blue-600 font-semibold">Unit Pelayanan Dapur</span>
+              <span className="block text-xs uppercase tracking-wider text-blue-600 font-semibold">Unit Pelayanan Dapur</span>
             </div>
           </div>
 
@@ -257,7 +257,7 @@ export default function RegisterPage() {
                   <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
                     ID / Slug URL
                   </label>
-                  <span className="text-[10px] text-slate-400">Otomatis</span>
+                  <span className="text-xs text-slate-400">Otomatis</span>
                 </div>
                 <div className="relative group">
                   <UserCircle className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
@@ -380,7 +380,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Security Assurance footer */}
-        <div className="text-center mt-5 text-[11px] text-slate-400">
+        <div className="text-center mt-5 text-xs text-slate-400">
           Dilindungi enkripsi sesi TLS & JWT • MBG Catering
         </div>
       </div>

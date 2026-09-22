@@ -206,14 +206,14 @@ export function TabKomponen() {
                   {comp.description && <p className="text-gray-500 text-sm mt-1 line-clamp-2 leading-relaxed">{comp.description}</p>}
                 </div>
                 <div className="flex gap-2 opacity-0 lg:opacity-100 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => openCompForm(comp)} className="text-blue-600 hover:text-white px-2.5 py-1.5 bg-blue-50 hover:bg-blue-600 rounded-lg text-[11px] uppercase tracking-wider font-bold transition-colors shadow-sm">Edit</button>
-                  <button onClick={() => deleteComp(comp.id)} className="text-red-600 hover:text-white px-2.5 py-1.5 bg-red-50 hover:bg-red-600 rounded-lg text-[11px] uppercase tracking-wider font-bold transition-colors shadow-sm">Del</button>
+                  <button onClick={() => openCompForm(comp)} className="text-blue-600 hover:text-white px-2.5 py-1.5 bg-blue-50 hover:bg-blue-600 rounded-lg text-xs uppercase tracking-wider font-bold transition-colors shadow-sm">Edit</button>
+                  <button onClick={() => deleteComp(comp.id)} className="text-red-600 hover:text-white px-2.5 py-1.5 bg-red-50 hover:bg-red-600 rounded-lg text-xs uppercase tracking-wider font-bold transition-colors shadow-sm">Del</button>
                 </div>
               </div>
 
               <div className="bg-gray-50/50 rounded-2xl p-4 border border-gray-100 flex-1 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-teal-100/30 to-transparent rounded-bl-full pointer-events-none" />
-                <h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-3 ml-1">Kandungan Racikan:</h4>
+                <h4 className="text-xs uppercase tracking-widest font-bold text-gray-400 mb-3 ml-1">Kandungan Racikan:</h4>
                 <div className="space-y-2">
                   {comp.items.length === 0 ? (
                     <p className="text-gray-400 text-sm italic font-medium ml-1">Kosong. (Belum ada bahan diatur)</p>
@@ -266,7 +266,7 @@ export function TabKomponen() {
               <label className="block text-sm font-bold text-gray-900">Bahan Baku Pembentuk Racikan:</label>
             </div>
             <div className="bg-gray-50/80 border border-gray-100 rounded-2xl p-4 shadow-inner">
-              <div className="flex text-[11px] uppercase tracking-widest font-bold text-gray-400 mb-3 px-2">
+              <div className="flex text-xs uppercase tracking-widest font-bold text-gray-400 mb-3 px-2">
                 <div className="flex-1">Nama Bahan Asli</div>
                 <div className="w-[100px]">Takar/Qty</div>
                 <div className="w-20">Standar</div>
@@ -304,7 +304,7 @@ export function TabKomponen() {
                         />
                         <span className="text-gray-500 font-semibold">gram</span>
                         {row.qty_needed > 0 && (
-                          <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
+                          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
                             ≈ {((row.qty_needed) * (row.unit_weight_gram || (products.find(p => p.id === row.ingredient_id)?.conversion_factor || 1))).toLocaleString('id-ID')} gram
                           </span>
                         )}

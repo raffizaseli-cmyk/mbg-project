@@ -179,7 +179,7 @@ export function TabAlokasi() {
                         
                         <div className="space-y-3">
                             {/* Biaya Operasi */}
-                            <p className="text-[11px] uppercase tracking-wider text-slate-500 font-bold">Biaya Produksi (Terpakai)</p>
+                            <p className="text-xs uppercase tracking-wider text-slate-500 font-bold">Biaya Produksi (Terpakai)</p>
                             <div className="flex justify-between items-center text-slate-400 text-sm">
                                 <span>Bahan Baku (1.000 × {formatRupiah(settings.bahan_sd_smp)})</span>
                                 <span className="font-medium text-slate-300">{formatRupiah(estimasiBahan)}</span>
@@ -192,7 +192,7 @@ export function TabAlokasi() {
                             <hr className="border-slate-700/50 my-3" />
                             
                             {/* Keuntungan Dapur */}
-                            <p className="text-[11px] uppercase tracking-wider text-slate-500 font-bold">Keuntungan Pengelola (Sewa Dapur)</p>
+                            <p className="text-xs uppercase tracking-wider text-slate-500 font-bold">Keuntungan Pengelola (Sewa Dapur)</p>
                             <div className="flex justify-between items-center text-emerald-400 font-bold text-base">
                                 <span>💰 Insentif Harian (Fixed)</span>
                                 <span>{formatRupiah(settings.insentif_harian)}</span>
@@ -207,7 +207,7 @@ export function TabAlokasi() {
                             </div>
                         </div>
                         
-                        <p className="text-[11px] text-slate-500 mt-5 leading-relaxed">
+                        <p className="text-xs text-slate-500 mt-5 leading-relaxed">
                             Bahan baku &amp; operasional langsung terpakai untuk produksi makanan. Keuntungan yang diterima pengelola dapur = <strong className="text-emerald-400">Insentif harian {formatRupiah(settings.insentif_harian)}/hari</strong>.
                         </p>
                     </div>

@@ -155,7 +155,7 @@ export default function RiwayatStokPage() {
                             <History className="w-5 h-5" />
                         </div>
                         <div>
-                            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+                            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
                                 Buku Mutasi & Riwayat Stok
                             </h1>
                             <p className="text-xs sm:text-sm text-slate-500 font-medium">
@@ -180,7 +180,7 @@ export default function RiwayatStokPage() {
             <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] border border-slate-200/80 p-5 sm:p-6 space-y-4">
                 <div className="flex flex-wrap gap-3.5 items-end">
                     <div className="min-w-[220px] flex-1">
-                        <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">
+                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">
                             Pilih Bahan Baku
                         </label>
                         <select 
@@ -196,7 +196,7 @@ export default function RiwayatStokPage() {
                     </div>
 
                     <div className="w-36">
-                        <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">
+                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">
                             Periode
                         </label>
                         <select 
@@ -214,7 +214,7 @@ export default function RiwayatStokPage() {
                     {period === "custom" && (
                         <>
                             <div className="w-36">
-                                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Dari</label>
+                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Dari</label>
                                 <input 
                                     type="date" 
                                     value={customFrom} 
@@ -223,7 +223,7 @@ export default function RiwayatStokPage() {
                                 />
                             </div>
                             <div className="w-36">
-                                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Sampai</label>
+                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Sampai</label>
                                 <input 
                                     type="date" 
                                     value={customTo} 
@@ -235,7 +235,7 @@ export default function RiwayatStokPage() {
                     )}
 
                     <div className="w-40">
-                        <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">
+                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">
                             Arah Mutasi
                         </label>
                         <select 
@@ -276,7 +276,7 @@ export default function RiwayatStokPage() {
                             📦
                         </div>
                         <p className="text-base font-extrabold text-slate-800">Pilih Bahan Baku</p>
-                        <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-sm">
+                        <p className="text-sm sm:text-base text-slate-600 mt-1 max-w-sm">
                             Pilih salah satu bahan pada dropdown di atas untuk melihat buku jurnal mutasi stok lengkap.
                         </p>
                     </div>
@@ -291,7 +291,7 @@ export default function RiwayatStokPage() {
                             📋
                         </div>
                         <p className="text-base font-extrabold text-slate-800">Tidak Ada Catatan Mutasi</p>
-                        <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-sm">
+                        <p className="text-sm sm:text-base text-slate-600 mt-1 max-w-sm">
                             Tidak ditemukan perubahan stok untuk bahan ini pada filter periode yang dipilih.
                         </p>
                     </div>
@@ -306,7 +306,7 @@ export default function RiwayatStokPage() {
                         <div className="overflow-x-auto no-scrollbar">
                             <table className="w-full text-xs sm:text-sm">
                                 <thead className="bg-slate-50/50 border-b border-slate-100">
-                                    <tr className="text-[11px] uppercase font-extrabold tracking-wider text-slate-500">
+                                    <tr className="text-xs uppercase font-bold tracking-wider text-slate-500">
                                         <th className="text-left px-6 py-3.5 whitespace-nowrap">Waktu Transaksi</th>
                                         <th className="text-right px-6 py-3.5 whitespace-nowrap">Mutasi (Delta)</th>
                                         <th className="text-right px-6 py-3.5 whitespace-nowrap">Saldo Akhir</th>
@@ -349,7 +349,7 @@ export default function RiwayatStokPage() {
                                                 </td>
                                                 <td className="px-6 py-4 text-center whitespace-nowrap">
                                                     {reasonInfo ? (
-                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${
                                                             reasonInfo.type === "in" 
                                                                 ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/30" 
                                                                 : reasonInfo.type === "adjust" 

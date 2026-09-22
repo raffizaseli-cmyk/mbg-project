@@ -184,17 +184,17 @@ export default function TransactionDetailPage() {
                         <span>Kembali ke Daftar Transaksi</span>
                     </Link>
                     <div className="flex items-center gap-3">
-                        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
                             {trx.nama_toko || "Nota Belanja"}
                         </h1>
                         <StatusBadge status={trx.status} />
                         {trx.source && (
-                            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 border border-slate-200 text-slate-600">
+                            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 border border-slate-200 text-slate-600">
                                 {trx.source}
                             </span>
                         )}
                     </div>
-                    <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+                    <p className="text-sm sm:text-base text-slate-600 mt-1 font-medium">
                         ID Transaksi: <span className="font-mono text-slate-700 font-semibold">{trx.id}</span> • Tanggal: <span className="text-slate-800 font-semibold">{new Date(trx.date).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
                     </p>
                 </div>
@@ -286,7 +286,7 @@ export default function TransactionDetailPage() {
                                     <Receipt className="w-6 h-6" />
                                 </div>
                                 <p className="text-xs font-bold text-slate-700">Foto Nota Tidak Terlampir</p>
-                                <p className="text-[11px] text-slate-400">Transaksi dicatat manual atau melalui sistem integrasi kasir.</p>
+                                <p className="text-xs text-slate-400">Transaksi dicatat manual atau melalui sistem integrasi kasir.</p>
                             </div>
                         )}
                     </div>
@@ -307,7 +307,7 @@ export default function TransactionDetailPage() {
                             </div>
                             <div className="flex justify-between items-center py-1 border-t border-slate-100/60">
                                 <span className="text-slate-400 font-medium">Metode Bayar</span>
-                                <span className="px-2.5 py-0.5 rounded-lg font-bold bg-blue-50 text-blue-700 border border-blue-200/60 uppercase text-[10px]">
+                                <span className="px-2.5 py-0.5 rounded-lg font-bold bg-blue-50 text-blue-700 border border-blue-200/60 uppercase text-xs">
                                     {trx.payment_method || "Tunai"}
                                 </span>
                             </div>
@@ -363,7 +363,7 @@ export default function TransactionDetailPage() {
                         <div className="overflow-x-auto no-scrollbar">
                             <table className="w-full text-xs sm:text-sm">
                                 <thead className="bg-slate-50/70 border-b border-slate-200/80">
-                                    <tr className="text-[11px] uppercase font-extrabold tracking-wider text-slate-500">
+                                    <tr className="text-xs uppercase font-bold tracking-wider text-slate-500">
                                         <th className="text-left px-5 py-3.5 whitespace-nowrap">No</th>
                                         <th className="text-left px-5 py-3.5 whitespace-nowrap">Nama Bahan (Nota)</th>
                                         <th className="text-right px-5 py-3.5 whitespace-nowrap">Qty</th>
@@ -394,12 +394,12 @@ export default function TransactionDetailPage() {
                                             </td>
                                             <td className="px-5 py-3.5 whitespace-nowrap">
                                                 {item.alias_matched ? (
-                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-700">
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-700">
                                                         <Check className="w-3 h-3 text-emerald-600" />
                                                         {item.alias_matched}
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-500">
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-500">
                                                         Belum Dipetakan
                                                     </span>
                                                 )}
@@ -451,7 +451,7 @@ export default function TransactionDetailPage() {
                                                 <span className={`w-2 h-2 rounded-full ${isPositive ? "bg-emerald-500" : "bg-rose-500"}`} />
                                                 <div>
                                                     <p className="font-bold text-slate-900">{h.product_name || "Bahan Baku"}</p>
-                                                    <p className="text-[11px] text-slate-400">{h.reason || "Penerimaan Belanja Nota"}</p>
+                                                    <p className="text-xs text-slate-400">{h.reason || "Penerimaan Belanja Nota"}</p>
                                                 </div>
                                             </div>
                                             <div className="text-right">
@@ -460,7 +460,7 @@ export default function TransactionDetailPage() {
                                                 }`}>
                                                     {isPositive ? "+" : ""}{h.change_qty} {h.unit}
                                                 </span>
-                                                <p className="text-[10px] text-slate-400 mt-0.5">
+                                                <p className="text-xs text-slate-400 mt-0.5">
                                                     {new Date(h.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
                                                 </p>
                                             </div>
@@ -524,7 +524,7 @@ export default function TransactionDetailPage() {
                                     }`}
                                 >
                                     <div className="text-xs font-bold">{m.label}</div>
-                                    <div className="text-[10px] text-slate-400 font-normal mt-0.5">{m.desc}</div>
+                                    <div className="text-xs text-slate-400 font-normal mt-0.5">{m.desc}</div>
                                 </button>
                             ))}
                         </div>
@@ -570,7 +570,7 @@ export default function TransactionDetailPage() {
                             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
                             <span>Konsekuensi Otomatis:</span>
                         </p>
-                        <ul className="list-disc list-inside space-y-0.5 text-rose-700 text-[11px] font-medium pl-1">
+                        <ul className="list-disc list-inside space-y-0.5 text-rose-700 text-xs font-medium pl-1">
                             <li>Status nota belanja akan dibatalkan permanen.</li>
                             <li>Stok bahan baku gudang akan dikoreksi kembali otomatis.</li>
                             <li>Catatan transaksi di Pembukuan & Arus Kas akan dibersihkan.</li>

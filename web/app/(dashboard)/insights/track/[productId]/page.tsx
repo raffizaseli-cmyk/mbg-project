@@ -100,7 +100,7 @@ function PriceLineChart({ data }: { data: ChartPoint[] }) {
                         <line x1={padL} y1={yl.y} x2={W - padR} y2={yl.y}
                             stroke="#e5e7eb" strokeWidth={1} />
                         <text x={padL - 8} y={yl.y + 4} textAnchor="end"
-                            className="text-[10px] fill-gray-400">
+                            className="text-xs fill-gray-400">
                             {formatRp(yl.val)}
                         </text>
                     </g>
@@ -137,7 +137,7 @@ function PriceLineChart({ data }: { data: ChartPoint[] }) {
                     const label = new Date(p.date).toLocaleDateString("id-ID", { day: "2-digit", month: "short" });
                     return (
                         <text key={i} x={p.x} y={H - padB + 20} textAnchor="middle"
-                            className="text-[10px] fill-gray-500" transform={`rotate(-30, ${p.x}, ${H - padB + 20})`}>
+                            className="text-xs fill-gray-500" transform={`rotate(-30, ${p.x}, ${H - padB + 20})`}>
                             {label}
                         </text>
                     );

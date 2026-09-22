@@ -358,7 +358,7 @@ export default function MbgPage() {
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                    <tr className="bg-slate-50/80 border-b border-slate-200/80 text-xs font-bold text-slate-500 uppercase tracking-wider">
                                         <th className="text-left px-5 py-3.5">Tanggal Operasional</th>
                                         <th className="text-left px-4 py-3.5">Menu Sajian</th>
                                         <th className="text-center px-4 py-3.5">Titik Sekolah</th>
@@ -508,7 +508,7 @@ export default function MbgPage() {
 
                                 <div className="grid grid-cols-7 gap-2 mb-2">
                                     {["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"].map(h => (
-                                        <div key={h} className="text-center text-[11px] font-bold text-slate-500 uppercase tracking-wider py-1.5 bg-slate-50/70 rounded-lg">
+                                        <div key={h} className="text-center text-xs font-bold text-slate-500 uppercase tracking-wider py-1.5 bg-slate-50/70 rounded-lg">
                                             {h}
                                         </div>
                                     ))}
@@ -540,23 +540,23 @@ export default function MbgPage() {
                                                     {day.day}
                                                 </span>
                                                 {day.has_delivery && (
-                                                    <span className="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded-md font-bold shadow-xs">
+                                                    <span className="text-xs bg-blue-600 text-white px-1.5 py-0.2 rounded-md font-bold shadow-xs">
                                                         {day.total_portions}
                                                     </span>
                                                 )}
                                             </div>
 
                                             {day.has_menu ? (
-                                                <p className="text-[11px] font-bold text-slate-800 mt-1 leading-tight line-clamp-2">
+                                                <p className="text-xs font-bold text-slate-800 mt-1 leading-tight line-clamp-2">
                                                     {day.menu_name}
                                                 </p>
                                             ) : day.is_weekday ? (
-                                                <p className="text-[10px] text-slate-400 italic mt-1 font-medium">Belum ada menu</p>
+                                                <p className="text-xs text-slate-400 italic mt-1 font-medium">Belum ada menu</p>
                                             ) : null}
 
                                             {day.nutrition ? (
                                                 <div className="mt-1 pt-1 border-t border-black/5">
-                                                    <div className="flex items-center justify-between text-[9px] font-bold">
+                                                    <div className="flex items-center justify-between text-xs font-bold">
                                                         <span className="text-orange-700">{day.nutrition.totals.calories} kkal</span>
                                                         <span className="text-blue-700">P:{day.nutrition.totals.proteins}g</span>
                                                     </div>
@@ -679,24 +679,24 @@ export default function MbgPage() {
                                                 <>
                                                     <div className="grid grid-cols-4 gap-2.5">
                                                         <div className="bg-orange-50/80 border border-orange-200/70 p-3 rounded-xl text-center">
-                                                            <div className="text-[10px] font-bold text-orange-600 uppercase">Kalori</div>
+                                                            <div className="text-xs font-bold text-orange-600 uppercase">Kalori</div>
                                                             <div className="text-lg font-bold text-orange-900">{selectedDay.nutrition.totals.calories}</div>
-                                                            <div className="text-[9px] text-orange-500 font-medium">kkal</div>
+                                                            <div className="text-xs text-orange-500 font-medium">kkal</div>
                                                         </div>
                                                         <div className="bg-blue-50/80 border border-blue-200/70 p-3 rounded-xl text-center">
-                                                            <div className="text-[10px] font-bold text-blue-600 uppercase">Protein</div>
+                                                            <div className="text-xs font-bold text-blue-600 uppercase">Protein</div>
                                                             <div className="text-lg font-bold text-blue-900">{selectedDay.nutrition.totals.proteins}</div>
-                                                            <div className="text-[9px] text-blue-500 font-medium">gram</div>
+                                                            <div className="text-xs text-blue-500 font-medium">gram</div>
                                                         </div>
                                                         <div className="bg-amber-50/80 border border-amber-200/70 p-3 rounded-xl text-center">
-                                                            <div className="text-[10px] font-bold text-amber-600 uppercase">Lemak</div>
+                                                            <div className="text-xs font-bold text-amber-600 uppercase">Lemak</div>
                                                             <div className="text-lg font-bold text-amber-900">{selectedDay.nutrition.totals.fat}</div>
-                                                            <div className="text-[9px] text-amber-500 font-medium">gram</div>
+                                                            <div className="text-xs text-amber-500 font-medium">gram</div>
                                                         </div>
                                                         <div className="bg-teal-50/80 border border-teal-200/70 p-3 rounded-xl text-center">
-                                                            <div className="text-[10px] font-bold text-teal-600 uppercase">Karbo</div>
+                                                            <div className="text-xs font-bold text-teal-600 uppercase">Karbo</div>
                                                             <div className="text-lg font-bold text-teal-900">{selectedDay.nutrition.totals.carbohydrate}</div>
-                                                            <div className="text-[9px] text-teal-500 font-medium">gram</div>
+                                                            <div className="text-xs text-teal-500 font-medium">gram</div>
                                                         </div>
                                                     </div>
 
@@ -840,7 +840,7 @@ export default function MbgPage() {
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-xs">
                                         <thead>
-                                            <tr className="bg-slate-800 text-white text-[10px] uppercase tracking-wider font-bold">
+                                            <tr className="bg-slate-800 text-white text-xs uppercase tracking-wider font-bold">
                                                 <th className="py-3 px-3 text-left sticky left-0 bg-slate-800 z-10">Tgl</th>
                                                 <th className="py-3 px-3 text-left">Hari</th>
                                                 <th className="py-3 px-3 text-left min-w-[140px]">Menu Sajian</th>
@@ -888,9 +888,9 @@ export default function MbgPage() {
                                                         </td>
                                                         <td className="py-2 px-3 text-center">
                                                             {!day.has_menu ? <span className="text-slate-300">—</span> :
-                                                                n?.is_balanced ? <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-bold">Lolos BGN</span> :
-                                                                    n ? <span className="px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full text-[10px] font-bold">Perlu Revisi</span> :
-                                                                        <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full text-[10px] font-bold">Belum Ada</span>}
+                                                                n?.is_balanced ? <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">Lolos BGN</span> :
+                                                                    n ? <span className="px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full text-xs font-bold">Perlu Revisi</span> :
+                                                                        <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full text-xs font-bold">Belum Ada</span>}
                                                         </td>
                                                     </tr>
                                                 );

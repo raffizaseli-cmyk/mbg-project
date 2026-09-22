@@ -80,7 +80,7 @@ export default function DokumenLegalPage() {
                             <FolderCheck className="w-5 h-5" />
                         </div>
                         <div>
-                            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+                            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
                                 Repositori Dokumen Pertanggungjawaban
                             </h1>
                             <p className="text-xs sm:text-sm text-slate-500 font-medium">
@@ -104,7 +104,7 @@ export default function DokumenLegalPage() {
                             📂
                         </div>
                         <p className="text-base font-extrabold text-slate-800">Belum Ada Dokumen Yang Diterbitkan</p>
-                        <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-sm">
+                        <p className="text-sm sm:text-base text-slate-600 mt-1 max-w-sm">
                             Dokumen akan otomatis tersimpan di sini ketika Anda melakukan kompilasi Excel Dinas atau pengesahan BAP di halaman Pembukuan.
                         </p>
                     </div>
@@ -112,7 +112,7 @@ export default function DokumenLegalPage() {
                     <div className="overflow-x-auto no-scrollbar">
                         <table className="w-full text-xs sm:text-sm">
                             <thead className="bg-slate-50/70 border-b border-slate-200/80">
-                                <tr className="text-[11px] uppercase font-extrabold tracking-wider text-slate-500">
+                                <tr className="text-xs uppercase font-bold tracking-wider text-slate-500">
                                     <th className="text-left px-6 py-4 whitespace-nowrap">Periode</th>
                                     <th className="text-left px-6 py-4 whitespace-nowrap">Tipe Dokumen</th>
                                     <th className="text-center px-6 py-4 whitespace-nowrap">Status Pengesahan</th>
@@ -143,28 +143,28 @@ export default function DokumenLegalPage() {
                                                     </div>
                                                     <div>
                                                         <p className="font-bold text-slate-900">{label}</p>
-                                                        <p className="text-[11px] text-slate-400">{isExcel ? ".XLSX format resmi BGN" : ".PDF dokumen pengesahan"}</p>
+                                                        <p className="text-xs text-slate-400">{isExcel ? ".XLSX format resmi BGN" : ".PDF dokumen pengesahan"}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-center">
                                                 {doc.status === "draft" ? (
-                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-700 border border-amber-500/20">
+                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-700 border border-amber-500/20">
                                                         <Clock className="w-3 h-3 text-amber-600" />
                                                         Draft Tanda Tangan
                                                     </span>
                                                 ) : doc.status === "final" ? (
-                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
+                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
                                                         <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                                         Final & Ditandatangani
                                                     </span>
                                                 ) : doc.status === "submitted" ? (
-                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-blue-500/10 text-blue-700 border border-blue-500/20">
+                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-700 border border-blue-500/20">
                                                         <ShieldCheck className="w-3 h-3 text-blue-600" />
                                                         Terkirim ke Dinas
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
+                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
                                                         <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                                         Valid & Siap Diunduh
                                                     </span>

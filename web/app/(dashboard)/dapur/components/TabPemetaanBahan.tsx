@@ -585,7 +585,7 @@ export function TabPemetaanBahan({
                               <Edit className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
                               <span>Koreksi Pembacaan AI / Nota</span>
                             </h4>
-                            <span className="text-[10px] text-blue-500 font-medium">Bahan sudah dikenali — koreksi data jika ada yang salah</span>
+                            <span className="text-xs text-blue-500 font-medium">Bahan sudah dikenali — koreksi data jika ada yang salah</span>
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                             <div className="md:col-span-5">
@@ -663,7 +663,7 @@ export function TabPemetaanBahan({
                             title="Koreksi data yang salah dibaca AI"
                           >
                             <Edit className="w-3.5 h-3.5" />
-                            <span className="text-[10px] font-semibold hidden sm:inline">Koreksi</span>
+                            <span className="text-xs font-semibold hidden sm:inline">Koreksi</span>
                           </button>
                         </div>
                       )}
@@ -806,7 +806,7 @@ export function TabPemetaanBahan({
                           <Edit className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
                           <span>Koreksi Pembacaan AI</span>
                         </h4>
-                        <span className="text-[10px] text-blue-500 font-medium">Bahan sudah dikenali — hanya koreksi data jika salah</span>
+                        <span className="text-xs text-blue-500 font-medium">Bahan sudah dikenali — hanya koreksi data jika salah</span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                         <div className="md:col-span-5">
@@ -875,7 +875,7 @@ export function TabPemetaanBahan({
                           <p className="font-semibold text-gray-900 text-sm">{item.ocr_nama_asli || item.product_name}</p>
                           <p className="text-xs text-gray-500 mt-0.5">
                             {item.qty} <strong className="text-gray-700">{item.unit}</strong> × {fmtRp(item.price)} = {fmtRp(item.subtotal)}
-                            <span className="ml-2 text-green-600 font-semibold text-[10px] uppercase tracking-wide">✓ Dikenali</span>
+                            <span className="ml-2 text-green-600 font-semibold text-xs uppercase tracking-wide">✓ Dikenali</span>
                           </p>
                         </div>
                       </div>
@@ -886,7 +886,7 @@ export function TabPemetaanBahan({
                         title="Koreksi data yang salah dibaca AI"
                       >
                         <Edit className="w-3.5 h-3.5" />
-                        <span className="text-[10px] font-semibold hidden sm:inline">Koreksi</span>
+                        <span className="text-xs font-semibold hidden sm:inline">Koreksi</span>
                       </button>
                     </div>
                   )}
@@ -897,7 +897,7 @@ export function TabPemetaanBahan({
             {/* Divider jika ada kedua tipe */}
             {(group.recognized_items || []).length > 0 && group.unmapped_items.length > 0 && (
               <div className="px-5 py-2 bg-amber-50/60 border-y border-amber-100 flex items-center gap-2">
-                <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider">⚠️ Bahan Berikut Perlu Dipetakan ke Produk DB</span>
+                <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">⚠️ Bahan Berikut Perlu Dipetakan ke Produk DB</span>
               </div>
             )}
 
@@ -930,7 +930,7 @@ export function TabPemetaanBahan({
                           <Edit className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
                           <span>Edit Detail Bahan Asli</span>
                         </h4>
-                        <span className="text-[10px] text-blue-500 font-medium">Ubah pembacaan AI yang salah</span>
+                        <span className="text-xs text-blue-500 font-medium">Ubah pembacaan AI yang salah</span>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -1072,12 +1072,12 @@ export function TabPemetaanBahan({
                                   {(p.nutrition_ref_kategori || p.nutrition_ref_kondisi) && (
                                     <div className="flex flex-wrap gap-1 mt-0.5 pb-1">
                                       {p.nutrition_ref_kategori && (
-                                        <span className="text-[9px] font-bold bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-100 uppercase tracking-wide">
+                                        <span className="text-xs font-bold bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-100 uppercase tracking-wide">
                                           {p.nutrition_ref_kategori}
                                         </span>
                                       )}
                                       {p.nutrition_ref_kondisi && (
-                                        <span className="text-[9px] font-bold bg-orange-50 text-orange-700 px-1.5 py-0.5 rounded border border-orange-100 uppercase tracking-wide">
+                                        <span className="text-xs font-bold bg-orange-50 text-orange-700 px-1.5 py-0.5 rounded border border-orange-100 uppercase tracking-wide">
                                           {p.nutrition_ref_kondisi}
                                         </span>
                                       )}
@@ -1150,7 +1150,7 @@ export function TabPemetaanBahan({
                           pkgLocked[item.id] ? (
                             <div className="pt-2 border-t border-emerald-200 bg-emerald-50/70 p-3 rounded-xl flex items-center justify-between">
                               <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
-                                <span className="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold">✓</span>
+                                <span className="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</span>
                                 Konversi Terkunci: <strong>1 {item.unit} = {mapping.pkgValue} {mapping.pkgUnit}</strong>
                               </span>
                               <div className="flex items-center gap-2">
@@ -1168,7 +1168,7 @@ export function TabPemetaanBahan({
                                     setShowCustomPkg((prev) => ({ ...prev, [item.id]: false }));
                                     updateMapping(item.id, { pkgValue: "1", pkgUnit: item.unit }, item.unit);
                                   }}
-                                  className="text-[10px] text-gray-400 hover:text-red-600 font-semibold"
+                                  className="text-xs text-gray-400 hover:text-red-600 font-semibold"
                                 >
                                   ✕ Reset
                                 </button>
@@ -1186,7 +1186,7 @@ export function TabPemetaanBahan({
                                     setShowCustomPkg((prev) => ({ ...prev, [item.id]: false }));
                                     updateMapping(item.id, { pkgValue: "1", pkgUnit: item.unit }, item.unit);
                                   }}
-                                  className="text-[10px] text-gray-400 hover:text-red-600 font-semibold"
+                                  className="text-xs text-gray-400 hover:text-red-600 font-semibold"
                                 >
                                   Reset ke Eceran (1 {item.unit})
                                 </button>
@@ -1194,7 +1194,7 @@ export function TabPemetaanBahan({
 
                               <div className="grid grid-cols-2 gap-2">
                                 <div>
-                                  <label className="block text-[10px] font-bold text-gray-700 mb-0.5">Isi per {item.unit}</label>
+                                  <label className="block text-xs font-bold text-gray-700 mb-0.5">Isi per {item.unit}</label>
                                   <input
                                     type="number"
                                     step="any"
@@ -1206,7 +1206,7 @@ export function TabPemetaanBahan({
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-gray-700 mb-0.5">Satuan Target</label>
+                                  <label className="block text-xs font-bold text-gray-700 mb-0.5">Satuan Target</label>
                                   <select
                                     value={mapping.pkgUnit}
                                     onChange={(e) => updateMapping(item.id, { pkgUnit: e.target.value }, item.unit)}
@@ -1226,7 +1226,7 @@ export function TabPemetaanBahan({
 
                               {/* Action to Lock / Confirm this conversion */}
                               <div className="pt-1 flex items-center justify-between gap-2">
-                                <span className="text-[11px] text-gray-500 font-medium">
+                                <span className="text-xs text-gray-500 font-medium">
                                   Rasio: 1 {item.unit} = <strong>{mapping.pkgValue || "1"} {mapping.pkgUnit}</strong>
                                 </span>
                                 <button
@@ -1247,7 +1247,7 @@ export function TabPemetaanBahan({
                             </div>
                           )
                         ) : (
-                          <div className="flex items-center justify-between text-[11px] text-gray-500 pt-0.5">
+                          <div className="flex items-center justify-between text-xs text-gray-500 pt-0.5">
                             <span>
                               Konversi: 1 {item.unit} = 1 {mapping.pkgUnit || item.unit} (Eceran)
                             </span>

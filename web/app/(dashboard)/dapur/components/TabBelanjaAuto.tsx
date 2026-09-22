@@ -169,7 +169,7 @@ export function TabBelanjaAuto() {
             <div className="overflow-y-auto flex-1 p-5">
               <table className="w-full text-sm text-left">
                 <thead>
-                  <tr className="border-b border-gray-100 text-[11px] uppercase tracking-wider text-gray-500">
+                  <tr className="border-b border-gray-100 text-xs uppercase tracking-wider text-gray-500">
                     <th className="pb-3 font-semibold">Item & Qty</th>
                     <th className="pb-3 font-semibold text-right">Harga</th>
                     <th className="pb-3 font-semibold text-right">Subtotal</th>

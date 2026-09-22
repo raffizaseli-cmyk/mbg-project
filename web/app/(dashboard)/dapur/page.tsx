@@ -64,17 +64,17 @@ export default function DapurPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 text-[11px] font-bold flex items-center gap-1.5">
+            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 text-xs font-bold flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
               Formula Gizi & Standar Porsi BGN
             </span>
             <span className="text-xs text-slate-400">•</span>
             <span className="text-xs font-semibold text-slate-500">Dapur Sentral MBG</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
             Dapur, Resep & Bill of Materials
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+          <p className="text-sm sm:text-base text-slate-600 mt-1 font-medium">
             Formulasi takaran bahan baku per porsi, kalkulasi otomatis kebutuhan gramasi, dan master menu makanan bergizi.
           </p>
         </div>
@@ -114,7 +114,7 @@ export default function DapurPage() {
                 </div>
                 <div className="text-left">
                   <div>{tab.label}</div>
-                  <div className={`text-[10px] font-normal hidden sm:block ${isActive ? "text-slate-300" : "text-slate-400"}`}>
+                  <div className={`text-xs font-normal hidden sm:block ${isActive ? "text-slate-300" : "text-slate-400"}`}>
                     {tab.desc}
                   </div>
                 </div>

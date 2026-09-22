@@ -125,8 +125,8 @@ const Sidebar = ({
               <UtensilsCrossed className="w-5 h-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-sm font-bold text-slate-900 tracking-tight truncate leading-tight">MBG Catering</h1>
-              <p className="text-[11px] font-semibold text-blue-600 tracking-wide uppercase mt-0.5">{getRoleBadge(userRole)}</p>
+              <h1 className="text-base font-bold text-slate-900 tracking-tight truncate leading-tight">MBG Catering</h1>
+              <p className="text-xs font-semibold text-blue-600 tracking-wide uppercase mt-0.5">{getRoleBadge(userRole)}</p>
             </div>
           </div>
         ) : (
@@ -155,7 +155,7 @@ const Sidebar = ({
               return <div key={`div-${index}`} className="my-3 border-b border-slate-100 w-8 mx-auto" />;
             }
             return (
-              <div key={`div-${index}`} className="px-3 pt-4 pb-1.5 text-[10px] font-bold text-slate-400 tracking-wider uppercase flex items-center gap-2 shrink-0">
+              <div key={`div-${index}`} className="px-3 pt-4 pb-1.5 text-xs font-bold text-slate-400 tracking-wider uppercase flex items-center gap-2 shrink-0">
                 <span>{item.label}</span>
                 <div className="h-px bg-slate-100 flex-1 ml-1" />
               </div>
@@ -173,7 +173,7 @@ const Sidebar = ({
                   prefetch={true}
                   title={collapsed && !mobile ? item.label : undefined}
                   className={`
-                    relative flex items-center gap-3 py-2.5 rounded-xl text-sm font-medium transition-colors group w-full shrink-0
+                    relative flex items-center gap-3 py-2.5 rounded-xl text-[15px] font-medium transition-colors group w-full shrink-0
                     ${collapsed && !mobile ? "justify-center px-0 w-11 mx-auto" : "px-3.5"}
                     ${active
                       ? "bg-blue-50 text-blue-700 font-semibold"
@@ -194,7 +194,7 @@ const Sidebar = ({
                   )}
 
                   {(!collapsed || mobile) && item.badge && (
-                    <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-md bg-blue-100 text-blue-700">
+                    <span className="px-2 py-0.5 text-xs font-bold rounded-md bg-blue-100 text-blue-700">
                       {item.badge}
                     </span>
                   )}
@@ -210,7 +210,7 @@ const Sidebar = ({
                           key={child.href} 
                           href={child.href}
                           prefetch={true}
-                          className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs transition-colors
+                          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
                             ${childActive
                               ? "text-blue-700 bg-blue-50/70 font-semibold"
                               : "text-slate-500 hover:text-slate-800 hover:bg-slate-50 font-medium"}
@@ -238,7 +238,7 @@ const Sidebar = ({
           onClick={handleLogout}
           title={collapsed ? "Logout" : undefined}
           className={`
-            w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer
+            w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer
             ${collapsed && !mobile ? "justify-center px-0 w-10 mx-auto" : ""}
           `}
         >
@@ -378,11 +378,11 @@ export default function DashboardLayout({
             </button>
 
             <div className="flex flex-col">
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 leading-tight">
                 {currentPageTitle}
               </h2>
-              <div className="flex items-center gap-1.5 text-xs text-slate-500 hidden sm:flex">
-                <Home className="w-3.5 h-3.5 text-slate-400" />
+              <div className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 hidden sm:flex">
+                <Home className="w-4 h-4 text-slate-400" />
                 <span className="text-slate-300">/</span>
                 <span className="text-slate-600 font-medium">{currentPageTitle}</span>
               </div>
@@ -391,10 +391,10 @@ export default function DashboardLayout({
 
           {/* Center: Search */}
           <div className="hidden xl:flex items-center">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200/70 border border-slate-200 text-slate-500 text-xs cursor-pointer transition-colors w-64 group">
-              <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-colors" />
-              <span className="flex-1 text-slate-400 group-hover:text-slate-600">Cari nota, resep, atau stok...</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-white border border-slate-200 rounded text-slate-500">
+            <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200/70 border border-slate-200 text-slate-500 text-sm cursor-pointer transition-colors w-72 group">
+              <Search className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+              <span className="flex-1 text-slate-400 group-hover:text-slate-600 text-xs sm:text-sm">Cari nota, resep, atau stok...</span>
+              <kbd className="px-2 py-0.5 text-xs font-mono bg-white border border-slate-200 rounded-md text-slate-500 font-medium">
                 ⌘K
               </kbd>
             </div>
@@ -404,16 +404,16 @@ export default function DashboardLayout({
           <div className="flex items-center gap-3">
             
             {/* Live date */}
-            <div className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
-              <Calendar className="w-3.5 h-3.5 text-slate-500" />
+            <div className="hidden sm:flex items-center gap-2 text-sm font-medium text-slate-700 bg-slate-100 px-3.5 py-2 rounded-xl border border-slate-200">
+              <Calendar className="w-4 h-4 text-slate-500" />
               <span suppressHydrationWarning>
                 {new Date().toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
               </span>
             </div>
 
             {/* Compliance indicator badge */}
-            <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs sm:text-sm font-semibold">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
               <span>Standar BGN</span>
             </div>
 
@@ -421,14 +421,14 @@ export default function DashboardLayout({
 
             {/* User Profile */}
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-blue-100 border border-blue-200 text-blue-700 font-bold text-xs flex items-center justify-center uppercase">
+              <div className="w-9 h-9 rounded-full bg-blue-100 border border-blue-200 text-blue-700 font-bold text-sm flex items-center justify-center uppercase">
                 {userRole ? userRole.charAt(0) : "A"}
               </div>
               <div className="hidden md:flex flex-col text-left">
-                <span className="text-xs font-bold text-slate-900 leading-tight truncate max-w-[120px]">
+                <span className="text-sm font-bold text-slate-900 leading-tight truncate max-w-[130px]">
                   {tenantName}
                 </span>
-                <span className="text-[10px] text-slate-500 capitalize">
+                <span className="text-xs text-slate-500 capitalize">
                   {userRole}
                 </span>
               </div>

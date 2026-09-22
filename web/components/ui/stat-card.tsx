@@ -52,26 +52,26 @@ export function StatCard({
             <div className={`absolute -right-8 -top-8 w-32 h-32 ${accent.glow} rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500 pointer-events-none`} />
 
             <div className="flex items-start justify-between relative z-10">
-                <p className="text-[11px] font-bold tracking-wider uppercase text-slate-500">{title}</p>
+                <p className="text-xs sm:text-sm font-semibold tracking-wide uppercase text-slate-500">{title}</p>
                 <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${accent.iconBg} shadow-sm border flex items-center justify-center text-xl shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
                     {icon}
                 </div>
             </div>
 
-            <div className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 leading-tight mt-1 relative z-10 truncate">
+            <div className="text-2xl sm:text-3xl font-bold text-slate-900 leading-tight mt-1 relative z-10 truncate">
                 {value}
             </div>
 
             <div className="flex items-center justify-between mt-auto pt-2 relative z-10">
                 {subtitle && (
-                    <p className="text-xs font-semibold text-slate-500 max-w-[65%] truncate flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
+                    <p className="text-xs sm:text-sm font-medium text-slate-600 max-w-[65%] truncate flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
                         {subtitle}
                     </p>
                 )}
                 {trend && trendValue && (
-                    <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full ring-1 ring-inset ${currentTrend.colors} shrink-0`}>
-                        <TrendIcon className="w-3 h-3" />
+                    <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-full ring-1 ring-inset ${currentTrend.colors} shrink-0`}>
+                        <TrendIcon className="w-3.5 h-3.5" />
                         {trendValue}
                     </span>
                 )}

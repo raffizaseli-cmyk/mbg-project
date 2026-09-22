@@ -305,17 +305,17 @@ export default function StokPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-700 text-[11px] font-bold flex items-center gap-1.5">
+                        <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-700 text-xs font-bold flex items-center gap-1.5">
                             <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
                             Manajemen Logistik Gudang
                         </span>
                         <span className="text-xs text-slate-400">•</span>
                         <span className="text-xs font-semibold text-slate-500">{items.length} Master Bahan Baku</span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
                         Persediaan & Stok Bahan
                     </h1>
-                    <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+                    <p className="text-sm sm:text-base text-slate-600 mt-1 font-medium">
                         Pantau inventaris fisik bahan pangan, proyeksi kebutuhan resep MBG, dan penyesuaian stock opname.
                     </p>
                 </div>
@@ -384,7 +384,7 @@ export default function StokPage() {
                                 <h3 className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
                                     Proyeksi Ketahanan Stok Bahan
                                 </h3>
-                                <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-extrabold">
+                                <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-extrabold">
                                     BOM Forecast
                                 </span>
                             </div>
@@ -449,7 +449,7 @@ export default function StokPage() {
                                 <div className="overflow-x-auto no-scrollbar rounded-2xl border border-slate-200/80">
                                     <table className="w-full text-xs sm:text-sm">
                                         <thead className="bg-slate-50/80 border-b border-slate-200/80">
-                                            <tr className="text-[11px] uppercase font-extrabold tracking-wider text-slate-500">
+                                            <tr className="text-xs uppercase font-bold tracking-wider text-slate-500">
                                                 <th className="text-left px-4 py-3 whitespace-nowrap">Bahan Baku</th>
                                                 <th className="text-right px-4 py-3 whitespace-nowrap">Stok Saat Ini</th>
                                                 <th className="text-right px-4 py-3 whitespace-nowrap">Konsumsi / Hari</th>
@@ -493,7 +493,7 @@ export default function StokPage() {
                                                                             {item.needed_for_period.toLocaleString("id-ID", { maximumFractionDigits: 1 })} {item.display_unit || item.unit}
                                                                         </span>
                                                                         {!item.sufficient && (
-                                                                            <span className="block text-[10px] text-rose-500 font-bold mt-0.5">
+                                                                            <span className="block text-xs text-rose-500 font-bold mt-0.5">
                                                                                 (Kurang {item.shortage.toFixed(1)})
                                                                             </span>
                                                                         )}
@@ -505,7 +505,7 @@ export default function StokPage() {
                                                                 <DaysDisplay days={item.days_remaining} stock={item.stock_qty_display ?? item.stock_qty} />
                                                             </td>
                                                             <td className="px-4 py-3 text-center">
-                                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border whitespace-nowrap ${statusColor[item.status]}`}>
+                                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border whitespace-nowrap ${statusColor[item.status]}`}>
                                                                     {statusLabel[item.status]}
                                                                 </span>
                                                             </td>
@@ -551,7 +551,7 @@ export default function StokPage() {
             <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] border border-slate-200/80 p-5 sm:p-6 space-y-4">
                 <div className="flex flex-wrap gap-3.5 items-end">
                     <div className="w-44">
-                        <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Kategori</label>
+                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Kategori</label>
                         <select 
                             value={category} 
                             onChange={e => setCategory(e.target.value)}
@@ -563,7 +563,7 @@ export default function StokPage() {
                         </select>
                     </div>
                     <div className="flex-1 min-w-[200px]">
-                        <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Cari Bahan</label>
+                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Cari Bahan</label>
                         <div className="relative">
                             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
                             <input 
@@ -616,7 +616,7 @@ export default function StokPage() {
                                     ].map(col => (
                                         <th 
                                             key={col.label}
-                                            className={`text-left px-5 py-4 text-slate-500 font-extrabold text-[11px] uppercase tracking-wider whitespace-nowrap ${col.key ? "cursor-pointer hover:text-slate-900 select-none" : ""}`}
+                                            className={`text-left px-5 py-4 text-slate-500 font-extrabold text-xs uppercase tracking-wider whitespace-nowrap ${col.key ? "cursor-pointer hover:text-slate-900 select-none" : ""}`}
                                             onClick={() => col.key && handleSort(col.key as any)}
                                         >
                                             <div className="flex items-center gap-1">
@@ -647,7 +647,7 @@ export default function StokPage() {
                                             </td>
                                             <td className="px-5 py-3.5 text-slate-500 text-xs font-medium">
                                                 {p.category ? (
-                                                    <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-semibold text-[10px]">
+                                                    <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-semibold text-xs">
                                                         {p.category}
                                                     </span>
                                                 ) : "—"}
@@ -704,7 +704,7 @@ export default function StokPage() {
                                                 )}
                                             </td>
                                             <td className="px-5 py-3.5">
-                                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border whitespace-nowrap ${st.className}`}>
+                                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border whitespace-nowrap ${st.className}`}>
                                                     <span className={`w-1.5 h-1.5 rounded-full ${st.dotColor}`} />
                                                     <span>{st.label}</span>
                                                 </span>
@@ -765,7 +765,7 @@ export default function StokPage() {
                     <div className="overflow-x-auto no-scrollbar rounded-2xl border border-slate-100">
                         <table className="w-full text-xs">
                             <thead className="bg-slate-50 border-b border-slate-100">
-                                <tr className="text-[10px] uppercase font-extrabold tracking-wider text-slate-400">
+                                <tr className="text-xs uppercase font-bold tracking-wider text-slate-400">
                                     <th className="text-left px-4 py-3">Tanggal</th>
                                     <th className="text-right px-4 py-3">Perubahan</th>
                                     <th className="text-right px-4 py-3">Saldo</th>
@@ -789,7 +789,7 @@ export default function StokPage() {
                                                 {parseFloat(h.running_balance).toLocaleString("id-ID")} {modalProduct.unit}
                                             </td>
                                             <td className="px-4 py-2.5 text-slate-700 font-medium">{h.reason || "—"}</td>
-                                            <td className="px-4 py-2.5 text-slate-400 text-[11px]">{h.notes || "—"}</td>
+                                            <td className="px-4 py-2.5 text-slate-400 text-xs">{h.notes || "—"}</td>
                                         </tr>
                                     );
                                 })}
@@ -898,7 +898,7 @@ export default function StokPage() {
                                             {deltaNum > 0 ? "+" : ""}{deltaNum.toLocaleString("id-ID", { maximumFractionDigits: 2 })} {koreksiModal.product.display_unit || koreksiModal.product.unit}
                                         </span>
                                     </div>
-                                    <p className="text-[11px] text-amber-700 font-medium">Alasan: {koreksiReason}</p>
+                                    <p className="text-xs text-amber-700 font-medium">Alasan: {koreksiReason}</p>
                                 </div>
                                 <div className="flex gap-2.5 pt-3 border-t border-slate-100">
                                     <button 

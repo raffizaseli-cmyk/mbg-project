@@ -237,17 +237,17 @@ export default function PembukuanPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-1">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
-                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-[11px] font-bold flex items-center gap-1.5">
+                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-xs font-bold flex items-center gap-1.5">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                             Buku Kas & Rekonsiliasi
                         </span>
                         <span className="text-xs text-slate-400">•</span>
                         <span className="text-xs font-semibold text-slate-500">{MONTHS_FULL[bulan]} {tahun}</span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
                         Pembukuan & Nota Belanja
                     </h1>
-                    <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+                    <p className="text-sm sm:text-base text-slate-600 mt-1 font-medium">
                         Rekam transaksi belanja pasar, verifikasi ekstraksi AI OCR, dan unduh laporan pertanggungjawaban dinas.
                     </p>
                 </div>
@@ -281,7 +281,7 @@ export default function PembukuanPage() {
                                         <h3 className="text-base font-bold text-slate-900 tracking-tight">
                                             Excel Dinas Juknis BGN
                                         </h3>
-                                        <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-extrabold">
+                                        <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-extrabold">
                                             10 Sheet
                                         </span>
                                     </div>
@@ -301,7 +301,7 @@ export default function PembukuanPage() {
                                 </span>
                             </div>
                             {excelDoc && (
-                                <p className="text-[11px] text-slate-400 mt-1">
+                                <p className="text-xs text-slate-400 mt-1">
                                     Diperbarui: {new Date(excelDoc.generated_at).toLocaleString("id-ID")}
                                 </p>
                             )}
@@ -360,7 +360,7 @@ export default function PembukuanPage() {
                                         <h3 className="text-base font-bold text-slate-900 tracking-tight">
                                             BAP Rekonsiliasi Kas
                                         </h3>
-                                        <span className="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-extrabold">
+                                        <span className="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-extrabold">
                                             Berita Acara
                                         </span>
                                     </div>
@@ -372,7 +372,7 @@ export default function PembukuanPage() {
                         <div className="mb-5 p-3 rounded-2xl bg-slate-50/80 border border-slate-200/60 text-xs">
                             <div className="flex items-center justify-between">
                                 <span className="text-slate-500 font-medium">Status Pengesahan:</span>
-                                <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                                <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
                                     !bapDoc 
                                         ? "bg-slate-100 text-slate-500 border-slate-200" 
                                         : bapDoc.status === "draft" 
@@ -385,12 +385,12 @@ export default function PembukuanPage() {
                                 </span>
                             </div>
                             {!bapDoc && (
-                                <p className="text-[11px] text-slate-400 mt-1 italic">
+                                <p className="text-xs text-slate-400 mt-1 italic">
                                     Dibuat otomatis jika terdapat pengembalian sisa dana kas dinas.
                                 </p>
                             )}
                             {bapDoc && (
-                                <p className="text-[11px] text-slate-400 mt-1">
+                                <p className="text-xs text-slate-400 mt-1">
                                     Generated: {new Date(bapDoc.generated_at).toLocaleString("id-ID")}
                                 </p>
                             )}
@@ -463,7 +463,7 @@ export default function PembukuanPage() {
                         <Receipt className="w-5 h-5" />
                     </div>
                     <div>
-                        <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">
+                        <h2 className="text-lg sm:text-xl font-bold text-slate-900">
                             Log Transaksi & Pengeluaran
                         </h2>
                         <p className="text-xs text-slate-500 font-medium">Daftar rekonsiliasi belanja bahan baku, operasional, dan arus kas.</p>
@@ -482,7 +482,7 @@ export default function PembukuanPage() {
             <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] border border-slate-200/80 p-5 sm:p-6 overflow-visible z-20 relative">
                 <div className="flex flex-wrap gap-4 items-end">
                     <div className="w-28">
-                        <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Bulan</label>
+                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Bulan</label>
                         <select
                             value={bulan}
                             onChange={(e) => { setBulan(Number(e.target.value)); setPage(0); }}
@@ -494,7 +494,7 @@ export default function PembukuanPage() {
                         </select>
                     </div>
                     <div className="w-24">
-                        <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Tahun</label>
+                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Tahun</label>
                         <input
                             type="number"
                             value={tahun}
@@ -503,7 +503,7 @@ export default function PembukuanPage() {
                         />
                     </div>
                     <div className="w-40">
-                        <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Status</label>
+                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Status</label>
                         <select
                             value={status}
                             onChange={(e) => { setStatus(e.target.value); setPage(0); }}
@@ -518,7 +518,7 @@ export default function PembukuanPage() {
                         </select>
                     </div>
                     <div className="w-40">
-                        <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Kategori</label>
+                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Kategori</label>
                         <select
                             value={juknisCat}
                             onChange={(e) => { setJuknisCat(e.target.value); setPage(0); }}
@@ -533,7 +533,7 @@ export default function PembukuanPage() {
                         </select>
                     </div>
                     <div className="flex-1 min-w-[200px]">
-                        <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Supplier / Toko</label>
+                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Supplier / Toko</label>
                         <div className="relative">
                             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
                             <input
@@ -610,7 +610,7 @@ export default function PembukuanPage() {
                                     </span>
                                 </div>
                             )}
-                            <p className="text-[11px] text-slate-400 mt-0.5">Kompilasi 10 Sheet Dinas BGN</p>
+                            <p className="text-xs text-slate-400 mt-0.5">Kompilasi 10 Sheet Dinas BGN</p>
                         </div>
                     </div>
                 </div>
@@ -668,7 +668,7 @@ export default function PembukuanPage() {
                             🧾
                         </div>
                         <p className="text-base font-extrabold text-slate-800">Tidak ada transaksi ditemukan</p>
-                        <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-sm">
+                        <p className="text-sm sm:text-base text-slate-600 mt-1 max-w-sm">
                             Belum ada nota belanja atau pengeluaran yang tercatat pada periode dan filter yang dipilih.
                         </p>
                     </div>
@@ -677,7 +677,7 @@ export default function PembukuanPage() {
                         <div className="overflow-x-auto no-scrollbar">
                             <table className="w-full text-xs sm:text-sm">
                                 <thead className="bg-slate-50/70 border-b border-slate-200/80">
-                                    <tr className="text-[11px] uppercase font-extrabold tracking-wider text-slate-500">
+                                    <tr className="text-xs uppercase font-bold tracking-wider text-slate-500">
                                         <th className="text-left px-6 py-4 whitespace-nowrap">Tanggal</th>
                                         <th className="text-left px-6 py-4 whitespace-nowrap">Supplier / Toko</th>
                                         <th className="text-center px-6 py-4 whitespace-nowrap">Item</th>
@@ -704,7 +704,7 @@ export default function PembukuanPage() {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
-                                                    <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[11px] font-bold">
+                                                    <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-xs font-bold">
                                                         {trx.items_count ?? "—"}
                                                     </span>
                                                 </td>
@@ -729,7 +729,7 @@ export default function PembukuanPage() {
                                                             lainnya: "📦 Lain",
                                                         };
                                                         return (
-                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border whitespace-nowrap ${colors[cat] || colors.lainnya}`}>
+                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border whitespace-nowrap ${colors[cat] || colors.lainnya}`}>
                                                                 {labels[cat] || cat}
                                                             </span>
                                                         );
@@ -918,7 +918,7 @@ export default function PembukuanPage() {
                                             }`}
                                         >
                                             <div className="text-xs font-bold">{m.label}</div>
-                                            <div className="text-[10px] text-slate-400 font-normal mt-0.5">{m.desc}</div>
+                                            <div className="text-xs text-slate-400 font-normal mt-0.5">{m.desc}</div>
                                         </button>
                                     ))}
                                 </div>
@@ -971,7 +971,7 @@ export default function PembukuanPage() {
                                 <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
                                 <span>Konsekuensi Otomatis:</span>
                             </p>
-                            <ul className="list-disc list-inside space-y-0.5 text-rose-700 text-[11px] font-medium pl-1">
+                            <ul className="list-disc list-inside space-y-0.5 text-rose-700 text-xs font-medium pl-1">
                                 <li>Status nota belanja akan di-void secara permanen.</li>
                                 <li>Stok bahan baku gudang akan dikoreksi kembali otomatis.</li>
                                 <li>Data arus kas dan buku besar terkait akan dibersihkan.</li>

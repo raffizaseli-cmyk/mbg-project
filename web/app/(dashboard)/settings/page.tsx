@@ -52,17 +52,17 @@ export default function SettingsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-700 text-[11px] font-bold flex items-center gap-1.5">
+            <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-700 text-xs font-bold flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
               Pusat Konfigurasi & Master Data
             </span>
             <span className="text-xs text-slate-400">•</span>
             <span className="text-xs font-semibold text-slate-500">Sistem Inti MBG</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
             Pengaturan & Master Sistem
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+          <p className="text-sm sm:text-base text-slate-600 mt-1 font-medium">
             Kelola profil SPPG katering, sekolah binaan, rekanan pasar, pagu juknis, dan integrasi bot operasional.
           </p>
         </div>
